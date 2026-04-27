@@ -408,6 +408,11 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;hei
     </div>
     <div style="font-size:.65rem;color:var(--txts);text-align:center;">Puntaje final</div>
     <div class="score" id="r-score">0 pts</div>
+    <!-- Botones siempre visibles -->
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="gbtn p" onclick="startGameAgain()" style="flex:1;padding:10px;font-size:.82rem;">🔄 Otra partida</button>
+      <button class="gbtn s" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">🐾 Cambiar</button>
+    </div>
   </div>
 
   <!-- FEEDBACK -->
@@ -490,9 +495,22 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;hei
       <span class="fb-sent-ico">🌱</span>
       <div class="fb-sent-title">¡Gracias, Guardián!</div>
       <div class="fb-sent-msg">Tu opinión ayuda a mejorar ECO-PODERES. Cada partida y cada comentario construyen un juego más poderoso.<br><br><strong style="color:var(--green);">+10 🌱 Semillas de Gratitud</strong></div>
-      <button class="gbtn p" onclick="goIntro()" style="margin-top:14px;">Jugar de nuevo</button>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+        <button class="gbtn p" onclick="startGameAgain()">🔄 Jugar otra partida</button>
+        <button class="gbtn s" onclick="goMenu()">🐾 Cambiar Guardián</button>
+        <button class="gbtn s" onclick="goRanking()">🏆 Ver Ranking</button>
+      </div>
     </div>
   </div>
+</div>
+
+
+<!-- RANKING -->
+<div class="screen z1" id="s-ranking" style="padding:1rem;gap:8px;">
+  <div style="font-family:var(--ffd);font-size:1.3rem;font-weight:900;text-align:center;width:100%;">🏆 Ranking</div>
+  <div style="font-size:.72rem;color:var(--txts);text-align:center;width:100%;">Mejores partidas — este dispositivo</div>
+  <div style="display:flex;flex-direction:column;gap:6px;width:100%;" id="rank-list"></div>
+  <button class="gbtn s" onclick="goIntro()" style="width:100%;margin-top:8px;">← Volver al inicio</button>
 </div>
 
 <script>
@@ -636,6 +654,38 @@ function sh(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remo
 function goIntro(){stopWorld();sh('intro');updateSeedsUI();}
 function goMenu(){buildMenu();sh('menu');}
 function updateSeedsUI(){['seeds-intro','seeds-game'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ST.seeds;});}
+function startGameAgain(){
+  // Reinicia con mismo guardián y comunidad
+  const comm=document.getElementById('comm-inp').value.trim()||G.comm||'Mi Comunidad';
+  document.getElementById('comm-inp').value=comm;
+  startGame();
+}
+function goRanking(){
+  // Guardar partida en ranking local
+  const pts=parseInt(document.getElementById('r-score').textContent)||0;
+  const entry={nm:G.g.nm+' '+G.g.ico,comm:G.comm||'Mi Comunidad',score:pts,eco:G.eco,ts:new Date().toLocaleDateString('es',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
+  try{const r=JSON.parse(localStorage.getItem('ep_ranking')||'[]');r.push(entry);r.sort((a,b)=>b.score-a.score);localStorage.setItem('ep_ranking',JSON.stringify(r.slice(0,20)));}catch(e){}
+  buildRankingScreen();sh('ranking');
+}
+function buildRankingScreen(){
+  const list=document.getElementById('rank-list');
+  let ranking=[];
+  try{ranking=JSON.parse(localStorage.getItem('ep_ranking')||'[]');}catch(e){}
+  if(!ranking.length){list.innerHTML='<div style="text-align:center;padding:2rem;color:var(--txts);font-size:.85rem;">Aún no hay partidas registradas.<br>¡Juega y sé el primero!</div>';return;}
+  const medals=['🥇','🥈','🥉'];
+  list.innerHTML=ranking.map((r,i)=>`
+    <div style="background:var(--bg3);border:1px solid ${i<3?'#ffc54244':'var(--border)'};border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;">
+      <div style="font-size:1.1rem;min-width:28px;">${medals[i]||i+1}</div>
+      <div style="flex:1;">
+        <div style="font-size:.84rem;font-weight:800;">${r.nm}</div>
+        <div style="font-size:.66rem;color:var(--txts);">${r.comm} · ${r.ts||''}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:.9rem;font-weight:800;color:var(--gold2);">${r.score} pts</div>
+        <div style="font-size:.65rem;color:var(--green);">🌍 ${r.eco}/100</div>
+      </div>
+    </div>`).join('');
+}
 
 function buildMenu(){
   document.getElementById('ggrid').innerHTML=GUARDIANES.map((g,i)=>`
