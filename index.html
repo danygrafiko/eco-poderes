@@ -460,7 +460,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="acts">
     <button class="abtn" id="a-col" onclick="act('col')" disabled><span class="ai">💎</span>Recolectar</button>
     <button class="abtn" id="a-pow" onclick="act('pow')" disabled><span class="ai" id="pow-ico">⚡</span>Poder</button>
-    <button class="abtn" id="a-drw" onclick="act('drw')" disabled><span class="ai">🃏</span>Robar</button>
+    <button class="abtn" id="a-drw" onclick="act('drw')" disabled><span class="ai">🃏</span><span id="drw-lbl">Robar</span></button>
   </div>
   <div class="hwrap">
     <div class="hhdr"><div class="hl">Proyectos en mano</div><div class="hc" id="hcnt">0 cartas</div></div>
@@ -595,8 +595,12 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 <div class="screen z1" id="s-reveal">
   <div class="reveal-title" id="reveal-title">¡Cartas obtenidas!</div>
   <div class="reveal-cards" id="reveal-cards"></div>
-  <button class="btn prim" onclick="cerrarApertura()" style="max-width:280px;">✅ Añadir a colección</button>
-  <button class="btn ghost" onclick="goSobres()" style="max-width:220px;padding:10px;">← Ver más sobres</button>
+  <button class="btn prim" onclick="cerrarApertura()" style="max-width:300px;">✅ Añadir a colección</button>
+  <div style="display:flex;gap:8px;max-width:300px;width:100%;">
+    <button class="btn sec" onclick="goSobres()" style="flex:1;padding:10px;font-size:.8rem;">🏪 Más sobres</button>
+    <button class="btn ghost" onclick="irAFeedback()" style="flex:1;padding:10px;font-size:.8rem;">💬 Dar feedback</button>
+  </div>
+  <button onclick="goAccionReal()" style="max-width:300px;width:100%;padding:11px;border-radius:50px;border:1px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);">🌍 Comprometer Acción Eco Real</button>
 </div>
 
 <!-- RANKING & FEEDBACK -->
@@ -945,8 +949,12 @@ function startGame(){
   startWorld();sh('game');
 }
 function drawCard(){
-  if(!G.deck.length){G.deck=shuffle([...G.disc]);G.disc=[];}
-  if(G.deck.length&&G.hand.length<5)G.hand.push(G.deck.pop());
+  if(G.hand.length>=5) return; // FIX: límite duro de 5 cartas
+  if(!G.deck.length){
+    if(!G.disc.length){setStatus('⚠️ Mazo y descarte vacíos.');return;}
+    G.deck=shuffle([...G.disc]);G.disc=[];
+  }
+  if(G.deck.length) G.hand.push(G.deck.pop());
 }
 
 // ══ FASES ══
@@ -1022,11 +1030,26 @@ function choosePath(p){
 // ══ ACCIONES ══
 function act(t){
   if(G.acciones<=0){setStatus('Sin acciones disponibles este turno.');return;}
-  if(t==='col'){G.agua+=1;G.energia+=1;G.acciones--;setStatus('💎 Recolectaste: +1 Agua, +1 Energía.');}
-  else if(t==='pow'){if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');}G.acciones--;}
-  else if(t==='drw'){drawCard();G.acciones--;setStatus('🃏 Robaste una carta del mazo.');}
+  if(t==='col'){
+    G.agua+=1;G.energia+=1;G.acciones--;
+    setStatus('💎 Recolectaste: +1 Agua, +1 Energía.');
+  }
+  else if(t==='pow'){
+    if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');}
+    G.acciones--;
+  }
+  else if(t==='drw'){
+    // FIX: Límite de mano = 5, y robar cuesta 1 acción
+    if(G.hand.length>=5){setStatus('⚠️ Mano llena (máx 5 cartas). Juega una primero.');return;}
+    drawCard();
+    G.acciones--;
+    setStatus('🃏 Robaste una carta. ('+G.hand.length+'/5 en mano)');
+  }
   // Jaguar: +1 acción si eco subió
-  if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5){G.acciones++;setStatus(s=>s+' 🐆 +1 Acción Jaguar!');}
+  if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5){
+    G.acciones++;
+    setStatus('🐆 +1 Acción Jaguar por subir ecosistema.');
+  }
   clamp();renderAll();
 }
 
@@ -1167,6 +1190,11 @@ function renderAll(){
   document.getElementById('rbox-ener').className='rbox'+(G.energia<=1?' scarce':'');
   $('pow-ico').textContent=G.g.ico;
   $('a-pow').disabled=G.phase!=='action'||G.g.id==='pulpo'||!G.g.apply;
+  // FIX: Deshabilitar robo si mano llena
+  const aDrw=document.getElementById('a-drw');
+  if(aDrw) aDrw.disabled=G.phase!=='action'||G.hand.length>=5;
+  const drwLbl=document.getElementById('drw-lbl');
+  if(drwLbl) drwLbl.textContent=G.hand.length>=5?'Mano llena':'Robar';
   updateSeedsUI();renderHand();
 }
 
@@ -1174,7 +1202,12 @@ const TL={emp:'🌿 EMP',proy:'📋 PROY',con:'🧠 CON',crea:'⚡ CREA',ali:'�
           rara:'⭐ RARA',epica:'💜 ÉPICA',legendaria:'🏆 LEGEND',guardiana:'✨ SUPREMA'};
 function renderHand(){
   const hs=document.getElementById('hscroll');
-  document.getElementById('hcnt').textContent=G.hand.length+' carta'+(G.hand.length!==1?'s':'');
+  const hMax=5;
+  const hEl=document.getElementById('hcnt');
+  if(hEl){
+    hEl.textContent=G.hand.length+'/'+hMax+' carta'+(G.hand.length!==1?'s':'');
+    hEl.style.color=G.hand.length>=5?'#ff5a5a':'var(--gold2)';
+  }
   if(!G.hand.length){hs.innerHTML='<div style="font-size:.73rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
   hs.innerHTML=G.hand.map((card,i)=>{
     const can=G.agua>=card.c.a&&G.energia>=card.c.e&&G.phase==='action';
@@ -1661,6 +1694,25 @@ updateSeedsUI();
 
 // INIT
 updateSeedsUI();
+
+// Ir a feedback desde sobres
+function irAFeedback(){
+  const resultScreen = document.getElementById('s-result');
+  // Si hay resultado activo, ir ahí directamente
+  if(resultScreen && document.getElementById('r-score')?.textContent !== '0 pts'){
+    sh('result');
+    // Scroll al formulario de feedback
+    setTimeout(()=>{
+      const fbCard = document.querySelector('.feedback-card');
+      if(fbCard) fbCard.scrollIntoView({behavior:'smooth'});
+    }, 300);
+  } else {
+    // Si no hay partida, ir al ranking tab feedback
+    goFBRanking();
+    setTimeout(()=>fbTab('fb'), 300);
+  }
+}
+
 </script>
 
 <!-- ACCIÓN REAL ECO -->
