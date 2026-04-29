@@ -1028,6 +1028,9 @@ function choosePath(p){
 }
 
 // ══ ACCIONES ══
+
+function cardCostA(card){return card.ca!==undefined?card.ca:(card.c?cardCostA(card):0);}
+function cardCostE(card){return card.ce!==undefined?card.ce:(card.c?cardCostE(card):0);}
 function act(t){
   if(G.acciones<=0){setStatus('Sin acciones disponibles este turno.');return;}
   if(t==='col'){
@@ -1057,10 +1060,10 @@ function playCard(i){
   const card=G.hand[i];if(!card)return;
   // Elefante no puede jugar impulso
   if(G.g.id==='elefante'&&card.tp==='imp'){setStatus('🐘 El Elefante no puede jugar cartas de Impulso.');return;}
-  if(G.agua<card.c.a||G.energia<card.c.e){setStatus('❌ Sin recursos para '+card.nm+'.');fl('#330000');return;}
+  if(G.agua<cardCostA(card)||G.energia<cardCostE(card)){setStatus('❌ Sin recursos para '+card.nm+'.');fl('#330000');return;}
   if(G.phase!=='action')return;
   prevEco=G.eco;
-  G.agua-=card.c.a;G.energia-=card.c.e;
+  G.agua-=cardCostA(card);G.energia-=cardCostE(card);
   card.ef(G);
   if(G.g.id==='tortuga')G.g.apply(G);
   if(G._bee){G.sociedad+=2;G._bee=false;setStatus('🐝 Buff cooperación: +2 Sociedad extra!');}
@@ -1210,7 +1213,7 @@ function renderHand(){
   }
   if(!G.hand.length){hs.innerHTML='<div style="font-size:.73rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
   hs.innerHTML=G.hand.map((card,i)=>{
-    const can=G.agua>=card.c.a&&G.energia>=card.c.e&&G.phase==='action';
+    const can=G.agua>=cardCostA(card)&&G.energia>=cardCostE(card)&&G.phase==='action';
     const isLeg=card.tp==='legendaria'||card.tp==='guardiana';
     const beeBdg=G._bee?'<div style="position:absolute;top:-4px;right:-4px;width:13px;height:13px;border-radius:50%;background:#ffc542;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#07101d;font-weight:900;">🐝</div>':'';
     const isNew=card._new?'<div class="card-new">NEW</div>':'';
@@ -1220,7 +1223,7 @@ function renderHand(){
       <div class="cico">${card.ico}</div>
       <div class="cn">${card.nm}</div>
       <div class="cfx">${card.txt}</div>
-      <div class="cco">💧${card.c.a} ⚡${card.c.e}</div>
+      <div class="cco">💧${cardCostA(card)} ⚡${cardCostE(card)}</div>
     </div>`;
   }).join('');
 }
@@ -1332,29 +1335,26 @@ function renderFeedbackList(){
 
 // ══ SISTEMA DE SOBRES ══
 const CARTAS_COL=[
-  // RARAS — 10 cartas para variedad en sobres Bronce
-  {id:'r02',ico:'🌊',nm:'Ciclo del Agua',tp:'rara',color:'#00aaff',c:{a:1,e:0},txt:'+2 eco · +2 agua',ef:g=>{g.eco+=2;g.agua+=2;}},
-  {id:'r03',ico:'🌿',nm:'Agroecología',tp:'rara',color:'#52c26d',c:{a:1,e:1},txt:'+3 eco · +1 agua',ef:g=>{g.eco+=3;g.agua+=1;}},
-  {id:'r04',ico:'🚲',nm:'Movilidad Verde',tp:'rara',color:'#88dd88',c:{a:0,e:1},txt:'+2 soc · -1 karma',ef:g=>{g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
-  {id:'r05',ico:'🌱',nm:'Semilla Guardiana',tp:'rara',color:'#5ccf9a',c:{a:0,e:0},txt:'+2 eco · +1 con',ef:g=>{g.eco+=2;g.conciencia+=1;}},
-  {id:'r06',ico:'💧',nm:'Cosecha de Lluvia',tp:'rara',color:'#44aaff',c:{a:0,e:1},txt:'+3 agua · +1 soc',ef:g=>{g.agua+=3;g.sociedad+=1;}},
-  {id:'r07',ico:'🌞',nm:'Panel Solar',tp:'rara',color:'#ffcc44',c:{a:0,e:0},txt:'+2 energía · +1 eco',ef:g=>{g.energia+=2;g.eco+=1;}},
-  {id:'r08',ico:'🌾',nm:'Huerto Comunitario',tp:'rara',color:'#88cc55',c:{a:1,e:0},txt:'+1 agua · +2 soc · +1 eco',ef:g=>{g.agua+=1;g.sociedad+=2;g.eco+=1;}},
-  {id:'r09',ico:'♻️',nm:'Centro de Reciclaje',tp:'rara',color:'#66ccaa',c:{a:0,e:1},txt:'-1 karma · +1 eco · +1 soc',ef:g=>{g.karma=Math.max(0,g.karma-1);g.eco+=1;g.sociedad+=1;}},
-  {id:'r10',ico:'🚿',nm:'Ducha Solar',tp:'rara',color:'#55bbdd',c:{a:0,e:0},txt:'+1 agua · +1 con · -1 karma',ef:g=>{g.agua+=1;g.conciencia+=1;g.karma=Math.max(0,g.karma-1);}},,ico:'☀️',nm:'Energía Limpia+',tp:'rara',color:'#ffd700',c:{a:0,e:1},txt:'+2 soc · +1 con · +1 eco',ef:g=>{g.sociedad+=2;g.conciencia+=1;g.eco+=1;}},
-  {id:'r02',ico:'🌊',nm:'Ciclo del Agua',tp:'rara',color:'#00aaff',c:{a:1,e:0},txt:'+2 eco · +2 agua',ef:g=>{g.eco+=2;g.agua+=2;}},
-  {id:'r03',ico:'🌿',nm:'Agroecología',tp:'rara',color:'#52c26d',c:{a:1,e:1},txt:'+3 eco · +1 agua',ef:g=>{g.eco+=3;g.agua+=1;}},
-  {id:'r04',ico:'🚲',nm:'Movilidad Verde',tp:'rara',color:'#88dd88',c:{a:0,e:1},txt:'+2 soc · -1 karma',ef:g=>{g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
-  {id:'e01',ico:'🌊',nm:'Desalinización Solar',tp:'epica',color:'#00c4ff',c:{a:0,e:2},txt:'+3 agua · +2 eco · +1 soc',ef:g=>{g.agua+=3;g.eco+=2;g.sociedad+=1;}},
-  {id:'e02',ico:'🏙️',nm:'Ciudad Circular',tp:'epica',color:'#8899ff',c:{a:2,e:2},txt:'+4 soc · +2 eco',ef:g=>{g.sociedad+=4;g.eco+=2;}},
-  {id:'e03',ico:'🌬️',nm:'Parque Eólico',tp:'epica',color:'#a0d8ff',c:{a:0,e:1},txt:'+3 energía · +2 eco',ef:g=>{g.energia+=3;g.eco+=2;}},
-  {id:'e04',ico:'🌈',nm:'Visión del Futuro',tp:'epica',color:'#ff99ff',c:{a:1,e:1},txt:'+2 todo',ef:g=>{g.eco+=2;g.sociedad+=2;g.conciencia+=2;}},
-  {id:'e05',ico:'🌻',nm:'Granja Comunitaria',tp:'epica',color:'#ffdd44',c:{a:2,e:1},txt:'+2 agua · +2 soc',ef:g=>{g.agua+=2;g.sociedad+=2;}},
-  {id:'l01',ico:'🌳',nm:'Árbol Milenario',tp:'legendaria',color:'#2aff88',c:{a:1,e:1},txt:'+5 eco · +3 con · -2 karma',ef:g=>{g.eco+=5;g.conciencia+=3;g.karma=Math.max(0,g.karma-2);}},
-  {id:'l02',ico:'🐋',nm:'Canción de la Ballena',tp:'legendaria',color:'#44aaff',c:{a:2,e:0},txt:'+4 eco · +3 soc · +2 agua',ef:g=>{g.eco+=4;g.sociedad+=3;g.agua+=2;}},
-  {id:'l03',ico:'🌅',nm:'Amanecer del Consejo',tp:'legendaria',color:'#ffcc44',c:{a:1,e:1},txt:'+4 eco · +4 con · +2 soc',ef:g=>{g.eco+=4;g.conciencia+=4;g.sociedad+=2;}},
-  {id:'g01',ico:'🦋',nm:'Metamorfosis',tp:'guardiana',color:'#ff44ff',c:{a:0,e:0},txt:'+6 eco · +5 con · +4 soc',ef:g=>{g.eco+=6;g.conciencia+=5;g.sociedad+=4;}},
-  {id:'g02',ico:'🌍',nm:'Gaia Despierta',tp:'guardiana',color:'#ff44ff',c:{a:0,e:0},txt:'+8 eco · karma=0 · +5 soc',ef:g=>{g.eco+=8;g.karma=0;g.sociedad+=5;}}
+  {id:"rc01",ico:"☀️",nm:"Energía Limpia+",tp:"rara",color:"#ffd700",ca:0,ce:1,txt:"+2 soc · +1 con · +1 eco",ef:function(g){g.sociedad+=2;g.conciencia+=1;g.eco+=1;}},
+  {id:"rc02",ico:"🌊",nm:"Ciclo del Agua",tp:"rara",color:"#00aaff",ca:1,ce:0,txt:"+2 eco · +2 agua",ef:function(g){g.eco+=2;g.agua+=2;}},
+  {id:"rc03",ico:"🌿",nm:"Agroecología",tp:"rara",color:"#52c26d",ca:1,ce:1,txt:"+3 eco · +1 agua",ef:function(g){g.eco+=3;g.agua+=1;}},
+  {id:"rc04",ico:"🚲",nm:"Movilidad Verde",tp:"rara",color:"#88dd88",ca:0,ce:1,txt:"+2 soc · -1 karma",ef:function(g){g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
+  {id:"rc05",ico:"🌱",nm:"Semilla Guardiana",tp:"rara",color:"#5ccf9a",ca:0,ce:0,txt:"+2 eco · +1 con",ef:function(g){g.eco+=2;g.conciencia+=1;}},
+  {id:"rc06",ico:"💧",nm:"Cosecha de Lluvia",tp:"rara",color:"#44aaff",ca:0,ce:1,txt:"+3 agua · +1 soc",ef:function(g){g.agua+=3;g.sociedad+=1;}},
+  {id:"rc07",ico:"🌞",nm:"Panel Solar",tp:"rara",color:"#ffcc44",ca:0,ce:0,txt:"+2 energía · +1 eco",ef:function(g){g.energia+=2;g.eco+=1;}},
+  {id:"rc08",ico:"🌾",nm:"Huerto Comunitario",tp:"rara",color:"#88cc55",ca:1,ce:0,txt:"+1 agua · +2 soc · +1 eco",ef:function(g){g.agua+=1;g.sociedad+=2;g.eco+=1;}},
+  {id:"rc09",ico:"♻️",nm:"Centro de Reciclaje",tp:"rara",color:"#66ccaa",ca:0,ce:1,txt:"-1 karma · +1 eco · +1 soc",ef:function(g){g.karma=Math.max(0,g.karma-1);g.eco+=1;g.sociedad+=1;}},
+  {id:"rc10",ico:"🚿",nm:"Ducha Solar",tp:"rara",color:"#55bbdd",ca:0,ce:0,txt:"+1 agua · +1 con · -1 karma",ef:function(g){g.agua+=1;g.conciencia+=1;g.karma=Math.max(0,g.karma-1);}},
+  {id:"ec01",ico:"🌊",nm:"Desalinización Solar",tp:"epica",color:"#00c4ff",ca:0,ce:2,txt:"+3 agua · +2 eco · +1 soc",ef:function(g){g.agua+=3;g.eco+=2;g.sociedad+=1;}},
+  {id:"ec02",ico:"🏙️",nm:"Ciudad Circular",tp:"epica",color:"#8899ff",ca:2,ce:2,txt:"+4 soc · +2 eco",ef:function(g){g.sociedad+=4;g.eco+=2;}},
+  {id:"ec03",ico:"🌬️",nm:"Parque Eólico",tp:"epica",color:"#a0d8ff",ca:0,ce:1,txt:"+3 energía · +2 eco",ef:function(g){g.energia+=3;g.eco+=2;}},
+  {id:"ec04",ico:"🌈",nm:"Visión del Futuro",tp:"epica",color:"#ff99ff",ca:1,ce:1,txt:"+2 eco+soc+con",ef:function(g){g.eco+=2;g.sociedad+=2;g.conciencia+=2;}},
+  {id:"ec05",ico:"🌻",nm:"Granja Comunitaria",tp:"epica",color:"#ffdd44",ca:2,ce:1,txt:"+2 agua · +2 soc",ef:function(g){g.agua+=2;g.sociedad+=2;}},
+  {id:"lc01",ico:"🌳",nm:"Árbol Milenario",tp:"legendaria",color:"#2aff88",ca:1,ce:1,txt:"+5 eco · +3 con · -2 karma",ef:function(g){g.eco+=5;g.conciencia+=3;g.karma=Math.max(0,g.karma-2);}},
+  {id:"lc02",ico:"🐋",nm:"Canción de la Ballena",tp:"legendaria",color:"#44aaff",ca:2,ce:0,txt:"+4 eco · +3 soc · +2 agua",ef:function(g){g.eco+=4;g.sociedad+=3;g.agua+=2;}},
+  {id:"lc03",ico:"🌅",nm:"Amanecer del Consejo",tp:"legendaria",color:"#ffcc44",ca:1,ce:1,txt:"+4 eco · +4 con · +2 soc",ef:function(g){g.eco+=4;g.conciencia+=4;g.sociedad+=2;}},
+  {id:"gc01",ico:"🦋",nm:"Metamorfosis",tp:"guardiana",color:"#ff44ff",ca:0,ce:0,txt:"+6 eco · +5 con · +4 soc",ef:function(g){g.eco+=6;g.conciencia+=5;g.sociedad+=4;}},
+  {id:"gc02",ico:"🌍",nm:"Gaia Despierta",tp:"guardiana",color:"#ff44ff",ca:0,ce:0,txt:"+8 eco · karma=0 · +5 soc",ef:function(g){g.eco+=8;g.karma=0;g.sociedad+=5;}}
 ];
 const SOBRES_DEF={
   bronce: {nm:'Bronce', ico:'📦',cost:30, borde:'#cd7f32',bg:'linear-gradient(155deg,#3d1f05,#7a3a0a)',sombra:'rgba(205,127,50,.5)', garantia:'rara',      pool:['rara','rara'],           pesos:[1,0]},
