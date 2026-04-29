@@ -2,259 +2,346 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>ECO-PODERES — Demo Oficial</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ECO-PODERES — El Consejo de Guardianes</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
   --bg:#07101d;--bg2:#0d1a2e;--bg3:#111b31;--bg4:#0a1525;
-  --gold:#ffe7a8;--gold2:#ffc542;
-  --green:#5ccf9a;--green2:#3aaf7a;
-  --blue:#6d8cff;--purple:#a66cff;
+  --gold:#ffe7a8;--gold2:#ffc542;--gold3:#e8a800;
+  --green:#5ccf9a;--green2:#3aaf7a;--green3:#1d7a50;
+  --blue:#6d8cff;--purple:#a66cff;--purple2:#7a44cc;
   --red:#ff5a5a;--orange:#ff8c42;
-  --txt:#e8f0ff;--txts:#7a9abf;--txtd:#4a6a8f;
+  --txt:#e8f0ff;--txts:#7a9abf;--txtd:#3a5a7f;
   --border:#1a2f4a;--border2:#243858;
   --r:14px;--ff:'Nunito',sans-serif;--ffd:'Cinzel',serif;
 }
 html,body{background:var(--bg);color:var(--txt);font-family:var(--ff);min-height:100vh;overflow-x:hidden;max-width:480px;margin:0 auto;}
-canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;}
+canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .z1{position:relative;z-index:1;}
 .screen{display:none;min-height:100vh;flex-direction:column;align-items:center;padding:10px;gap:7px;}
 .screen.on{display:flex;}
 
-/* ── BOTONES ── */
-.gbtn{padding:12px 24px;border-radius:50px;border:none;font-family:var(--ff);font-size:.92rem;font-weight:800;cursor:pointer;transition:all .18s;letter-spacing:.3px;width:100%;}
-.gbtn.p{background:linear-gradient(135deg,#4a6aee,#8a50e0);color:#fff;box-shadow:0 4px 20px #4a6aee33;}
-.gbtn.p:hover{transform:translateY(-2px);filter:brightness(1.1);}
-.gbtn.s{background:transparent;border:1.5px solid var(--green);color:var(--green);}
-.gbtn.gold{background:linear-gradient(135deg,#9a6600,#cc8800);color:#fff;}
-.gbtn:disabled{opacity:.35;cursor:default;}
-.seeds-pill{display:flex;align-items:center;gap:5px;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:20px;padding:5px 11px;}
-.sp-val{font-size:.88rem;font-weight:800;color:var(--green);}
-.sp-lbl{font-size:.6rem;color:var(--txts);}
+/* BUTTONS */
+.btn{padding:12px 20px;border-radius:50px;border:none;font-family:var(--ff);font-size:.92rem;font-weight:800;cursor:pointer;transition:all .15s;touch-action:manipulation;width:100%;}
+.btn.prim{background:linear-gradient(135deg,#4a6aee,#8a50e0);color:#fff;box-shadow:0 4px 20px #4a6aee33;}
+.btn.prim:active{transform:scale(.97);}
+.btn.sec{background:transparent;border:1.5px solid var(--green);color:var(--green);}
+.btn.sec:active{background:#0a1f15;}
+.btn.gold{background:linear-gradient(135deg,#9a6600,#cc8800);color:#fff;}
+.btn.danger{background:linear-gradient(135deg,#8a1a1a,#cc2222);color:#fff;}
+.btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--txts);font-size:.82rem;}
 
-/* ── FLASH / BANNER ── */
+/* FLASH/BANNER */
 .flash{position:fixed;inset:0;z-index:500;pointer-events:none;opacity:0;transition:opacity .12s;}
-.rbanner{position:fixed;top:0;left:0;right:0;z-index:600;background:#0d1525;border-bottom:1px solid var(--gold2);padding:10px;text-align:center;transform:translateY(-100%);transition:transform .3s;max-width:480px;margin:0 auto;}
+.rbanner{position:fixed;top:0;left:0;right:0;z-index:600;background:#07101d;border-bottom:2px solid var(--gold2);padding:12px 16px;text-align:center;transform:translateY(-100%);transition:transform .35s;max-width:480px;margin:0 auto;}
 .rbanner.show{transform:translateY(0);}
-.rbt{font-size:.85rem;font-weight:800;color:var(--gold2);font-family:var(--ffd);}
-.rbs{font-size:.68rem;color:var(--txts);margin-top:1px;}
+.rbt{font-size:.9rem;font-weight:900;color:var(--gold2);font-family:var(--ffd);}
+.rbs{font-size:.72rem;color:var(--txts);margin-top:3px;font-style:italic;}
 
-/* ══════════════════════════════
-   TUTORIAL
-══════════════════════════════ */
-#s-tutorial{padding:0;gap:0;justify-content:flex-start;}
-.tut-progress{width:100%;background:var(--bg2);padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
-.tut-dots{display:flex;gap:5px;}
-.tut-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .3s;}
-.tut-dot.on{background:var(--green);transform:scale(1.2);}
-.tut-dot.done{background:var(--green2);}
-.tut-step-lbl{font-size:.7rem;color:var(--txts);}
-.tut-content{flex:1;width:100%;padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
-.tut-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:18px;width:100%;}
-.tut-ico{font-size:3rem;text-align:center;display:block;margin-bottom:10px;}
-.tut-title{font-family:var(--ffd);font-size:1.1rem;font-weight:900;text-align:center;color:var(--gold2);margin-bottom:8px;}
-.tut-body{font-size:.85rem;color:var(--txts);line-height:1.8;text-align:center;}
-.tut-highlight{background:var(--bg4);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.82rem;color:var(--txt);line-height:1.7;}
-.tut-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.tut-item{background:var(--bg4);border-radius:10px;padding:10px 8px;text-align:center;}
-.ti-ico{font-size:1.4rem;margin-bottom:4px;}
-.ti-nm{font-size:.75rem;font-weight:800;margin-bottom:2px;}
-.ti-desc{font-size:.65rem;color:var(--txts);line-height:1.4;}
-.tut-example-card{background:var(--bg4);border:2px solid #ffc54255;border-radius:12px;padding:12px;text-align:center;max-width:180px;margin:0 auto;}
-.tut-nav{width:100%;padding:12px 16px;display:flex;gap:8px;background:var(--bg2);border-top:1px solid var(--border);}
-.step-counter{font-size:.72rem;color:var(--txts);text-align:center;margin-top:4px;}
+/* SEEDS PILL */
+.seeds-pill{display:flex;align-items:center;gap:5px;background:#0a1a0a;border:1px solid #1a4a1a;border-radius:20px;padding:5px 12px;}
+.seeds-pill .val{font-size:.9rem;font-weight:800;color:var(--green);}
+.seeds-pill .lbl{font-size:.62rem;color:var(--txts);}
 
-/* ══════════════════════════════
-   INTRO
-══════════════════════════════ */
-#s-intro{justify-content:center;text-align:center;padding:2rem 1.5rem;}
-.intro-orb{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a0a5e,#07101d);border:1.5px solid #6633aa55;display:flex;align-items:center;justify-content:center;font-size:3.2rem;animation:orbFloat 4s ease-in-out infinite;margin:0 auto 1rem;}
-@keyframes orbFloat{0%,100%{transform:translateY(0);box-shadow:0 0 30px #6633aa33}50%{transform:translateY(-9px);box-shadow:0 0 50px #8844cc55}}
-.intro-logo{font-family:var(--ffd);font-size:2.3rem;font-weight:900;background:linear-gradient(135deg,#ffe7a8,#c88cff,#6d8cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;margin-bottom:4px;}
-.intro-sub{font-size:.75rem;color:var(--gold2);letter-spacing:4px;text-transform:uppercase;margin-bottom:.5rem;}
-.demo-badge{display:inline-flex;align-items:center;gap:5px;background:#1a0a30;border:1px solid #6633aa;border-radius:20px;padding:4px 12px;font-size:.68rem;color:#c88cff;margin-bottom:1rem;}
-.intro-desc{font-size:.86rem;color:var(--txts);line-height:1.8;max-width:340px;margin:0 auto 1.5rem;}
-.intro-btns{display:flex;flex-direction:column;gap:9px;width:100%;max-width:280px;margin:0 auto;}
-.version-tag{font-size:.62rem;color:var(--txtd);margin-top:.5rem;}
+/* CELEBRATE */
+.celebrate-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.celebrate-overlay.on{display:flex;}
+.cel-card{background:linear-gradient(135deg,#081808,#080820);border:2px solid var(--green);border-radius:22px;padding:28px 22px;text-align:center;max-width:310px;width:92%;position:relative;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.cel-close{position:absolute;top:8px;right:12px;background:rgba(255,255,255,.1);border:none;color:#aaa;font-size:1rem;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cel-ico{font-size:3rem;display:block;margin-bottom:8px;}
+.cel-title{font-size:1.15rem;font-weight:900;color:var(--green);margin-bottom:6px;font-family:var(--ffd);}
+.cel-msg{font-size:.82rem;color:#aaddcc;line-height:1.65;margin-bottom:10px;}
+.cel-seeds{font-size:1.1rem;font-weight:800;color:var(--gold2);margin-bottom:16px;}
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:10000;animation:cfall linear forwards;}
+@keyframes cfall{0%{opacity:1;transform:translateY(-10px) rotate(0)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
 
-/* ══════════════════════════════
-   MENU
-══════════════════════════════ */
-#s-menu{padding:1rem;}
-.menu-logo{font-family:var(--ffd);font-size:1.4rem;font-weight:900;color:#fff;text-align:center;}
-.menu-sub{font-size:.7rem;color:var(--gold2);letter-spacing:2px;text-align:center;margin-bottom:1rem;}
+/* ============ INTRO ============ */
+#s-intro{justify-content:center;text-align:center;gap:1rem;padding:2rem 1.5rem;}
+.intro-orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a0a5e,#07101d);border:2px solid #6633aa44;display:flex;align-items:center;justify-content:center;font-size:3.5rem;margin:0 auto;animation:orbFloat 4s ease-in-out infinite;}
+@keyframes orbFloat{0%,100%{transform:translateY(0);box-shadow:0 0 30px #6633aa22}50%{transform:translateY(-10px);box-shadow:0 0 50px #8844cc44}}
+.intro-logo{font-family:var(--ffd);font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,#ffe7a8,#c88cff,#6d8cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;}
+.intro-sub{font-size:.78rem;color:var(--gold2);letter-spacing:4px;text-transform:uppercase;}
+.demo-badge{display:inline-flex;align-items:center;gap:5px;background:#1a0a30;border:1px solid #6633aa;border-radius:20px;padding:4px 14px;font-size:.7rem;color:#c88cff;}
+.intro-desc{font-size:.88rem;color:var(--txts);line-height:1.8;max-width:340px;margin:0 auto;}
+.intro-btns{display:flex;flex-direction:column;gap:9px;width:100%;max-width:300px;margin:0 auto;}
+.ver-tag{font-size:.62rem;color:var(--txtd);}
+
+/* ============ MENU ============ */
+#s-menu{padding:1rem;gap:.8rem;}
 .ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;}
-.gcard{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 7px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
-.gcard:hover{transform:translateY(-3px);}
+.gcard{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 7px;text-align:center;cursor:pointer;transition:all .2s;touch-action:manipulation;}
+.gcard:active{transform:scale(.97);}
 .gcard.sel{border-width:2px;}
-.gc-ico{font-size:2rem;margin-bottom:5px;}
-.gc-nm{font-size:.76rem;font-weight:800;}
-.gc-rl{font-size:.6rem;color:var(--txts);margin-top:2px;}
-.spanel{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:13px;width:100%;font-size:.81rem;line-height:1.7;}
+.gcard-ico{font-size:2rem;margin-bottom:5px;}
+.gcard-nm{font-size:.78rem;font-weight:800;}
+.gcard-rl{font-size:.62rem;color:var(--txts);margin-top:2px;}
+.spanel{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:14px;width:100%;font-size:.82rem;line-height:1.7;}
 .comm-setup{background:#0a1a0a;border:1px solid #1a3a1a;border-radius:var(--r);padding:12px;width:100%;}
-.comm-lbl{font-size:.66rem;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-.comm-inp{background:#07101d;border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:.88rem;color:var(--txt);width:100%;font-family:var(--ff);outline:none;}
+.comm-inp{background:#07101d;border:1px solid var(--border2);border-radius:8px;padding:9px 12px;font-size:.88rem;color:var(--txt);width:100%;font-family:var(--ff);outline:none;}
 .comm-inp:focus{border-color:var(--green);}
-.menu-row{display:flex;gap:8px;width:100%;}
 
-/* ══════════════════════════════
-   GAME
-══════════════════════════════ */
+/* ============ GAME ============ */
 #s-game{padding:7px;gap:5px;}
 .topbar{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:7px 11px;}
-.tb-r{font-size:.73rem;color:var(--gold2);font-weight:800;font-family:var(--ffd);}
-.tb-g{font-size:.82rem;font-weight:800;}
-.tb-k{font-size:.7rem;}
-#world-canvas{width:100%;border-radius:12px;display:block;}
+.tb-ronda{font-size:.75rem;color:var(--gold2);font-weight:800;font-family:var(--ffd);}
+.tb-g{font-size:.84rem;font-weight:800;}
+.tb-k{font-size:.72rem;}
+
+/* WORLD */
+#world-canvas{width:100%;border-radius:12px;display:block;border:1px solid var(--border);}
+
+/* COMM BANNER */
 .comm-banner{width:100%;background:linear-gradient(135deg,#0a1a0a,#0a1525);border:1px solid #1a3a2a;border-radius:9px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;}
-.cb-left{flex:1;}
 .cb-nm{font-size:.72rem;color:var(--green);font-weight:800;}
 .cb-rank{font-size:.6rem;color:var(--txts);}
-.cb-pts{font-size:.8rem;font-weight:800;color:var(--gold2);}
+.cb-pts{font-size:.82rem;font-weight:800;color:var(--gold2);}
+
+/* STATS */
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:100%;}
-.sbox{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 10px;position:relative;}
-.sl{font-size:.58rem;color:var(--txts);text-transform:uppercase;letter-spacing:.4px;}
-.sv{font-size:1.15rem;font-weight:800;}
-.sm{position:absolute;top:8px;right:8px;font-size:.58rem;color:var(--txtd);}
-.sbar{height:4px;border-radius:2px;margin-top:4px;background:#0f1e35;}
-.sf{height:100%;border-radius:2px;transition:width .45s;}
+.sbox{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 10px;position:relative;overflow:hidden;}
+.sbox::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.02));pointer-events:none;}
+.sl{font-size:.6rem;color:var(--txts);text-transform:uppercase;letter-spacing:.4px;}
+.sv{font-size:1.2rem;font-weight:800;}
+.sm{position:absolute;top:8px;right:8px;font-size:.6rem;color:var(--txtd);}
+.sbar{height:5px;border-radius:3px;margin-top:5px;background:#0f1e35;}
+.sf{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);}
 .pulse-danger{animation:pd 1s infinite;}
 @keyframes pd{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 3px rgba(255,90,90,.4);}}
+
+/* RESOURCES */
 .rrow{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%;}
 .rbox{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 4px;text-align:center;}
-.ri{font-size:.9rem;}.rv{font-size:.86rem;font-weight:800;margin:1px 0;}.rl{font-size:.55rem;color:var(--txts);}
+.ri{font-size:.9rem;} .rv{font-size:.88rem;font-weight:800;margin:1px 0;} .rl{font-size:.55rem;color:var(--txts);}
+.rbox.scarce{border-color:#ff5a5a55;background:#1a0a0a;}
+
+/* PHASE INDICATOR */
+.phase-track{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;border-radius:9px;overflow:hidden;border:1px solid var(--border);}
+.phase-step{padding:6px 4px;text-align:center;font-size:.63rem;font-weight:800;color:var(--txtd);background:var(--bg4);transition:all .3s;border-right:1px solid var(--border);}
+.phase-step:last-child{border-right:none;}
+.phase-step.active{background:#1a3a2a;color:var(--green);}
+.phase-step.done{background:#0a1a10;color:var(--green2);}
+
+/* DICE */
 .dwrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px;width:100%;}
 .dinner{display:flex;align-items:center;gap:10px;}
-.dface{width:66px;height:66px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #223355;background:var(--bg4);transition:all .2s;flex-shrink:0;font-size:1.6rem;}
-.dface.spin{animation:ds .08s infinite;}
-@keyframes ds{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.dface{width:70px;height:70px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #223355;background:var(--bg4);transition:all .25s;flex-shrink:0;font-size:1.7rem;position:relative;}
+.dface.spin{animation:ds .07s infinite;}
+@keyframes ds{0%,100%{transform:rotate(-4deg) scale(1.05)}50%{transform:rotate(4deg) scale(.95)}}
 .dinfo{flex:1;}
-.del{font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
-.dfx{font-size:.67rem;color:var(--txts);line-height:1.5;margin-top:2px;}
-.dbtn{background:linear-gradient(135deg,#4a4aee,#9a40e0);color:#fff;border:none;padding:9px 0;border-radius:9px;font-size:.82rem;font-weight:800;cursor:pointer;width:100%;margin-top:7px;font-family:var(--ff);transition:all .15s;}
-.dbtn:hover:not(:disabled){filter:brightness(1.1);}
-.dbtn:disabled{opacity:.3;cursor:default;}
-.narr{background:#060e1a;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:8px 11px;font-size:.72rem;color:#aac4e8;font-style:italic;line-height:1.65;width:100%;display:none;}
-.narr.on{display:block;}
-.nt{font-size:.65rem;font-weight:800;font-style:normal;color:var(--gold2);margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px;font-family:var(--ffd);}
-.paths{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;}
-.pbtn{background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:9px 7px;text-align:center;cursor:pointer;transition:all .2s;color:var(--txt);font-family:var(--ff);}
-.pbtn:hover:not(:disabled){transform:translateY(-2px);}
+.del{font-size:.74rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;}
+.dfx{font-size:.68rem;color:var(--txts);line-height:1.5;margin-top:2px;}
+
+/* PATHS */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%;}
+.pbtn{background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .15s;color:var(--txt);font-family:var(--ff);touch-action:manipulation;}
 .pbtn:disabled{opacity:.3;cursor:default;}
-.pi{font-size:1.2rem;margin-bottom:2px;}.pn{font-size:.78rem;font-weight:800;margin-bottom:2px;}.pd{font-size:.62rem;color:var(--txts);}
+.pbtn.ego:not(:disabled):active{background:#1f0a0a;}
+.pbtn.con:not(:disabled):active{background:#0a1f15;}
+.pi{font-size:1.3rem;margin-bottom:3px;display:block;}
+.pn{font-size:.82rem;font-weight:800;margin-bottom:2px;}
+.pd{font-size:.65rem;color:var(--txts);}
+
+/* ACTIONS */
 .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;}
-.abtn{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 3px;font-size:.7rem;cursor:pointer;color:var(--txt);transition:all .15s;text-align:center;font-family:var(--ff);}
-.abtn:hover:not(:disabled){border-color:var(--gold2);background:#1a1500;}
+.abtn{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 3px;font-size:.72rem;cursor:pointer;color:var(--txt);transition:all .15s;text-align:center;font-family:var(--ff);touch-action:manipulation;}
+.abtn:not(:disabled):active{border-color:var(--gold2);background:#1a1500;}
 .abtn:disabled{opacity:.3;cursor:default;}
-.ai{font-size:.9rem;display:block;margin-bottom:1px;}
+.ai{font-size:.95rem;display:block;margin-bottom:2px;}
+
+/* HAND */
 .hwrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px;width:100%;}
-.hhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.hl{font-size:.62rem;color:var(--txts);text-transform:uppercase;letter-spacing:.5px;}
-.hc{font-size:.62rem;color:var(--gold2);}
-.hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;}
+.hhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.hl{font-size:.63rem;color:var(--txts);text-transform:uppercase;letter-spacing:.5px;}
+.hc{font-size:.63rem;color:var(--gold2);}
+.hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:3px;}
 .hscroll::-webkit-scrollbar{height:3px;}.hscroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-.card{min-width:84px;max-width:90px;background:var(--bg4);border:1.5px solid #1e3050;border-radius:9px;padding:8px 6px;cursor:pointer;transition:all .2s;text-align:center;flex-shrink:0;position:relative;}
-.card:hover:not(.off){transform:translateY(-6px);box-shadow:0 10px 24px rgba(0,0,0,.6);}
+.card{min-width:90px;max-width:96px;background:var(--bg4);border:1.5px solid #1e3050;border-radius:10px;padding:9px 7px;cursor:pointer;transition:all .2s;text-align:center;flex-shrink:0;position:relative;touch-action:manipulation;}
+.card:not(.off):active{transform:translateY(-6px);box-shadow:0 10px 24px rgba(0,0,0,.6);}
 .card.off{opacity:.4;cursor:default;}
-.card.leg{animation:legGlow 2s infinite;}
-@keyframes legGlow{0%,100%{box-shadow:0 0 8px rgba(255,215,0,.3)}50%{box-shadow:0 0 18px rgba(255,215,0,.6)}}
-.ct{font-size:.53rem;text-transform:uppercase;letter-spacing:.3px;font-weight:800;}
-.cico{font-size:1.1rem;margin:2px 0;}
-.cn{font-size:.67rem;font-weight:800;line-height:1.2;margin-bottom:2px;}
-.cfx{font-size:.59rem;color:var(--txts);line-height:1.35;margin-bottom:4px;}
-.cco{font-size:.57rem;color:var(--gold2);border-top:1px solid #1e3050;padding-top:3px;}
-.status{background:#060f06;border:1px solid #0f2a12;border-radius:8px;padding:7px 10px;font-size:.73rem;color:#7fffc4;line-height:1.55;min-height:36px;width:100%;}
-.nextbtn{width:100%;background:linear-gradient(135deg,#1a5a3a,#1a3a8a);color:#fff;border:none;padding:11px;border-radius:10px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:var(--ff);transition:all .2s;}
-.nextbtn:hover:not(:disabled){filter:brightness(1.15);}
+.card.leg{box-shadow:0 0 12px rgba(255,215,0,.35);}
+.ct{font-size:.54rem;text-transform:uppercase;letter-spacing:.3px;font-weight:800;}
+.cico{font-size:1.2rem;margin:2px 0;}
+.cn{font-size:.7rem;font-weight:800;line-height:1.2;margin-bottom:2px;}
+.cfx{font-size:.62rem;color:var(--txts);line-height:1.35;margin-bottom:4px;}
+.cco{font-size:.58rem;color:var(--gold2);border-top:1px solid #1e3050;padding-top:3px;}
+.card-new{position:absolute;top:-5px;right:-5px;background:#ff4444;color:#fff;font-size:.48rem;font-weight:900;padding:2px 5px;border-radius:6px;font-family:var(--ffd);}
+
+/* STATUS */
+.status{background:#040d04;border:1px solid #0f2a12;border-radius:9px;padding:8px 11px;font-size:.76rem;color:#7fffc4;line-height:1.6;min-height:38px;width:100%;}
+
+/* NEXT ROUND */
+.nextbtn{width:100%;background:linear-gradient(135deg,#1a5a3a,#1a3a8a);color:#fff;border:none;padding:13px;border-radius:11px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:var(--ff);transition:all .15s;touch-action:manipulation;}
+.nextbtn:not(:disabled):active{filter:brightness(1.2);}
 .nextbtn:disabled{opacity:.3;cursor:default;}
 
-/* DEMO HINT TOOLTIP */
-.demo-hint{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a0a30;border:1px solid var(--purple);border-radius:12px;padding:10px 14px;font-size:.75rem;color:#c88cff;max-width:280px;text-align:center;z-index:700;animation:hintFloat 3s ease-in-out infinite;box-shadow:0 4px 20px rgba(166,108,255,.3);}
-@keyframes hintFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px)}}
-.demo-hint.hidden{display:none;}
-.dh-close{cursor:pointer;color:var(--purple);margin-left:8px;font-weight:800;}
-
-/* ══════════════════════════════
-   CRISIS
-══════════════════════════════ */
+/* CRISIS */
 .crisis-veil{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);pointer-events:none;transition:background .5s;}
-.crisis-veil.on{pointer-events:all;background:rgba(60,0,0,.88);}
-.crisis-box{background:#130505;border:2px solid #cc2222;border-radius:18px;padding:22px 18px;max-width:300px;text-align:center;transform:scale(0);transition:transform .3s .15s;width:90%;}
+.crisis-veil.on{pointer-events:all;background:rgba(50,0,0,.9);}
+.crisis-box{background:#100505;border:2px solid #cc2222;border-radius:20px;padding:22px 18px;max-width:310px;text-align:center;transform:scale(0);transition:transform .3s .1s;width:92%;}
 .crisis-veil.on .crisis-box{transform:scale(1);}
-.cr-ico{font-size:2.2rem;margin-bottom:6px;display:block;}
-.cr-title{font-size:.95rem;font-weight:900;color:#ff5a5a;margin-bottom:6px;font-family:var(--ffd);}
-.cr-narr{font-size:.73rem;color:#ffaaaa;font-style:italic;line-height:1.6;margin-bottom:10px;padding:8px;background:#0a0000;border-radius:8px;}
-.cr-fx{font-size:.78rem;color:#ffdddd;margin-bottom:12px;}
-.cr-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.cr-btn{padding:10px 8px;border-radius:9px;border:none;font-size:.76rem;font-weight:800;cursor:pointer;line-height:1.3;font-family:var(--ff);transition:all .15s;}
-.cr-btn:hover{filter:brightness(1.15);}
+.cr-ico{font-size:2.5rem;margin-bottom:6px;display:block;}
+.cr-title{font-size:1rem;font-weight:900;color:#ff5a5a;margin-bottom:6px;font-family:var(--ffd);}
+.cr-narr{font-size:.75rem;color:#ffaaaa;font-style:italic;line-height:1.65;margin-bottom:10px;padding:8px;background:#0a0000;border-radius:9px;}
+.cr-fx{font-size:.8rem;color:#ffdddd;margin-bottom:14px;font-weight:700;}
+.cr-choices{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.cr-btn{padding:11px 8px;border-radius:10px;border:none;font-size:.78rem;font-weight:800;cursor:pointer;line-height:1.35;font-family:var(--ff);touch-action:manipulation;transition:all .15s;}
+.cr-btn:active{transform:scale(.97);}
 
-/* ══════════════════════════════
-   CELEBRATE
-══════════════════════════════ */
-.celebrate{position:fixed;inset:0;z-index:900;pointer-events:none;display:none;background:transparent;}
-.celebrate.on{display:block;}
-.win-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:linear-gradient(135deg,#0a2a0a,#0a0a2a);border:2px solid var(--green);border-radius:20px;padding:24px 20px;text-align:center;max-width:290px;width:90%;z-index:910;transition:transform .4s cubic-bezier(.175,.885,.32,1.275);}
-.win-banner.on{transform:translate(-50%,-50%) scale(1);}
-.wb-ico{font-size:2.8rem;display:block;margin-bottom:7px;}
-.wb-title{font-size:1.05rem;font-weight:900;color:var(--green);margin-bottom:5px;font-family:var(--ffd);}
-.wb-msg{font-size:.78rem;color:#aaddcc;line-height:1.6;margin-bottom:9px;}
-.wb-seeds{font-size:.95rem;font-weight:800;color:var(--gold2);}
-.confetti-piece{position:fixed;width:7px;height:7px;border-radius:2px;pointer-events:none;z-index:920;animation:cfall linear forwards;}
-@keyframes cfall{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(640deg);opacity:0}}
+/* NARR */
+.narr{background:#04080f;border-left:3px solid var(--green);border-radius:0 9px 9px 0;padding:9px 12px;font-size:.74rem;color:#aac4e8;font-style:italic;line-height:1.7;width:100%;display:none;}
+.narr.on{display:block;}
+.nt{font-size:.66rem;font-weight:800;font-style:normal;color:var(--gold2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;font-family:var(--ffd);}
 
-/* ══════════════════════════════
-   RESULT + FEEDBACK
-══════════════════════════════ */
-#s-result{justify-content:flex-start;padding:1rem;gap:10px;}
-.rcard{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:20px;width:100%;}
-.r-ico{font-size:2.8rem;display:block;margin-bottom:5px;text-align:center;}
-.r-title{font-size:1.2rem;font-weight:900;margin-bottom:5px;text-align:center;font-family:var(--ffd);}
-.r-msg{font-size:.79rem;color:var(--txts);line-height:1.65;margin-bottom:14px;text-align:center;}
+/* ============ RESULTADO ============ */
+#s-result{justify-content:flex-start;gap:9px;}
+.rcard{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:22px;width:100%;}
+.r-ico{font-size:3rem;display:block;margin-bottom:6px;text-align:center;}
+.r-title{font-size:1.3rem;font-weight:900;text-align:center;font-family:var(--ffd);margin-bottom:5px;}
+.r-msg{font-size:.82rem;color:var(--txts);line-height:1.65;margin-bottom:14px;text-align:center;}
 .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
-.rs{background:var(--bg4);border-radius:8px;padding:8px 10px;text-align:left;}
-.rsl{font-size:.58rem;color:var(--txts);}.rsv{font-size:.92rem;font-weight:800;}
-.r-seeds-earned{background:#0a1a0a;border:1px solid #1a3a1a;border-radius:10px;padding:9px;text-align:center;margin-bottom:12px;}
-.rse-lbl{font-size:.68rem;color:var(--txts);margin-bottom:3px;}
-.rse-val{font-size:1.3rem;font-weight:900;color:var(--green);}
-.score{font-size:1.8rem;font-weight:900;color:var(--gold2);text-align:center;margin:3px 0 12px;font-family:var(--ffd);}
+.rs{background:var(--bg4);border-radius:9px;padding:8px 10px;}
+.rsl{font-size:.6rem;color:var(--txts);}
+.rsv{font-size:.95rem;font-weight:800;}
+.r-seeds{background:#0a1a0a;border:1px solid #1a4a1a;border-radius:10px;padding:10px;text-align:center;margin-bottom:12px;}
+.r-seeds-lbl{font-size:.7rem;color:var(--txts);margin-bottom:3px;}
+.r-seeds-val{font-size:1.4rem;font-weight:900;color:var(--green);}
+.score{font-size:1.9rem;font-weight:900;color:var(--gold2);text-align:center;margin:3px 0 12px;font-family:var(--ffd);}
 
 /* FEEDBACK */
 .feedback-card{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:20px;width:100%;}
-.fb-title{font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--gold2);text-align:center;margin-bottom:4px;}
-.fb-sub{font-size:.72rem;color:var(--txts);text-align:center;margin-bottom:16px;}
-.stars-row{display:flex;justify-content:center;gap:6px;margin-bottom:14px;}
-.star{font-size:2rem;cursor:pointer;transition:all .2s;filter:grayscale(1);opacity:.4;}
-.star.on{filter:none;opacity:1;transform:scale(1.15);}
-.star:hover{transform:scale(1.25);}
-.fb-cats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;}
-.fb-cat{background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;}
-.fbc-lbl{font-size:.68rem;color:var(--txts);margin-bottom:6px;}
+.fb-title{font-family:var(--ffd);font-size:.95rem;font-weight:900;color:var(--gold2);text-align:center;margin-bottom:4px;}
+.fb-sub{font-size:.72rem;color:var(--txts);text-align:center;margin-bottom:14px;}
+.stars-row{display:flex;justify-content:center;gap:7px;margin-bottom:12px;}
+.star{font-size:1.9rem;cursor:pointer;transition:all .2s;filter:grayscale(1);opacity:.35;touch-action:manipulation;}
+.star.on{filter:none;opacity:1;transform:scale(1.1);}
+.fb-cats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
+.fb-cat{background:var(--bg4);border-radius:10px;padding:10px 8px;text-align:center;}
+.fbc-nm{font-size:.72rem;font-weight:800;margin-bottom:2px;}
+.fbc-lbl{font-size:.65rem;color:var(--txts);margin-bottom:6px;}
 .fbc-stars{display:flex;justify-content:center;gap:3px;}
-.fbc-star{font-size:1.1rem;cursor:pointer;transition:all .15s;filter:grayscale(1);opacity:.4;}
+.fbc-star{font-size:1.1rem;cursor:pointer;filter:grayscale(1);opacity:.35;touch-action:manipulation;}
 .fbc-star.on{filter:none;opacity:1;}
-.fb-aspect-lbl{font-size:.72rem;font-weight:800;margin-bottom:2px;}
+.fb-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.fb-tag{padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--bg4);font-size:.7rem;cursor:pointer;color:var(--txts);touch-action:manipulation;transition:all .15s;}
+.fb-tag.on{border-color:var(--green);background:#0a1f15;color:var(--green);}
 .fb-textarea{width:100%;background:var(--bg4);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:.82rem;color:var(--txt);font-family:var(--ff);resize:none;outline:none;margin-bottom:10px;}
 .fb-textarea:focus{border-color:var(--purple);}
-.fb-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-.fb-tag{padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--bg4);font-size:.7rem;cursor:pointer;transition:all .15s;color:var(--txts);}
-.fb-tag.on{border-color:var(--green);background:#0a1f15;color:var(--green);}
-.fb-sent{text-align:center;padding:20px;display:none;}
-.fb-sent-ico{font-size:3rem;display:block;margin-bottom:10px;}
-.fb-sent-title{font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--green);margin-bottom:6px;}
+.fb-sent{display:none;text-align:center;padding:16px 0;}
+.fb-sent-ico{font-size:2.8rem;display:block;margin-bottom:8px;}
+.fb-sent-title{font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--green);margin-bottom:6px;}
 .fb-sent-msg{font-size:.8rem;color:var(--txts);line-height:1.6;}
-.progress-bar-h{height:6px;background:var(--bg4);border-radius:3px;width:100%;margin-bottom:4px;}
-.pbh-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--purple));transition:width .4s;}
-.fb-progress-lbl{font-size:.62rem;color:var(--txts);text-align:right;}
+
+/* ============ SOBRES ============ */
+#s-sobres{padding:10px;gap:8px;}
+.sobre-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
+.sobre-btn{border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;font-family:var(--ff);color:white;touch-action:manipulation;border:2px solid transparent;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.sobre-btn:active{transform:scale(.96);}
+.sobre-ico{font-size:2.5rem;margin-bottom:6px;pointer-events:none;display:block;}
+.sobre-nm{font-size:.86rem;font-weight:900;margin-bottom:4px;pointer-events:none;}
+.sobre-desc{font-size:.64rem;color:#ffffff88;margin-bottom:8px;pointer-events:none;line-height:1.4;}
+.sobre-cost{font-size:.86rem;font-weight:800;pointer-events:none;}
+
+/* APERTURA */
+#s-apertura{justify-content:center;align-items:center;gap:18px;min-height:100vh;text-align:center;}
+#btn-abrir-sobre{
+  width:190px;height:230px;border-radius:22px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;border:3px solid #ffd700;
+  background:linear-gradient(155deg,#2a2000,#4a3800);
+  box-shadow:0 0 45px rgba(255,215,0,.45);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  font-family:var(--ff);color:white;
+  transition:transform .12s, box-shadow .12s;
+  animation:sobrePulse 2s ease-in-out infinite;
+}
+@keyframes sobrePulse{0%,100%{box-shadow:0 0 30px rgba(255,215,0,.35)}50%{box-shadow:0 0 60px rgba(255,215,0,.65)}}
+#btn-abrir-sobre:active{transform:scale(.94);}
+.ap-ico{font-size:4.5rem;pointer-events:none;margin-bottom:8px;display:block;}
+.ap-nm{font-size:1rem;font-weight:900;font-family:var(--ffd);color:#ffc542;pointer-events:none;}
+.ap-hint{font-size:.88rem;color:var(--txts);animation:ph 1.8s ease-in-out infinite;}
+@keyframes ph{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* REVEAL */
+#s-reveal{justify-content:center;align-items:center;gap:16px;min-height:100vh;text-align:center;padding:20px;}
+.reveal-title{font-size:1.15rem;font-weight:900;color:var(--gold2);font-family:var(--ffd);}
+.reveal-cards{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%;}
+.reveal-card{width:130px;border-radius:14px;padding:16px 10px;text-align:center;border:2px solid transparent;transition:transform .6s cubic-bezier(.175,.885,.32,1.275);transform:rotateY(180deg) scale(.8);}
+.reveal-card.flipped{transform:rotateY(0) scale(1);}
+.rc-rar{font-size:.6rem;text-transform:uppercase;letter-spacing:.5px;font-weight:900;margin-bottom:6px;}
+.rc-ico{font-size:2rem;margin-bottom:6px;}
+.rc-nm{font-size:.78rem;font-weight:900;color:#e8f0ff;margin-bottom:4px;line-height:1.2;}
+.rc-fx{font-size:.64rem;color:var(--txts);line-height:1.4;}
+
+/* COLECCION */
+#s-coleccion{padding:10px;gap:8px;}
+.col-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;}
+.col-card{border-radius:11px;padding:10px 7px;text-align:center;border:1.5px solid var(--border);background:var(--bg2);position:relative;}
+.col-card.locked{opacity:.3;filter:grayscale(1);}
+.col-card.new::after{content:'NEW';position:absolute;top:-5px;right:-5px;background:#ff4444;color:#fff;font-size:.5rem;font-weight:900;padding:2px 6px;border-radius:6px;}
+.cc-ico{font-size:1.4rem;margin-bottom:3px;}
+.cc-nm{font-size:.66rem;font-weight:800;line-height:1.2;margin-bottom:2px;}
+.cc-rar{font-size:.54rem;text-transform:uppercase;letter-spacing:.3px;}
+.cc-cnt{position:absolute;top:3px;left:3px;background:#1a3a1a;color:var(--green);font-size:.58rem;font-weight:900;padding:1px 5px;border-radius:8px;}
+
+/* RANKING */
+#s-fbranking{padding:10px;gap:8px;}
+.rank-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;width:100%;}
+.rank-pos{font-size:1.1rem;min-width:28px;text-align:center;}
+.rank-info{flex:1;}
+.rank-nm{font-size:.84rem;font-weight:800;}
+.rank-comm{font-size:.66rem;color:var(--txts);}
+.rank-pts{font-size:.9rem;font-weight:800;color:var(--gold2);}
+.rank-eco{font-size:.65rem;color:var(--green);}
+
+/* TABS */
+.tabs{display:flex;gap:6px;width:100%;}
+.tab{flex:1;padding:9px 4px;border-radius:9px;border:1px solid var(--border);background:var(--bg2);font-size:.74rem;font-weight:800;cursor:pointer;text-align:center;color:var(--txts);transition:all .15s;font-family:var(--ff);touch-action:manipulation;}
+.tab.on{background:var(--bg3);border-color:var(--purple);color:var(--purple);}
+
+/* TUTORIAL */
+#s-tutorial{padding:0;gap:0;justify-content:flex-start;}
+.tut-hdr{width:100%;background:var(--bg2);padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.tut-dots{display:flex;gap:5px;}
+.tut-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .3s;}
+.tut-dot.on{background:var(--green);transform:scale(1.25);}
+.tut-dot.done{background:var(--green2);}
+.tut-lbl{font-size:.7rem;color:var(--txts);}
+.tut-body{flex:1;width:100%;padding:18px 14px;display:flex;flex-direction:column;gap:12px;}
+.tut-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.tut-ico{font-size:2.8rem;text-align:center;display:block;margin-bottom:10px;}
+.tut-title{font-family:var(--ffd);font-size:1.05rem;font-weight:900;text-align:center;color:var(--gold2);margin-bottom:8px;}
+.tut-text{font-size:.85rem;color:var(--txts);line-height:1.8;text-align:center;}
+.tut-hl{background:var(--bg4);border-left:3px solid var(--green);border-radius:0 9px 9px 0;padding:10px 14px;font-size:.82rem;color:var(--txt);line-height:1.7;}
+.tut-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tut-item{background:var(--bg4);border-radius:10px;padding:10px 8px;text-align:center;}
+.ti-ico{font-size:1.5rem;margin-bottom:4px;}
+.ti-nm{font-size:.76rem;font-weight:800;margin-bottom:2px;}
+.ti-desc{font-size:.66rem;color:var(--txts);line-height:1.4;}
+.tut-footer{width:100%;padding:12px 14px;display:flex;gap:8px;background:var(--bg2);border-top:1px solid var(--border);}
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
 <div class="flash" id="flash"></div>
 <div class="rbanner" id="rbanner"><div class="rbt" id="rbt"></div><div class="rbs" id="rbs"></div></div>
+
+<!-- CELEBRATE -->
+<div class="celebrate-overlay" id="celebrate" onclick="handleCelClick(event)">
+  <div class="cel-card">
+    <button class="cel-close" onclick="closeCel()">✕</button>
+    <span class="cel-ico" id="cel-ico">🌿</span>
+    <div class="cel-title" id="cel-title"></div>
+    <div class="cel-msg" id="cel-msg"></div>
+    <div class="cel-seeds" id="cel-seeds"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn prim" onclick="closeCel();goSobres();">🌱 Ir a Tienda de Sobres</button>
+      <button class="btn sec" onclick="closeCel();">Ver resultado y dar feedback</button>
+    </div>
+  </div>
+</div>
 
 <!-- CRISIS -->
 <div class="crisis-veil" id="crisis-veil">
@@ -270,110 +357,104 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;hei
   </div>
 </div>
 
-<!-- CELEBRATE -->
-<div class="celebrate" id="celebrate">
-  <div class="win-banner" id="win-banner">
-    <span class="wb-ico" id="wb-ico">🌿</span>
-    <div class="wb-title" id="wb-title"></div>
-    <div class="wb-msg" id="wb-msg"></div>
-    <div class="wb-seeds" id="wb-seeds"></div>
-    <button class="gbtn p" onclick="closeCelebrate()" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto;">Continuar →</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     TUTORIAL
-═══════════════════════════════════════ -->
-<div class="screen z1" id="s-tutorial">
-  <div class="tut-progress">
-    <div class="tut-dots" id="tut-dots"></div>
-    <div class="tut-step-lbl" id="tut-step-lbl">Paso 1 de 6</div>
-  </div>
-  <div class="tut-content" id="tut-content"></div>
-  <div class="tut-nav">
-    <button class="gbtn s" id="tut-prev" onclick="tutPrev()" style="flex:.4;padding:10px;">← Anterior</button>
-    <button class="gbtn p" id="tut-next" onclick="tutNext()" style="flex:1;padding:10px;">Siguiente →</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     INTRO
-═══════════════════════════════════════ -->
+<!-- INTRO -->
 <div class="screen on z1" id="s-intro">
   <div class="intro-orb">🌍</div>
   <div class="intro-logo">ECO-PODERES</div>
   <div class="intro-sub">El Consejo de Guardianes</div>
-  <div class="demo-badge">🧪 Demo v0.1 — Feedback abierto</div>
-  <div class="intro-desc">Eres un Guardián del planeta. Tus decisiones cada ronda determinan si el mundo florece o colapsa. Equilibra ecosistema, conciencia y sociedad en 6 rondas.</div>
+  <div class="demo-badge">🧪 Demo v0.2 — En evolución</div>
+  <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
-    <button class="gbtn p" onclick="startTutorial()">📖 Aprender a Jugar</button>
-    <button class="gbtn s" onclick="goMenu()">▶ Jugar Directamente</button>
-    <div class="seeds-pill" style="justify-content:center;margin-top:4px;">
-      <span style="font-size:.95rem;">🌱</span>
-      <span class="sp-val" id="seeds-intro">0</span>
-      <span class="sp-lbl">semillas guardianas</span>
+    <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
+    <button class="btn sec" onclick="goMenu()">▶ Jugar directamente</button>
+    <button onclick="goFBRanking()" style="width:100%;padding:11px;border-radius:50px;border:1px solid var(--gold2);background:transparent;color:var(--gold2);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">🏆 Ranking & Feedback</button>
+    <div class="seeds-pill" style="justify-content:center;">
+      <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="version-tag">ECO-PODERES Demo · danygrafiko © 2025</div>
+  <div class="ver-tag">ECO-PODERES v0.2 · danygrafiko © 2025</div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     MENU
-═══════════════════════════════════════ -->
-<div class="screen z1" id="s-menu">
-  <div class="menu-logo">ECO-PODERES</div>
-  <div class="menu-sub">Elige tu Guardián</div>
+<!-- TUTORIAL -->
+<div class="screen z1" id="s-tutorial">
+  <div class="tut-hdr">
+    <div class="tut-dots" id="tut-dots"></div>
+    <div class="tut-lbl" id="tut-lbl">Paso 1 de 7</div>
+  </div>
+  <div class="tut-body" id="tut-body"></div>
+  <div class="tut-footer">
+    <button class="btn ghost" id="tut-prev" onclick="tutPrev()" style="flex:.45;padding:10px;">← Anterior</button>
+    <button class="btn prim" id="tut-next" onclick="tutNext()" style="flex:1;padding:10px;">Siguiente →</button>
+  </div>
+</div>
+
+<!-- MENU -->
+<div class="screen z1" id="s-menu" style="gap:.8rem;padding:1rem;">
+  <div style="text-align:center;">
+    <div style="font-family:var(--ffd);font-size:1.4rem;font-weight:900;">Elige tu Guardián</div>
+    <div style="font-size:.72rem;color:var(--gold2);letter-spacing:2px;margin-top:3px;">Tu poder define tu destino</div>
+  </div>
   <div class="ggrid" id="ggrid"></div>
-  <div class="spanel" id="spanel">Selecciona un guardián.</div>
+  <div class="spanel" id="spanel">Selecciona un guardián para ver sus habilidades.</div>
   <div class="comm-setup">
-    <div class="comm-lbl">Tu comunidad / población</div>
+    <div style="font-size:.68rem;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Tu comunidad / población</div>
     <input class="comm-inp" id="comm-inp" placeholder="Ej: Comunidad Los Robles..." maxlength="40">
-    <div style="font-size:.6rem;color:var(--txts);margin-top:5px;">Aparecerá en el ranking comunitario de Guardianes</div>
+    <div style="font-size:.62rem;color:var(--txts);margin-top:5px;">Aparecerá en el ranking de Guardianes</div>
   </div>
-  <div class="menu-row">
-    <button class="gbtn s" onclick="goIntro()" style="flex:.4;padding:10px;">← Volver</button>
-    <button class="gbtn p" onclick="startGame()" style="flex:1;padding:10px;">Iniciar Partida →</button>
+  <div style="display:flex;gap:8px;width:100%;">
+    <button class="btn sec" onclick="goIntro()" style="flex:.4;padding:10px;">← Volver</button>
+    <button class="btn prim" onclick="startGame()" style="flex:1;padding:10px;">Iniciar Partida →</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     GAME
-═══════════════════════════════════════ -->
+<!-- GAME -->
 <div class="screen z1" id="s-game">
   <div class="topbar">
-    <div class="tb-r" id="tb-r">Ronda 1/6</div>
+    <div class="tb-ronda" id="tb-r">Ronda 1/8</div>
     <div class="tb-g" id="tb-g">🐺 Lobo</div>
     <div class="tb-k" id="tb-k">☯ 0/3</div>
-    <div class="seeds-pill"><span style="font-size:.9rem;">🌱</span><span class="sp-val" id="seeds-game">0</span></div>
+    <div class="seeds-pill"><span>🌱</span><span class="val" id="seeds-game">0</span></div>
   </div>
-  <canvas id="world-canvas" height="148"></canvas>
+  <canvas id="world-canvas" height="155"></canvas>
   <div class="comm-banner">
-    <div class="cb-left"><div class="cb-nm" id="cb-nm">Mi Comunidad</div><div class="cb-rank" id="cb-rank">Guardián en formación</div></div>
+    <div><div class="cb-nm" id="cb-nm">Mi Comunidad</div><div class="cb-rank" id="cb-rank">Guardián en formación</div></div>
     <div class="cb-pts" id="cb-pts">0 pts</div>
   </div>
   <div class="sgrid">
     <div class="sbox" id="eco-box"><div class="sl">🌍 Ecosistema</div><div class="sv" id="v-eco">50</div><span class="sm">/100</span><div class="sbar"><div class="sf" id="b-eco" style="width:50%;background:#5ccf9a;"></div></div></div>
     <div class="sbox"><div class="sl">🧠 Conciencia</div><div class="sv" id="v-con">3</div><span class="sm">/10</span><div class="sbar"><div class="sf" id="b-con" style="width:30%;background:#a66cff;"></div></div></div>
     <div class="sbox"><div class="sl">🤝 Sociedad</div><div class="sv" id="v-soc">2</div><span class="sm">/10</span><div class="sbar"><div class="sf" id="b-soc" style="width:20%;background:#6d8cff;"></div></div></div>
-    <div class="sbox"><div class="sl">🎯 Acciones</div><div class="sv" id="v-acc">3</div><span class="sm">/4</span><div class="sbar"><div class="sf" id="b-acc" style="width:75%;background:#ffc542;"></div></div></div>
+    <div class="sbox"><div class="sl">🎯 Acciones</div><div class="sv" id="v-acc">3</div><span class="sm" id="acc-max">/3</span><div class="sbar"><div class="sf" id="b-acc" style="width:100%;background:#ffc542;"></div></div></div>
   </div>
   <div class="rrow">
-    <div class="rbox"><div class="ri">💧</div><div class="rv" id="v-ag">4</div><div class="rl">Agua</div></div>
-    <div class="rbox"><div class="ri">⚡</div><div class="rv" id="v-en">3</div><div class="rl">Energía</div></div>
+    <div class="rbox" id="rbox-agua"><div class="ri">💧</div><div class="rv" id="v-ag">4</div><div class="rl">Agua</div></div>
+    <div class="rbox" id="rbox-ener"><div class="ri">⚡</div><div class="rv" id="v-en">3</div><div class="rl">Energía</div></div>
     <div class="rbox"><div class="ri">🃏</div><div class="rv" id="v-dk">—</div><div class="rl">Mazo</div></div>
     <div class="rbox"><div class="ri">♻️</div><div class="rv" id="v-ds">0</div><div class="rl">Descarte</div></div>
+  </div>
+  <div class="phase-track">
+    <div class="phase-step active" id="ps-dice">🎲 DADO</div>
+    <div class="phase-step" id="ps-path">⚔️ CAMINO</div>
+    <div class="phase-step" id="ps-action">💎 ACCIÓN</div>
   </div>
   <div class="dwrap">
     <div class="dinner">
       <div class="dface" id="dface"><span id="d-ico">🎲</span></div>
-      <div class="dinfo"><div class="del" id="d-el" style="color:var(--txts);">Elemento</div><div class="dfx" id="d-fx">Lanza el dado para comenzar</div></div>
+      <div class="dinfo">
+        <div class="del" id="d-el" style="color:var(--txts);">Elemento</div>
+        <div class="dfx" id="d-fx">Lanza el dado para comenzar la ronda</div>
+      </div>
     </div>
-    <button class="dbtn" id="dbtn" onclick="rollDice()">🎲 Lanzar Dado</button>
+    <button class="btn prim" id="dbtn" onclick="rollDice()" style="margin-top:9px;border-radius:10px;padding:10px;">🎲 Lanzar Dado</button>
   </div>
   <div class="narr on" id="narr"><div class="nt" id="nt">Historia</div><span id="ntxt"></span></div>
   <div class="paths">
-    <button class="pbtn" id="p-ego" onclick="choosePath('ego')" disabled><div class="pi">⚔️</div><div class="pn" style="color:#ff9a6a;">EGO</div><div class="pd">+2 Energía · +1 Karma</div></button>
-    <button class="pbtn" id="p-con" onclick="choosePath('con')" disabled><div class="pi">🌀</div><div class="pn" style="color:var(--green);">CONSCIENCIA</div><div class="pd">+1 Eco · +1 Conciencia</div></button>
+    <button class="pbtn ego" id="p-ego" onclick="choosePath('ego')" disabled>
+      <span class="pi">⚔️</span><div class="pn" style="color:#ff9a6a;">EGO</div><div class="pd">+2 Energía · +1 Karma</div>
+    </button>
+    <button class="pbtn con" id="p-con" onclick="choosePath('con')" disabled>
+      <span class="pi">🌀</span><div class="pn" style="color:var(--green);">CONSCIENCIA</div><div class="pd">+1 Eco · +1 Conciencia</div>
+    </button>
   </div>
   <div class="acts">
     <button class="abtn" id="a-col" onclick="act('col')" disabled><span class="ai">💎</span>Recolectar</button>
@@ -384,14 +465,12 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;hei
     <div class="hhdr"><div class="hl">Proyectos en mano</div><div class="hc" id="hcnt">0 cartas</div></div>
     <div class="hscroll" id="hscroll"></div>
   </div>
-  <div class="status" id="status">Bienvenido. Lanza el dado.</div>
+  <div class="status" id="status">Bienvenido. Lanza el dado para comenzar.</div>
   <button class="nextbtn" id="nextbtn" onclick="nextRound()" disabled>Siguiente Ronda →</button>
 </div>
 
-<!-- ═══════════════════════════════════════
-     RESULT + FEEDBACK
-═══════════════════════════════════════ -->
-<div class="screen z1" id="s-result">
+<!-- RESULTADO -->
+<div class="screen z1" id="s-result" style="gap:9px;">
   <div class="rcard">
     <span class="r-ico" id="r-ico">🌍</span>
     <div class="r-title" id="r-title"></div>
@@ -402,73 +481,31 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;hei
       <div class="rs"><div class="rsl">🤝 Sociedad</div><div class="rsv" id="r-soc">—</div></div>
       <div class="rs"><div class="rsl">☯ Karma</div><div class="rsv" id="r-kar">—</div></div>
     </div>
-    <div class="r-seeds-earned">
-      <div class="rse-lbl">🌱 Semillas Guardianas ganadas esta partida</div>
-      <div class="rse-val" id="r-seeds">+0</div>
-    </div>
+    <div class="r-seeds"><div class="r-seeds-lbl">🌱 Semillas Guardianas ganadas</div><div class="r-seeds-val" id="r-seeds">+0</div></div>
     <div style="font-size:.65rem;color:var(--txts);text-align:center;">Puntaje final</div>
     <div class="score" id="r-score">0 pts</div>
-    <!-- Botones siempre visibles -->
     <div style="display:flex;gap:8px;margin-top:4px;">
-      <button class="gbtn p" onclick="startGameAgain()" style="flex:1;padding:10px;font-size:.82rem;">🔄 Otra partida</button>
-      <button class="gbtn s" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">🐾 Cambiar</button>
+      <button class="btn sec" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">🔄 Otra</button>
+      <button class="btn prim" onclick="goSobres()" style="flex:1;padding:10px;font-size:.82rem;">🌱 Sobres</button>
     </div>
   </div>
-
-  <!-- FEEDBACK -->
-  <div class="feedback-card" id="feedback-card">
+  <div class="feedback-card">
     <div class="fb-title">¿Qué te pareció la demo?</div>
-    <div class="fb-sub">Tu opinión mejora el juego para todos 🌿</div>
-
-    <!-- Progreso feedback -->
-    <div class="progress-bar-h"><div class="pbh-fill" id="fb-prog-fill" style="width:0%"></div></div>
-    <div class="fb-progress-lbl" id="fb-prog-lbl" style="margin-bottom:12px;">0% completado</div>
-
-    <!-- ESTRELLAS GENERAL -->
-    <div style="font-size:.75rem;font-weight:800;margin-bottom:6px;text-align:center;">Calificación general</div>
+    <div class="fb-sub">Tu opinión mejora el juego 🌿</div>
+    <div style="font-size:.74rem;font-weight:800;margin-bottom:7px;text-align:center;">Calificación general</div>
     <div class="stars-row" id="stars-main">
-      <span class="star" data-val="1" onclick="rateStar(1)">⭐</span>
-      <span class="star" data-val="2" onclick="rateStar(2)">⭐</span>
-      <span class="star" data-val="3" onclick="rateStar(3)">⭐</span>
-      <span class="star" data-val="4" onclick="rateStar(4)">⭐</span>
-      <span class="star" data-val="5" onclick="rateStar(5)">⭐</span>
+      <span class="star" onclick="rateStar(1)">⭐</span><span class="star" onclick="rateStar(2)">⭐</span>
+      <span class="star" onclick="rateStar(3)">⭐</span><span class="star" onclick="rateStar(4)">⭐</span>
+      <span class="star" onclick="rateStar(5)">⭐</span>
     </div>
-    <div id="star-label" style="font-size:.72rem;color:var(--txts);text-align:center;margin-bottom:14px;min-height:18px;"></div>
-
-    <!-- CATEGORÍAS -->
+    <div id="star-lbl" style="font-size:.72rem;color:var(--txts);text-align:center;margin-bottom:14px;min-height:18px;"></div>
     <div class="fb-cats">
-      <div class="fb-cat">
-        <div class="fb-aspect-lbl">🎮 Diversión</div>
-        <div class="fbc-lbl">¿Qué tan entretenido?</div>
-        <div class="fbc-stars" id="cat-fun">
-          <span class="fbc-star" onclick="rateCat('fun',1)">⭐</span><span class="fbc-star" onclick="rateCat('fun',2)">⭐</span><span class="fbc-star" onclick="rateCat('fun',3)">⭐</span><span class="fbc-star" onclick="rateCat('fun',4)">⭐</span><span class="fbc-star" onclick="rateCat('fun',5)">⭐</span>
-        </div>
-      </div>
-      <div class="fb-cat">
-        <div class="fb-aspect-lbl">📖 Claridad</div>
-        <div class="fbc-lbl">¿Se entiende bien?</div>
-        <div class="fbc-stars" id="cat-clarity">
-          <span class="fbc-star" onclick="rateCat('clarity',1)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',2)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',3)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',4)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',5)">⭐</span>
-        </div>
-      </div>
-      <div class="fb-cat">
-        <div class="fb-aspect-lbl">🌍 Temática</div>
-        <div class="fbc-lbl">¿La causa eco importa?</div>
-        <div class="fbc-stars" id="cat-theme">
-          <span class="fbc-star" onclick="rateCat('theme',1)">⭐</span><span class="fbc-star" onclick="rateCat('theme',2)">⭐</span><span class="fbc-star" onclick="rateCat('theme',3)">⭐</span><span class="fbc-star" onclick="rateCat('theme',4)">⭐</span><span class="fbc-star" onclick="rateCat('theme',5)">⭐</span>
-        </div>
-      </div>
-      <div class="fb-cat">
-        <div class="fb-aspect-lbl">🎨 Diseño</div>
-        <div class="fbc-lbl">¿Te gusta cómo se ve?</div>
-        <div class="fbc-stars" id="cat-design">
-          <span class="fbc-star" onclick="rateCat('design',1)">⭐</span><span class="fbc-star" onclick="rateCat('design',2)">⭐</span><span class="fbc-star" onclick="rateCat('design',3)">⭐</span><span class="fbc-star" onclick="rateCat('design',4)">⭐</span><span class="fbc-star" onclick="rateCat('design',5)">⭐</span>
-        </div>
-      </div>
+      <div class="fb-cat"><div class="fbc-nm">🎮 Diversión</div><div class="fbc-lbl">¿Qué tan entretenido?</div><div class="fbc-stars" id="cat-fun"><span class="fbc-star" onclick="rateCat('fun',1)">⭐</span><span class="fbc-star" onclick="rateCat('fun',2)">⭐</span><span class="fbc-star" onclick="rateCat('fun',3)">⭐</span><span class="fbc-star" onclick="rateCat('fun',4)">⭐</span><span class="fbc-star" onclick="rateCat('fun',5)">⭐</span></div></div>
+      <div class="fb-cat"><div class="fbc-nm">📖 Claridad</div><div class="fbc-lbl">¿Se entiende bien?</div><div class="fbc-stars" id="cat-clarity"><span class="fbc-star" onclick="rateCat('clarity',1)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',2)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',3)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',4)">⭐</span><span class="fbc-star" onclick="rateCat('clarity',5)">⭐</span></div></div>
+      <div class="fb-cat"><div class="fbc-nm">🌍 Temática</div><div class="fbc-lbl">¿La causa eco importa?</div><div class="fbc-stars" id="cat-theme"><span class="fbc-star" onclick="rateCat('theme',1)">⭐</span><span class="fbc-star" onclick="rateCat('theme',2)">⭐</span><span class="fbc-star" onclick="rateCat('theme',3)">⭐</span><span class="fbc-star" onclick="rateCat('theme',4)">⭐</span><span class="fbc-star" onclick="rateCat('theme',5)">⭐</span></div></div>
+      <div class="fb-cat"><div class="fbc-nm">🎨 Diseño</div><div class="fbc-lbl">¿Te gusta cómo se ve?</div><div class="fbc-stars" id="cat-design"><span class="fbc-star" onclick="rateCat('design',1)">⭐</span><span class="fbc-star" onclick="rateCat('design',2)">⭐</span><span class="fbc-star" onclick="rateCat('design',3)">⭐</span><span class="fbc-star" onclick="rateCat('design',4)">⭐</span><span class="fbc-star" onclick="rateCat('design',5)">⭐</span></div></div>
     </div>
-
-    <!-- TAGS -->
-    <div style="font-size:.72rem;font-weight:800;margin-bottom:7px;">¿Qué destacas? (elige varios)</div>
+    <div style="font-size:.72rem;font-weight:800;margin-bottom:7px;">¿Qué destacas?</div>
     <div class="fb-tags" id="fb-tags">
       <span class="fb-tag" onclick="toggleTag(this,'Muy adictivo')">🔥 Muy adictivo</span>
       <span class="fb-tag" onclick="toggleTag(this,'Fácil de aprender')">✅ Fácil de aprender</span>
@@ -477,220 +514,395 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;hei
       <span class="fb-tag" onclick="toggleTag(this,'Cartas interesantes')">🃏 Cartas interesantes</span>
       <span class="fb-tag" onclick="toggleTag(this,'Mundo visual bonito')">🌍 Mundo visual bonito</span>
       <span class="fb-tag" onclick="toggleTag(this,'Confuso al inicio')">❓ Confuso al inicio</span>
-      <span class="fb-tag" onclick="toggleTag(this,'Demasiado corto')">⏱ Demasiado corto</span>
+      <span class="fb-tag" onclick="toggleTag(this,'Quiero más rondas')">⏱ Quiero más rondas</span>
       <span class="fb-tag" onclick="toggleTag(this,'Quiero más cartas')">🎴 Quiero más cartas</span>
       <span class="fb-tag" onclick="toggleTag(this,'Lo recomendaría')">💚 Lo recomendaría</span>
     </div>
-
-    <!-- COMENTARIO -->
-    <div style="font-size:.72rem;font-weight:800;margin-bottom:6px;">¿Algo más que quieras decirnos?</div>
-    <textarea class="fb-textarea" id="fb-comment" rows="3" placeholder="Comparte tu experiencia, sugerencias o lo que más te gustó..."></textarea>
-
-    <!-- BOTONES -->
-    <button class="gbtn p" onclick="submitFeedback()" style="margin-bottom:8px;">Enviar feedback 🌿</button>
-    <button class="gbtn s" onclick="skipFeedback()">Jugar de nuevo sin enviar</button>
-
-    <!-- ENVIADO -->
+    <div style="font-size:.72rem;font-weight:800;margin-bottom:6px;">¿Algo más?</div>
+    <textarea class="fb-textarea" id="fb-comment" rows="3" placeholder="Tu experiencia, sugerencias..."></textarea>
+    <button class="btn prim" onclick="submitFB()" style="margin-bottom:8px;">Enviar feedback 🌿</button>
+    <button class="btn ghost" onclick="goIntro()">Jugar de nuevo sin enviar</button>
     <div class="fb-sent" id="fb-sent">
       <span class="fb-sent-ico">🌱</span>
       <div class="fb-sent-title">¡Gracias, Guardián!</div>
-      <div class="fb-sent-msg">Tu opinión ayuda a mejorar ECO-PODERES. Cada partida y cada comentario construyen un juego más poderoso.<br><br><strong style="color:var(--green);">+10 🌱 Semillas de Gratitud</strong></div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
-        <button class="gbtn p" onclick="startGameAgain()">🔄 Jugar otra partida</button>
-        <button class="gbtn s" onclick="goMenu()">🐾 Cambiar Guardián</button>
-        <button class="gbtn s" onclick="goRanking()">🏆 Ver Ranking</button>
-      </div>
+      <div class="fb-sent-msg">Tu opinión construye un juego mejor.<br><br><strong style="color:var(--green);">+10 🌱 Semillas de Gratitud</strong></div>
+      <button class="btn sec" onclick="goFBRanking()" style="margin-top:12px;">🏆 Ver feedback de otros</button>
+      <button class="btn prim" onclick="goIntro()" style="margin-top:8px;">Jugar de nuevo</button>
     </div>
   </div>
 </div>
 
+<!-- SOBRES -->
+<div class="screen z1" id="s-sobres" style="padding:10px;gap:8px;">
+  <div style="width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;">
+    <div style="font-family:var(--ffd);font-size:1rem;font-weight:900;">🌱 Tienda de Sobres</div>
+    <div class="seeds-pill"><span>🌱</span><span class="val" id="seeds-store">0</span><span class="lbl">semillas</span></div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" id="stab-tienda" onclick="sobreTab('tienda')">🏪 Tienda</button>
+    <button class="tab" id="stab-col" onclick="sobreTab('coleccion')">📚 Colección</button>
+  </div>
+  <div id="stab-tienda-body" style="display:flex;flex-direction:column;gap:8px;width:100%;">
+    <div style="font-size:.68rem;color:var(--txts);text-align:center;">1 carta garantizada + 1 carta sorpresa por sobre</div>
+    <div class="sobre-grid">
+      <button class="sobre-btn" onclick="iniciarCompra('bronce')" style="background:linear-gradient(150deg,#1a0f05,#2a1808);border-color:#cd7f32;">
+        <span class="sobre-ico">📦</span><div class="sobre-nm" style="color:#cd7f32;">Bronce</div><div class="sobre-desc">Comunes y raras para empezar</div><div class="sobre-cost">🌱 <span style="color:#cd7f32;">30</span></div>
+      </button>
+      <button class="sobre-btn" onclick="iniciarCompra('plata')" style="background:linear-gradient(150deg,#0a0f1a,#151f2e);border-color:#a8a9ad;">
+        <span class="sobre-ico">🥈</span><div class="sobre-nm" style="color:#a8a9ad;">Plata</div><div class="sobre-desc">1 Épica garantizada</div><div class="sobre-cost">🌱 <span style="color:#a8a9ad;">70</span></div>
+      </button>
+      <button class="sobre-btn" onclick="iniciarCompra('oro')" style="background:linear-gradient(150deg,#1a1400,#2a2000);border-color:#ffd700;">
+        <span class="sobre-ico">🏆</span><div class="sobre-nm" style="color:#ffd700;">Oro</div><div class="sobre-desc">1 Legendaria garantizada</div><div class="sobre-cost">🌱 <span style="color:#ffd700;">150</span></div>
+      </button>
+      <button class="sobre-btn" onclick="iniciarCompra('suprema')" style="background:linear-gradient(150deg,#0d001a,#1a0030);border-color:#9933ff;box-shadow:0 0 14px rgba(153,51,255,.2);">
+        <span class="sobre-ico">✨</span><div class="sobre-nm" style="color:#cc44ff;">Suprema</div><div class="sobre-desc">Solo acción real 🌍</div><div class="sobre-cost">🌱 <span style="color:#cc44ff;">300</span></div>
+      </button>
+    </div>
+    <div style="background:#0a1a0a;border:1px solid #1a4a1a;border-radius:10px;padding:10px 12px;font-size:.7rem;color:var(--txts);line-height:1.8;">
+      🌱 <strong style="color:var(--green);">¿Cómo ganar Semillas?</strong><br>
+      Jugar: <strong style="color:#fff;">+20</strong> · Eco&gt;70: <strong style="color:#fff;">+30</strong> · Victoria: <strong style="color:#fff;">+50</strong> · Feedback: <strong style="color:#fff;">+10</strong>
+    </div>
+  </div>
+  <div id="stab-col-body" style="display:none;flex-direction:column;gap:8px;width:100%;">
+    <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--txts);">
+      <span id="col-count">0 únicas</span><span id="col-prog" style="color:var(--gold2);"></span>
+    </div>
+    <div class="col-grid" id="col-grid"></div>
+  </div>
+  <div style="display:flex;gap:8px;width:100%;margin-top:4px;">
+    <button class="btn sec" onclick="goIntro()" style="flex:1;padding:10px;font-size:.82rem;">← Inicio</button>
+    <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">▶ Jugar</button>
+  </div>
+</div>
 
-<!-- RANKING -->
-<div class="screen z1" id="s-ranking" style="padding:1rem;gap:8px;">
-  <div style="font-family:var(--ffd);font-size:1.3rem;font-weight:900;text-align:center;width:100%;">🏆 Ranking</div>
-  <div style="font-size:.72rem;color:var(--txts);text-align:center;width:100%;">Mejores partidas — este dispositivo</div>
-  <div style="display:flex;flex-direction:column;gap:6px;width:100%;" id="rank-list"></div>
-  <button class="gbtn s" onclick="goIntro()" style="width:100%;margin-top:8px;">← Volver al inicio</button>
+<!-- APERTURA -->
+<div class="screen z1" id="s-apertura">
+  <div style="text-align:center;">
+    <div id="ap-lbl" style="font-size:.8rem;color:var(--txts);margin-bottom:4px;">Sobre</div>
+    <div id="ap-titulo" style="font-size:1.1rem;font-weight:900;color:var(--gold2);font-family:var(--ffd);">¡Toca para descubrir!</div>
+  </div>
+  <button id="btn-abrir-sobre" onclick="ejecutarApertura()">
+    <span class="ap-ico" id="ap-ico">📦</span>
+    <div class="ap-nm" id="ap-nm"></div>
+    <div style="font-size:.72rem;color:#ffffff44;margin-top:8px;pointer-events:none;letter-spacing:2px;">TOCA AQUÍ</div>
+  </button>
+  <div class="ap-hint">✨ Toca el sobre para abrirlo</div>
+  <button class="btn ghost" onclick="goSobres()" style="max-width:220px;padding:10px;">← Volver sin abrir</button>
+</div>
+
+<!-- REVEAL -->
+<div class="screen z1" id="s-reveal">
+  <div class="reveal-title" id="reveal-title">¡Cartas obtenidas!</div>
+  <div class="reveal-cards" id="reveal-cards"></div>
+  <button class="btn prim" onclick="cerrarApertura()" style="max-width:280px;">✅ Añadir a colección</button>
+  <button class="btn ghost" onclick="goSobres()" style="max-width:220px;padding:10px;">← Ver más sobres</button>
+</div>
+
+<!-- RANKING & FEEDBACK -->
+<div class="screen z1" id="s-fbranking" style="padding:10px;gap:8px;">
+  <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;text-align:center;width:100%;">🏆 Comunidad</div>
+  <div class="tabs">
+    <button class="tab on" id="fbtab-rank" onclick="fbTab('rank')">🏆 Ranking</button>
+    <button class="tab" id="fbtab-fb" onclick="fbTab('fb')">💬 Feedback</button>
+  </div>
+  <div id="fbview-rank" style="display:flex;flex-direction:column;gap:7px;width:100%;">
+    <div style="font-size:.68rem;color:var(--txts);text-align:center;">Mejores Guardianes · Sesión actual</div>
+    <div id="rank-lista" style="display:flex;flex-direction:column;gap:6px;width:100%;"></div>
+    <div style="background:#0a1a0a;border:1px solid #1a4a1a;border-radius:10px;padding:10px;font-size:.7rem;color:var(--txts);text-align:center;line-height:1.7;">
+      Puntaje = Eco + Con×5 + Soc×7 - Karma×4<br>
+      <span style="color:var(--gold2);">Conciencia alta protege el ecosistema</span>
+    </div>
+  </div>
+  <div id="fbview-fb" style="display:none;flex-direction:column;gap:8px;width:100%;">
+    <div id="fb-lista" style="display:flex;flex-direction:column;gap:8px;width:100%;"></div>
+  </div>
+  <div style="display:flex;gap:8px;width:100%;margin-top:4px;">
+    <button class="btn sec" onclick="goIntro()" style="flex:1;padding:10px;font-size:.82rem;">← Inicio</button>
+    <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">▶ Jugar</button>
+  </div>
 </div>
 
 <script>
-// ═══ STARS ═══
-(()=>{const c=document.getElementById('stars'),ctx=c.getContext('2d');function r(){c.width=innerWidth;c.height=innerHeight;}r();addEventListener('resize',r);const S=Array.from({length:100},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.2+.3,sp:Math.random()*.3+.1,ph:Math.random()*Math.PI*2}));function draw(){ctx.clearRect(0,0,c.width,c.height);const t=Date.now()/1000;S.forEach(s=>{const a=.15+.18*Math.sin(t*s.sp+s.ph);ctx.beginPath();ctx.arc(s.x*c.width,s.y*c.height,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,220,255,${a})`;ctx.fill();});requestAnimationFrame(draw);}draw();})();
+// ══════════════════════════════════════════
+// ECO-PODERES v0.2 — Motor de juego completo
+// ══════════════════════════════════════════
 
-// ═══ WORLD CANVAS ═══
+// STARS
+(()=>{
+  const c=document.getElementById('stars'),ctx=c.getContext('2d');
+  function r(){c.width=innerWidth;c.height=innerHeight;}r();addEventListener('resize',r);
+  const S=Array.from({length:110},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.3+.3,sp:Math.random()*.3+.1,ph:Math.random()*Math.PI*2}));
+  function draw(){ctx.clearRect(0,0,c.width,c.height);const t=Date.now()/1000;S.forEach(s=>{const a=.15+.18*Math.sin(t*s.sp+s.ph);ctx.beginPath();ctx.arc(s.x*c.width,s.y*c.height,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,220,255,${a})`;ctx.fill();});requestAnimationFrame(draw);}
+  draw();
+})();
+
+// WORLD CANVAS
 let worldTimer=null;
-function drawWorld(eco,karma,sociedad,ronda){
+function drawWorld(eco,karma,soc,ronda,maxR){
   const cv=document.getElementById('world-canvas');if(!cv)return;
-  const W=cv.width=cv.offsetWidth||360,H=148;
-  const ctx=cv.getContext('2d'),t=Date.now()/1000;
+  const W=cv.width=cv.offsetWidth||360,H=155,ctx=cv.getContext('2d'),t=Date.now()/1000;
   ctx.clearRect(0,0,W,H);
+  // Sky gradient — reacts to eco
+  const sr=eco>60?7:eco>30?22:42,sg=eco>60?16:eco>30?12:5,sb=eco>60?29:eco>30?8:5;
   const g=ctx.createLinearGradient(0,0,0,H*.65);
-  const sr=eco>60?7:eco>30?20:38,sg=eco>60?16:eco>30?12:5,sb=eco>60?29:eco>30?8:5;
-  g.addColorStop(0,`rgb(${sr},${sg},${sb})`);g.addColorStop(1,`rgb(${sr+12},${sg+28},${sb+44})`);
+  g.addColorStop(0,`rgb(${sr},${sg},${sb})`);
+  g.addColorStop(1,`rgb(${sr+14},${sg+30},${sb+48})`);
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  if(eco>50){ctx.fillStyle=`rgba(255,228,100,${.7+.1*Math.sin(t*.5)})`;ctx.beginPath();ctx.arc(W*.83,H*.21,11+1.5*Math.sin(t*.5),0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,228,100,.1)';ctx.beginPath();ctx.arc(W*.83,H*.21,21+2*Math.sin(t*.5),0,Math.PI*2);ctx.fill();}
-  else{ctx.fillStyle='rgba(175,175,215,.5)';ctx.beginPath();ctx.arc(W*.83,H*.21,9,0,Math.PI*2);ctx.fill();}
-  const cc=eco>60?'rgba(255,255,255,.09)':eco>30?'rgba(155,95,55,.18)':'rgba(88,48,48,.28)';
-  for(let i=0;i<3;i++){const cx=(W*.1+i*W*.3+Math.sin(t*.07+i)*14)%(W*.92);ctx.fillStyle=cc;ctx.beginPath();ctx.ellipse(cx,H*.13+i*7,27+i*9,9,0,0,Math.PI*2);ctx.fill();}
-  const gr=eco>60?14:eco>30?54:74,gg=eco>60?68:eco>30?33:9,gb=eco>60?23:eco>30?7:5;
-  ctx.fillStyle=`rgb(${gr},${gg},${gb})`;ctx.fillRect(0,H*.6,W,H*.4);
-  if(eco>35){const wa=Math.min(.55,(eco-35)/65);ctx.fillStyle=`rgba(22,92,172,${wa})`;ctx.beginPath();ctx.moveTo(W*.22,H*.63);ctx.bezierCurveTo(W*.28,H*.61,W*.38,H*.66,W*.43,H*.63);ctx.lineTo(W*.43,H*.73);ctx.bezierCurveTo(W*.38,H*.76,W*.28,H*.71,W*.22,H*.73);ctx.closePath();ctx.fill();}
-  const tc=Math.max(1,Math.floor(eco/14));
-  for(let i=0;i<Math.min(tc,7);i++){
-    const tx=W*.04+i*(W*.84/6.5),ty=H*.61,th=17+i%3*7;
-    const mg=Math.min(195,eco*1.8);
-    ctx.fillStyle=`rgb(16,${Math.floor(mg*.38)},11)`;ctx.fillRect(tx+7,ty,4,th*.38);
-    ctx.fillStyle=`rgb(${18+i*3},${Math.floor(mg*.72)},${13+i*2})`;
-    ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(tx+9,ty-th);ctx.lineTo(tx+18,ty);ctx.closePath();ctx.fill();
-    if(eco>45){const sw=Math.sin(t*.8+i)*1.5;ctx.fillStyle='rgba(78,175,58,.22)';ctx.beginPath();ctx.moveTo(tx+sw,ty);ctx.lineTo(tx+9+sw,ty-th*.52);ctx.lineTo(tx+18+sw,ty);ctx.closePath();ctx.fill();}
+  // Sun/Moon
+  if(eco>45){
+    const glow=eco>70?.75:.55;
+    ctx.fillStyle=`rgba(255,228,100,${glow+.1*Math.sin(t*.5)})`;
+    ctx.beginPath();ctx.arc(W*.84,H*.2,12+1.5*Math.sin(t*.5),0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=`rgba(255,228,100,.1)`;
+    ctx.beginPath();ctx.arc(W*.84,H*.2,22+2*Math.sin(t*.5),0,Math.PI*2);ctx.fill();
+  } else {
+    ctx.fillStyle='rgba(160,160,210,.55)';ctx.beginPath();ctx.arc(W*.84,H*.2,10,0,Math.PI*2);ctx.fill();
   }
-  if(sociedad>2){const bc=Math.min(sociedad,5);for(let i=0;i<bc;i++){const bx=W*.53+i*27,bh=17+i*7;ctx.fillStyle=eco>50?'rgba(68,108,173,.73)':'rgba(53,53,73,.73)';ctx.fillRect(bx,H*.62-bh,17,bh);if(eco>45){ctx.fillStyle='rgba(255,248,115,.42)';for(let j=0;j<2;j++)for(let k=0;k<2;k++)ctx.fillRect(bx+2+j*6,H*.62-bh+3+k*6,3,3);}}}
-  if(karma>=2||eco<20){for(let i=0;i<5;i++){const sx=W*.07+i*W*.2,sy=H*.47+Math.sin(t+i)*4;ctx.fillStyle=`rgba(68,53,53,${.12+.07*Math.sin(t*1.5+i)})`;ctx.beginPath();ctx.ellipse(sx,sy,13,7,0,0,Math.PI*2);ctx.fill();}}
-  ctx.fillStyle='rgba(255,196,64,.72)';ctx.font='bold 10px sans-serif';ctx.textAlign='left';ctx.fillText(`Ronda ${ronda}/6`,7,13);
+  // Clouds
+  const cc=eco>65?'rgba(255,255,255,.09)':eco>35?'rgba(150,90,50,.18)':'rgba(80,45,45,.28)';
+  for(let i=0;i<3;i++){const cx=(W*.1+i*W*.3+Math.sin(t*.07+i)*14)%(W*.92);ctx.fillStyle=cc;ctx.beginPath();ctx.ellipse(cx,H*.13+i*7,26+i*9,9,0,0,Math.PI*2);ctx.fill();}
+  // Ground
+  const gr=eco>60?13:eco>30?52:72,gg=eco>60?65:eco>30?30:8,gb=eco>60?20:eco>30?6:4;
+  ctx.fillStyle=`rgb(${gr},${gg},${gb})`;ctx.fillRect(0,H*.6,W,H*.4);
+  // River
+  if(eco>30){const wa=Math.min(.55,(eco-30)/70);ctx.fillStyle=`rgba(22,92,175,${wa})`;ctx.beginPath();ctx.moveTo(W*.2,H*.63);ctx.bezierCurveTo(W*.28,H*.61,W*.38,H*.67,W*.44,H*.63);ctx.lineTo(W*.44,H*.74);ctx.bezierCurveTo(W*.38,H*.77,W*.28,H*.72,W*.2,H*.74);ctx.closePath();ctx.fill();}
+  // Trees
+  const tc=Math.max(1,Math.floor(eco/13));
+  for(let i=0;i<Math.min(tc,8);i++){
+    const tx=W*.03+i*(W*.84/7.5),ty=H*.61,th=16+i%3*8;
+    const mg=Math.min(200,eco*1.9);
+    ctx.fillStyle=`rgb(15,${Math.floor(mg*.35)},10)`;ctx.fillRect(tx+7,ty,4,th*.4);
+    ctx.fillStyle=`rgb(${18+i*3},${Math.floor(mg*.72)},${12+i*2})`;
+    ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(tx+9,ty-th);ctx.lineTo(tx+18,ty);ctx.closePath();ctx.fill();
+    if(eco>50){const sw=Math.sin(t*.8+i)*1.5;ctx.fillStyle='rgba(78,175,58,.2)';ctx.beginPath();ctx.moveTo(tx+sw,ty);ctx.lineTo(tx+9+sw,ty-th*.52);ctx.lineTo(tx+18+sw,ty);ctx.closePath();ctx.fill();}
+  }
+  // Buildings (sociedad)
+  if(soc>2){for(let i=0;i<Math.min(soc-1,5);i++){const bx=W*.53+i*26,bh=16+i*7;ctx.fillStyle=eco>50?'rgba(66,108,175,.75)':'rgba(52,52,72,.75)';ctx.fillRect(bx,H*.62-bh,16,bh);if(eco>45){ctx.fillStyle='rgba(255,248,115,.4)';for(let j=0;j<2;j++)for(let k=0;k<2;k++)ctx.fillRect(bx+2+j*5,H*.62-bh+3+k*5,3,3);}}}
+  // Smoke (karma)
+  if(karma>=2||eco<20){for(let i=0;i<5;i++){ctx.fillStyle=`rgba(65,50,50,${.1+.07*Math.sin(t*1.5+i)})`;ctx.beginPath();ctx.ellipse(W*.07+i*W*.2,H*.47+Math.sin(t+i)*4,13,7,0,0,Math.PI*2);ctx.fill();}}
+  // Progress bar & ronda
+  ctx.fillStyle='rgba(255,196,64,.75)';ctx.font='bold 10px sans-serif';ctx.textAlign='left';ctx.fillText(`Ronda ${ronda}/${maxR}`,7,13);
   const bw=Math.floor((eco/100)*(W-14));
   ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(7,H-8,W-14,5);
   ctx.fillStyle=eco>60?'#5ccf9a':eco>30?'#ffc542':'#ff5a5a';ctx.fillRect(7,H-8,bw,5);
 }
-function startWorld(){if(worldTimer)return;worldTimer=setInterval(()=>{if(G)drawWorld(G.eco,G.karma,G.sociedad,G.ronda);},80);}
+function startWorld(){if(worldTimer)return;worldTimer=setInterval(()=>{if(G)drawWorld(G.eco,G.karma,G.sociedad,G.ronda,G.maxR);},80);}
 function stopWorld(){clearInterval(worldTimer);worldTimer=null;}
 
-// ═══ TUTORIAL DATA ═══
-const TUT_STEPS=[
-  {ico:'🌍',title:'Bienvenido al Consejo de Guardianes',body:'Eres un Guardián del planeta. Tu misión: mantener el ecosistema vivo durante 6 rondas de decisiones que cambiarán el destino del mundo.',extra:{type:'highlight',txt:'El juego termina si el Ecosistema llega a 0 — o ganas si logras mantener el equilibrio hasta la ronda 6.'}},
-  {ico:'🎲',title:'El Dado de los Elementos',body:'Cada ronda lanzas un dado con 6 elementos. El resultado modifica el mundo automáticamente antes de que puedas actuar.',extra:{type:'grid',items:[{ico:'💧',nm:'AGUA',desc:'+1 Eco +1 Agua'},{ico:'🌿',nm:'TIERRA',desc:'+2 Eco +1 Agua'},{ico:'🌀',nm:'AIRE',desc:'+1 Con +1 Energía'},{ico:'⭐',nm:'VACÍO',desc:'+2 Eco +1 Con'},{ico:'🔥',nm:'FUEGO',desc:'-2 Eco +2 Energía'},{ico:'⚡',nm:'CAOS',desc:'-2 Eco -1 Con +1 Karma'}]}},
-  {ico:'⚔️',title:'EGO o CONSCIENCIA',body:'Después del dado, eliges tu camino para la ronda. Esta es la decisión más importante — define cómo actúas y qué consecuencias enfrentas.',extra:{type:'grid',items:[{ico:'⚔️',nm:'EGO',desc:'+2 Energía\n+1 Karma\nMás recursos, más riesgo'},{ico:'🌀',nm:'CONSCIENCIA',desc:'+1 Eco\n+1 Conciencia\nMás equilibrio, más lento'}]}},
-  {ico:'🎴',title:'Las Cartas de Proyecto',body:'Tienes cartas en mano que representan emprendimientos ecológicos. Jugarlas cuesta Agua y Energía, pero generan beneficios al ecosistema y la sociedad.',extra:{type:'card-example'}},
-  {ico:'⚠️',title:'Las Crisis',body:'A veces el mundo enfrenta eventos inesperados: incendios, sequías, conflictos sociales. Tendrás que elegir entre dos respuestas — ambas con consecuencias reales.',extra:{type:'highlight',txt:'Tip: elegir la respuesta "consciente" puede costar más recursos, pero siempre es mejor para el ecosistema a largo plazo.'}},
-  {ico:'🌱',title:'Semillas Guardianas',body:'Al jugar ganas Semillas Guardianas — la moneda del Consejo. Con ellas puedes abrir Sobres de Cartas especiales que desbloquean poderes únicos para futuras partidas.',extra:{type:'highlight',txt:'¡Las cartas Legendarias y Supremas que desbloquees entran a tu mazo y hacen cada partida diferente!'}}
-];
+// ══ DATOS DEL JUEGO ══
 
-let tutStep=0;
-function startTutorial(){tutStep=0;renderTut();sh('tutorial');}
-function renderTut(){
-  const step=TUT_STEPS[tutStep];
-  const dots=document.getElementById('tut-dots');
-  dots.innerHTML=TUT_STEPS.map((_,i)=>`<div class="tut-dot ${i<tutStep?'done':i===tutStep?'on':''}"></div>`).join('');
-  document.getElementById('tut-step-lbl').textContent=`Paso ${tutStep+1} de ${TUT_STEPS.length}`;
-  document.getElementById('tut-prev').disabled=tutStep===0;
-  document.getElementById('tut-next').textContent=tutStep===TUT_STEPS.length-1?'¡Empezar a jugar! →':'Siguiente →';
-  let extra='';
-  if(step.extra){
-    if(step.extra.type==='highlight') extra=`<div class="tut-highlight">💡 ${step.extra.txt}</div>`;
-    else if(step.extra.type==='grid') extra=`<div class="tut-grid">${step.extra.items.map(it=>`<div class="tut-item"><div class="ti-ico">${it.ico}</div><div class="ti-nm">${it.nm}</div><div class="ti-desc">${it.desc.replace(/\n/g,'<br>')}</div></div>`).join('')}</div>`;
-    else if(step.extra.type==='card-example') extra=`<div class="tut-example-card" style="border:2px solid #52c26d55;background:#0a1f0a;"><div style="font-size:.55rem;color:#52c26d;font-weight:800;margin-bottom:4px;">🌿 EMPRENDIMIENTO</div><div style="font-size:1.3rem;margin-bottom:3px;">🌾</div><div style="font-size:.78rem;font-weight:800;margin-bottom:3px;">Agricultura Viva</div><div style="font-size:.64rem;color:var(--txts);margin-bottom:6px;">+2 eco · +1 agua</div><div style="font-size:.62rem;color:var(--gold2);">💧2 ⚡0</div></div>`;
-  }
-  document.getElementById('tut-content').innerHTML=`<div class="tut-card"><span class="tut-ico">${step.ico}</span><div class="tut-title">${step.title}</div><div class="tut-body">${step.body}</div></div>${extra}`;
-}
-function tutNext(){if(tutStep<TUT_STEPS.length-1){tutStep++;renderTut();}else{goMenu();}}
-function tutPrev(){if(tutStep>0){tutStep--;renderTut();}}
+const MAX_RONDAS = 8; // MEJORA: 6→8 rondas para más profundidad estratégica
 
-// ═══ DATA ═══
 const DICE=[
-  {id:'AGUA',ico:'💧',color:'#3aa7ff',label:'AGUA',fx:'+1 Eco · +1 Agua',narr:'El agua sagrada desciende de las montañas, nutriendo cada raíz del mundo.',apply:g=>{g.eco+=1;g.agua+=1;}},
-  {id:'TIERRA',ico:'🌿',color:'#52c26d',label:'TIERRA',fx:'+2 Eco · +1 Agua',narr:'La tierra fértil vibra bajo tus pies. El bosque ancestral te da la bienvenida.',apply:g=>{g.eco+=2;g.agua+=1;}},
-  {id:'AIRE',ico:'🌀',color:'#b280ff',label:'AIRE',fx:'+1 Conciencia · +1 Energía',narr:'Un viento limpio despeja tu mente. Ves con claridad lo que antes era niebla.',apply:g=>{g.conciencia+=1;g.energia+=1;}},
-  {id:'VACÍO',ico:'⭐',color:'#ffe880',label:'VACÍO',fx:'+2 Eco · +1 Conciencia',narr:'En el silencio del vacío, todo es posible. El universo respira junto a ti.',apply:g=>{g.eco+=2;g.conciencia+=1;}},
-  {id:'FUEGO',ico:'🔥',color:'#ff7a45',label:'FUEGO',fx:'-2 Eco · +2 Energía',narr:'El fuego consume lo viejo. Úsalo con sabiduría o el mundo arderá.',apply:g=>{g.eco-=2;g.energia+=2;}},
-  {id:'CAOS',ico:'⚡',color:'#ffc030',label:'CAOS',fx:'-2 Eco · -1 Con · +1 Karma',narr:'Las fuerzas del caos sacuden los cimientos del Consejo. El mundo tiembla.',apply:g=>{g.eco-=2;g.conciencia-=1;g.karma+=1;}}
-];
-const GUARDIANES=[
-  {id:'lobo',ico:'🐺',nm:'Lobo',color:'#5ccf9a',rol:'Equilibrio',poder:'Poder: +1 Eco y +1 Conciencia.',sombra:'Sin penalización especial. Ideal para principiantes.',apply:g=>{g.eco+=1;g.conciencia+=1;}},
-  {id:'aguila',ico:'🦅',nm:'Águila',color:'#6d8cff',rol:'Visión',poder:'Transforma FUEGO/CAOS en AIRE. +1 Acc al lanzar.',sombra:'Transformación solo una vez por ronda.',applyRoll:(g,f)=>(f==='FUEGO'||f==='CAOS')&&!g.gpu?(g.gpu=true,'AIRE'):f,apply:g=>{g.acciones=Math.min(g.acciones+1,4);}},
-  {id:'pulpo',ico:'🐙',nm:'Pulpo',color:'#a66cff',rol:'Adaptación',poder:'Pasivo: +1 Conciencia extra al elegir cualquier camino.',sombra:'No puede usar acción "Poder" manual.',apply:null},
-  {id:'tortuga',ico:'🐢',nm:'Tortuga',color:'#59b870',rol:'Resistencia',poder:'Al jugar carta: +2 Eco extra (una vez/ronda).',sombra:'Solo puede jugar 1 carta extra por turno.',apply:g=>{if(!g.gpu){g.eco+=2;g.gpu=true;}}},
-  {id:'elefante',ico:'🐘',nm:'Elefante',color:'#c4a87a',rol:'Memoria',poder:'Poder: +2 Sociedad y +1 Conciencia.',sombra:'Cartas de impulso cuestan +1 agua.',apply:g=>{g.sociedad+=2;g.conciencia+=1;}},
-  {id:'abeja',ico:'🐝',nm:'Abeja',color:'#ffc542',rol:'Cooperación',poder:'Buff: siguiente carta jugada da +2 Sociedad extra.',sombra:'-1 Eco si no jugaste ninguna carta esta ronda.',apply:g=>{g._bee=true;}}
-];
-const CRISES=[
-  {ico:'🏭',title:'Contaminación Industrial',narr:'Las chimeneas no paran. El cielo se tiñe de gris sobre tu comunidad.',fx:'Elige cómo responder.',A:{txt:'Filtros limpios\n-2 energía · -1 eco',fn:g=>{g.energia=Math.max(0,g.energia-2);g.eco-=1;}},B:{txt:'Ignorarlo ahora\n-4 eco · +1 karma',fn:g=>{g.eco-=4;g.karma+=1;}}},
-  {ico:'🌊',title:'Derrame Tóxico',narr:'Un derrame amenaza el río principal. La comunidad espera tu decisión urgente.',fx:'Cada segundo importa.',A:{txt:'Limpiar con agua\n-3 agua · +2 eco',fn:g=>{g.agua=Math.max(0,g.agua-3);g.eco+=2;}},B:{txt:'Desviar el daño\n-2 eco · -1 soc',fn:g=>{g.eco-=2;g.sociedad=Math.max(0,g.sociedad-1);}}},
-  {ico:'🌡️',title:'Ola de Calor',narr:'El calor es extremo. Los cultivos se secan. Tu comunidad necesita agua.',fx:'Actúa ya.',A:{txt:'Activar reservas\n-2 agua · +1 soc',fn:g=>{g.agua=Math.max(0,g.agua-2);g.sociedad+=1;}},B:{txt:'Racionar sin avisar\n-2 soc · +1 karma',fn:g=>{g.sociedad=Math.max(0,g.sociedad-2);g.karma+=1;}}},
-  {ico:'🔥',title:'Incendio Forestal',narr:'El fuego avanza desde el cerro. Los guardianes del bosque piden ayuda urgente.',fx:'El tiempo se acaba.',A:{txt:'Combatir con agua\n-3 agua · -1 eco',fn:g=>{g.agua=Math.max(0,g.agua-3);g.eco-=1;}},B:{txt:'Evacuar y observar\n-3 eco · -1 con',fn:g=>{g.eco-=3;g.conciencia=Math.max(0,g.conciencia-1);}}},
-  {ico:'💔',title:'Fractura Social',narr:'Un conflicto divide tu comunidad. Dos grupos enfrentados esperan tu mediación.',fx:'Tu decisión marcará el rumbo.',A:{txt:'Mediación consciente\n-1 energía · +2 soc · +1 con',fn:g=>{g.energia=Math.max(0,g.energia-1);g.sociedad+=2;g.conciencia+=1;}},B:{txt:'Favorecer un bando\n+1 energía · -2 soc · +1 karma',fn:g=>{g.energia+=1;g.sociedad=Math.max(0,g.sociedad-2);g.karma+=1;}}}
-];
-const EVENTS=[
-  {ico:'🌧️',nm:'Lluvia Abundante',narr:'El cielo llora de gratitud. Los ríos vuelven a cantar.',fx:'+2 Agua · +1 Energía',ef:g=>{g.agua+=2;g.energia+=1;}},
-  {ico:'🌸',nm:'Armonía Sutil',narr:'Los guardianes del bosque cantan en silencio.',fx:'+2 Ecosistema',ef:g=>{g.eco+=2;}},
-  {ico:'💡',nm:'Innovación Limpia',narr:'Un joven inventor presenta su solución ante el Consejo.',fx:'+1 Sociedad · +1 Con',ef:g=>{g.sociedad+=1;g.conciencia+=1;}},
-  {ico:'🌿',nm:'Llamado del Bosque',narr:'Los árboles más antiguos susurran su sabiduría al viento.',fx:'+1 Eco · +1 Con',ef:g=>{g.eco+=1;g.conciencia+=1;}},
-  {ico:'🤝',nm:'Alianza Verde',narr:'Tres comunidades deciden unirse bajo el árbol sagrado.',fx:'+2 Sociedad',ef:g=>{g.sociedad+=2;}},
-  {ico:'🌊',nm:'Marea de Conciencia',narr:'Una ola de despertar recorre el mundo.',fx:'+2 Con · +1 Soc',ef:g=>{g.conciencia+=2;g.sociedad+=1;}},
-  {ico:'☀️',nm:'Sequía Repentina',narr:'Las nubes abandonan el valle. La tierra reseca.',fx:'-1 Agua',ef:g=>{g.agua=Math.max(0,g.agua-1);}},
-  {ico:'🛍️',nm:'Consumo Excesivo',narr:'Los bosques se vacían. El karma acecha.',fx:'-1 Eco · +1 Karma',ef:g=>{g.eco=Math.max(0,g.eco-1);g.karma+=1;}}
-];
-const ROUND_NARR=[
-  {t:'El Mundo Despierta',n:'Los Guardianes del Consejo se reúnen por primera vez en cien años. El planeta espera tu primera decisión.'},
-  {t:'Las Raíces Hablan',n:'"Cada acción que tomes hoy, el mundo la recordará mañana." — El árbol más anciano del Consejo.'},
-  {t:'El Punto de Inflexión',n:'Mitad del camino. Los biomas muestran las consecuencias de tus elecciones. ¿Cambias de rumbo?'},
-  {t:'La Prueba del Fuego',n:'Las fuerzas del caos se intensifican. Solo quienes cultivaron conciencia guiarán al mundo.'},
-  {t:'La Última Oportunidad',n:'El Consejo te observa. Dos rondas quedan. El futuro aún puede escribirse en verde.'},
-  {t:'El Juicio Final',n:'Esta es tu última ronda. El mundo recordará lo que decidas hoy por mil años. Actúa con todo tu ser.'}
-];
-const CARDS=[
-  {ico:'💧',nm:'Sistema de Agua',tp:'emprendimiento',color:'#3aa7ff',c:{a:2,e:1},txt:'+3 eco · +1 soc',ef:g=>{g.eco+=3;g.sociedad+=1;}},
-  {ico:'☀️',nm:'Energía Limpia',tp:'emprendimiento',color:'#ffc542',c:{a:0,e:2},txt:'+2 soc · +1 con',ef:g=>{g.sociedad+=2;g.conciencia+=1;}},
-  {ico:'🌾',nm:'Agricultura Viva',tp:'emprendimiento',color:'#52c26d',c:{a:2,e:0},txt:'+2 eco · +1 agua',ef:g=>{g.eco+=2;g.agua+=1;}},
-  {ico:'♻️',nm:'Reciclaje',tp:'proyecto',color:'#7ac7ff',c:{a:0,e:1},txt:'-1 karma · +2 soc',ef:g=>{g.karma=Math.max(0,g.karma-1);g.sociedad+=2;}},
-  {ico:'📚',nm:'Educación',tp:'conciencia',color:'#b280ff',c:{a:0,e:1},txt:'+3 conciencia',ef:g=>{g.conciencia+=3;}},
-  {ico:'🔄',nm:'Economía Circular',tp:'creación',color:'#5ccfff',c:{a:1,e:1},txt:'+1 agua+energía+soc',ef:g=>{g.agua+=1;g.energia+=1;g.sociedad+=1;}},
-  {ico:'✨',nm:'Santuario Guardián',tp:'alianza',color:'#d78cff',c:{a:2,e:2},txt:'+4 eco · +2 con',ef:g=>{g.eco+=4;g.conciencia+=2;}},
-  {ico:'🔮',nm:'Visión Clara',tp:'conciencia',color:'#c88cff',c:{a:0,e:0},txt:'+1 con · -1 karma',ef:g=>{g.conciencia+=1;g.karma=Math.max(0,g.karma-1);}},
-  {ico:'💎',nm:'Reserva Oculta',tp:'impulso',color:'#5ccfff',c:{a:0,e:0},txt:'+2 agua · +1 energía',ef:g=>{g.agua+=2;g.energia+=1;}},
-  {ico:'🌱',nm:'Red de Semillas',tp:'creación',color:'#59b870',c:{a:1,e:1},txt:'+2 eco · +1 con',ef:g=>{g.eco+=2;g.conciencia+=1;}},
-  {ico:'🌊',nm:'Desalinización',tp:'emprendimiento',color:'#00c4ff',c:{a:0,e:2},txt:'+3 agua · +2 eco',ef:g=>{g.agua+=3;g.eco+=2;}},
-  {ico:'🏙️',nm:'Ciudad Circular',tp:'emprendimiento',color:'#8899ff',c:{a:2,e:2},txt:'+4 soc · +2 eco',ef:g=>{g.sociedad+=4;g.eco+=2;}},
-  {ico:'🕊️',nm:'Mensaje de Paz',tp:'alianza',color:'#ffffff',c:{a:0,e:0},txt:'+2 soc · -1 karma',ef:g=>{g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
-  {ico:'🌈',nm:'Visión del Futuro',tp:'alianza',color:'#ff99ff',c:{a:1,e:1},txt:'+2 eco+soc+con',ef:g=>{g.eco+=2;g.sociedad+=2;g.conciencia+=2;}}
+  {id:'AGUA',ico:'💧',color:'#3aa7ff',label:'AGUA',fx:'+1 Eco · +1 Agua · El mundo respira',
+   narr:'El agua sagrada desciende de las montañas. Cada gota es vida que regresa.',
+   apply:g=>{g.eco+=1;g.agua+=1;}},
+  {id:'TIERRA',ico:'🌿',color:'#52c26d',label:'TIERRA',fx:'+2 Eco · +1 Agua · La tierra fértil responde',
+   narr:'La tierra vibra bajo tus pies. El bosque ancestral agradece tu presencia.',
+   apply:g=>{g.eco+=2;g.agua+=1;}},
+  {id:'AIRE',ico:'🌀',color:'#b280ff',label:'AIRE',fx:'+1 Conciencia · +1 Energía · La mente se abre',
+   narr:'Un viento limpio despeja tu mente. Ves con claridad lo que antes era niebla.',
+   apply:g=>{g.conciencia+=1;g.energia+=1;}},
+  {id:'VACÍO',ico:'⭐',color:'#ffe880',label:'VACÍO',fx:'+2 Eco · +1 Con · Potencial puro',
+   narr:'En el silencio del vacío, todo es posible. El universo respira contigo.',
+   apply:g=>{g.eco+=2;g.conciencia+=1;}},
+  {id:'FUEGO',ico:'🔥',color:'#ff7a45',label:'FUEGO',fx:'-2 Eco · +2 Energía · Destruye y energiza',
+   narr:'El fuego consume lo viejo. ¿Sabrás canalizarlo antes de que devore el mundo?',
+   apply:g=>{g.eco-=2;g.energia+=2;}},
+  {id:'CAOS',ico:'⚡',color:'#ffc030',label:'CAOS',fx:'-2 Eco · -1 Con · +1 Karma · El mundo tiembla',
+   narr:'Las fuerzas del caos sacuden los cimientos del Consejo. La incertidumbre reina.',
+   apply:g=>{g.eco-=2;g.conciencia-=1;g.karma+=1;}},
+  // NUEVOS ELEMENTOS v0.2
+  {id:'TORMENTA',ico:'🌩️',color:'#8866ff',label:'TORMENTA',fx:'+2 Agua · -1 Eco · Limpia y destruye',
+   narr:'La tormenta arrasa pero también limpia. Del caos surge el renacimiento.',
+   apply:g=>{g.agua+=2;g.eco-=1;}},
+  {id:'AURORA',ico:'🌅',color:'#ffaa44',label:'AURORA',fx:'+1 Todo · El mundo florece',
+   narr:'Un amanecer extraordinario baña el mundo de luz dorada. Todo parece posible.',
+   apply:g=>{g.eco+=1;g.conciencia+=1;g.sociedad+=1;g.agua+=1;}},
 ];
 
-// ═══ STATE ═══
-let ST={seeds:0};
-function loadST(){try{const s=sessionStorage.getItem('ep_demo');if(s){const p=JSON.parse(s);ST.seeds=p.seeds||0;}}catch(e){}}
-function saveST(){sessionStorage.setItem('ep_demo',JSON.stringify(ST));}
+const GUARDIANES=[
+  {id:'lobo',ico:'🐺',nm:'Lobo',color:'#5ccf9a',rol:'Equilibrio',
+   poder:'Poder: +1 Eco y +1 Conciencia. El guardián más balanceado.',
+   sombra:'Sin penalización especial. Ideal para principiantes.',
+   tip:'Usa el poder en rondas de FUEGO o CAOS para compensar.',
+   apply:g=>{g.eco+=1;g.conciencia+=1;}},
+  {id:'aguila',ico:'🦅',nm:'Águila',color:'#6d8cff',rol:'Visión',
+   poder:'Convierte FUEGO/CAOS en AIRE (1×/ronda). Gana +1 acción al lanzar dado.',
+   sombra:'Transformación usable una sola vez por ronda.',
+   tip:'Aprovecha la acción extra para robar cartas y tener más opciones.',
+   applyRoll:(g,f)=>(f==='FUEGO'||f==='CAOS'||f==='TORMENTA')&&!g.gpu?(g.gpu=true,'AIRE'):f,
+   apply:g=>{g.acciones=Math.min(g.acciones+1,5);}},
+  {id:'pulpo',ico:'🐙',nm:'Pulpo',color:'#a66cff',rol:'Adaptación',
+   poder:'Pasivo: +1 Conciencia extra al elegir cualquier camino.',
+   sombra:'No puede usar la acción "Poder" manual.',
+   tip:'Siempre elige CONSCIENCIA — con Pulpo vale el doble.',
+   apply:null},
+  {id:'tortuga',ico:'🐢',nm:'Tortuga',color:'#59b870',rol:'Resistencia',
+   poder:'Al jugar carta: +2 Eco extra (una vez por ronda).',
+   sombra:'Solo puede beneficiarse de 1 carta extra por turno.',
+   tip:'Juega tu carta más poderosa primero para maximizar el bonus.',
+   apply:g=>{if(!g.gpu){g.eco+=2;g.gpu=true;}}},
+  {id:'elefante',ico:'🐘',nm:'Elefante',color:'#c4a87a',rol:'Memoria',
+   poder:'Poder: +2 Sociedad y +2 Conciencia. Rey de la sociedad.',
+   sombra:'No puede usar cartas de Impulso (muy directo para él).',
+   tip:'Combina con cartas de Emprendimiento para máximo impacto social.',
+   apply:g=>{g.sociedad+=2;g.conciencia+=2;}},
+  {id:'abeja',ico:'🐝',nm:'Abeja',color:'#ffc542',rol:'Cooperación',
+   poder:'Buff: siguiente carta jugada da +2 Sociedad extra.',
+   sombra:'-1 Eco si no jugaste ninguna carta esta ronda.',
+   tip:'Activa el buff ANTES de jugar tu carta más cara.',
+   apply:g=>{g._bee=true;}},
+  // NUEVO GUARDIÁN v0.2
+  {id:'jaguar',ico:'🐆',nm:'Jaguar',color:'#ff8844',rol:'Velocidad',
+   poder:'Gana +1 acción cada vez que el ecosistema sube. Máx. 5 acciones.',
+   sombra:'Pierde 2 eco si termina ronda sin usar todas sus acciones.',
+   tip:'Maximiza cada acción — el Jaguar no puede desperdiciar nada.',
+   apply:g=>{/* se aplica en renderAll cuando eco sube */}},
+];
+
+// CARTAS BASE — 16 cartas con mejor balance
+const CARDS=[
+  // Emprendimientos (costo bajo, efecto seguro)
+  {ico:'💧',nm:'Sistema de Agua',tp:'emp',color:'#3aa7ff',c:{a:2,e:1},txt:'+3 eco · +1 soc',ef:g=>{g.eco+=3;g.sociedad+=1;}},
+  {ico:'🌾',nm:'Agricultura Viva',tp:'emp',color:'#52c26d',c:{a:2,e:0},txt:'+2 eco · +1 agua',ef:g=>{g.eco+=2;g.agua+=1;}},
+  {ico:'☀️',nm:'Energía Limpia',tp:'emp',color:'#ffc542',c:{a:0,e:2},txt:'+2 soc · +1 con',ef:g=>{g.sociedad+=2;g.conciencia+=1;}},
+  {ico:'♻️',nm:'Reciclaje',tp:'proy',color:'#7ac7ff',c:{a:0,e:1},txt:'-1 karma · +2 soc',ef:g=>{g.karma=Math.max(0,g.karma-1);g.sociedad+=2;}},
+  {ico:'🌱',nm:'Red de Semillas',tp:'crea',color:'#59b870',c:{a:1,e:1},txt:'+2 eco · +1 con',ef:g=>{g.eco+=2;g.conciencia+=1;}},
+  // Conciencia
+  {ico:'📚',nm:'Educación',tp:'con',color:'#b280ff',c:{a:0,e:1},txt:'+3 conciencia',ef:g=>{g.conciencia+=3;}},
+  {ico:'🔮',nm:'Visión Clara',tp:'con',color:'#c88cff',c:{a:0,e:0},txt:'+1 con · -1 karma',ef:g=>{g.conciencia+=1;g.karma=Math.max(0,g.karma-1);}},
+  {ico:'🕊️',nm:'Mensaje de Paz',tp:'ali',color:'#ffffff',c:{a:0,e:0},txt:'+2 soc · -1 karma',ef:g=>{g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
+  // Impulso (gratis pero situacionales)
+  {ico:'💎',nm:'Reserva Oculta',tp:'imp',color:'#5ccfff',c:{a:0,e:0},txt:'+2 agua · +1 energía',ef:g=>{g.agua+=2;g.energia+=1;}},
+  {ico:'🔄',nm:'Economía Circular',tp:'crea',color:'#5ccfff',c:{a:1,e:1},txt:'+1 agua · +1 ener · +1 soc',ef:g=>{g.agua+=1;g.energia+=1;g.sociedad+=1;}},
+  // Alianzas (alto coste, alto impacto)
+  {ico:'✨',nm:'Santuario Guardián',tp:'ali',color:'#d78cff',c:{a:2,e:2},txt:'+4 eco · +2 con',ef:g=>{g.eco+=4;g.conciencia+=2;}},
+  {ico:'🌈',nm:'Visión del Futuro',tp:'ali',color:'#ff99ff',c:{a:1,e:1},txt:'+2 todo',ef:g=>{g.eco+=2;g.sociedad+=2;g.conciencia+=2;}},
+  // Nuevas v0.2
+  {ico:'🌊',nm:'Desalinización',tp:'emp',color:'#00c4ff',c:{a:0,e:2},txt:'+3 agua · +2 eco',ef:g=>{g.agua+=3;g.eco+=2;}},
+  {ico:'🏙️',nm:'Ciudad Circular',tp:'emp',color:'#8899ff',c:{a:2,e:2},txt:'+4 soc · +2 eco',ef:g=>{g.sociedad+=4;g.eco+=2;}},
+  {ico:'💫',nm:'Purificación',tp:'con',color:'#e0aaff',c:{a:1,e:0},txt:'-2 karma · +1 con',ef:g=>{g.karma=Math.max(0,g.karma-2);g.conciencia+=1;}},
+  {ico:'🌻',nm:'Granja Comunitaria',tp:'crea',color:'#ffdd44',c:{a:1,e:1},txt:'+1 agua · +2 soc · +1 eco',ef:g=>{g.agua+=1;g.sociedad+=2;g.eco+=1;}},
+];
+
+// CRISIS MEJORADAS con consecuencias más interesantes
+const CRISES=[
+  {ico:'🏭',title:'Contaminación Industrial',
+   narr:'Las chimeneas trabajan sin descanso. El horizonte se tiñe de gris sobre tu comunidad. El Consejo espera tu respuesta.',
+   fx:'Elige cómo responder al desafío industrial.',
+   A:{txt:'🌿 Invertir en filtros\n-2 energía · -1 eco · +1 soc',fn:g=>{g.energia=Math.max(0,g.energia-2);g.eco-=1;g.sociedad+=1;}},
+   B:{txt:'💀 Ignorarlo ahora\n-4 eco · +2 karma',fn:g=>{g.eco-=4;g.karma+=2;}}},
+  {ico:'🌊',title:'Derrame Tóxico',
+   narr:'Un derrame amenaza el río principal. Los peces mueren. La comunidad mira al Consejo esperando una decisión urgente.',
+   fx:'Cada minuto cuenta. El río no puede esperar.',
+   A:{txt:'💧 Limpiar con recursos\n-3 agua · +3 eco · +1 soc',fn:g=>{g.agua=Math.max(0,g.agua-3);g.eco+=3;g.sociedad+=1;}},
+   B:{txt:'🔀 Desviar el daño\n-2 eco · -2 soc · +1 karma',fn:g=>{g.eco-=2;g.sociedad=Math.max(0,g.sociedad-2);g.karma+=1;}}},
+  {ico:'🌡️',title:'Ola de Calor Extrema',
+   narr:'40 grados en la sombra. Los cultivos agonizando. Los ancianos en riesgo. La ciudad espera tu guía.',
+   fx:'La temperatura no baja. La decisión es tuya.',
+   A:{txt:'🌊 Activar reservas de agua\n-3 agua · +1 soc · +1 con',fn:g=>{g.agua=Math.max(0,g.agua-3);g.sociedad+=1;g.conciencia+=1;}},
+   B:{txt:'📢 Racionar sin explicar\n-3 soc · +2 karma',fn:g=>{g.sociedad=Math.max(0,g.sociedad-3);g.karma+=2;}}},
+  {ico:'🔥',title:'Incendio Forestal',
+   narr:'Las llamas devoran el bosque protector. Los guardianes del cerro piden ayuda. El humo oscurece el cielo.',
+   fx:'El fuego no espera negociaciones.',
+   A:{txt:'🚒 Combatir con todo\n-3 agua · -1 eco · +2 con',fn:g=>{g.agua=Math.max(0,g.agua-3);g.eco-=1;g.conciencia+=2;}},
+   B:{txt:'🏃 Evacuar y observar\n-4 eco · -1 soc',fn:g=>{g.eco-=4;g.sociedad=Math.max(0,g.sociedad-1);}}},
+  {ico:'💔',title:'Fractura Social',
+   narr:'Dos grupos enfrentados llevan semanas sin hablarse. La tensión amenaza con dividir para siempre a la comunidad.',
+   fx:'Tu decisión definirá qué clase de líder eres.',
+   A:{txt:'🤝 Mediación consciente\n-1 ener · +3 soc · +1 con',fn:g=>{g.energia=Math.max(0,g.energia-1);g.sociedad+=3;g.conciencia+=1;}},
+   B:{txt:'⚔️ Favorecer un bando\n+1 ener · -3 soc · +2 karma',fn:g=>{g.energia+=1;g.sociedad=Math.max(0,g.sociedad-3);g.karma+=2;}}},
+  // NUEVAS CRISIS v0.2
+  {ico:'🦠',title:'Plaga de Cultivos',
+   narr:'Una plaga desconocida devasta los campos. El sistema alimentario está en riesgo. Los guardianes de la tierra claman.',
+   fx:'La comida de miles de personas está en juego.',
+   A:{txt:'🌿 Respuesta orgánica\n-2 agua · -1 eco · +2 soc',fn:g=>{g.agua=Math.max(0,g.agua-2);g.eco-=1;g.sociedad+=2;}},
+   B:{txt:'☠️ Pesticidas masivos\n+1 agua · -3 eco · +1 karma',fn:g=>{g.agua+=1;g.eco-=3;g.karma+=1;}}},
+  {ico:'💸',title:'Crisis Económica Verde',
+   narr:'Los fondos para proyectos ecológicos se agotan. Inversores presionan por soluciones rápidas. El futuro cuelga de un hilo.',
+   fx:'Sin recursos, los proyectos mueren.',
+   A:{txt:'🌱 Buscar inversión ética\n-1 ener · +2 soc · +1 con',fn:g=>{g.energia=Math.max(0,g.energia-1);g.sociedad+=2;g.conciencia+=1;}},
+   B:{txt:'🏭 Aceptar capital sucio\n+3 ener · -2 eco · +2 karma',fn:g=>{g.energia+=3;g.eco-=2;g.karma+=2;}}},
+];
+
+const EVENTOS=[
+  {ico:'🌧️',nm:'Lluvia Abundante',narr:'El cielo llora de gratitud. Los ríos vuelven a cantar.',fx:'+2 Agua · +1 Energía',ef:g=>{g.agua+=2;g.energia+=1;}},
+  {ico:'🌸',nm:'Armonía Sutil',narr:'Los guardianes del bosque cantan en silencio. El equilibrio se restaura.',fx:'+2 Ecosistema',ef:g=>{g.eco+=2;}},
+  {ico:'💡',nm:'Innovación Limpia',narr:'Un inventor presenta su solución ante el Consejo. El mundo escucha.',fx:'+1 Sociedad · +1 Conciencia',ef:g=>{g.sociedad+=1;g.conciencia+=1;}},
+  {ico:'🌿',nm:'Llamado del Bosque',narr:'Los árboles ancestrales susurran su sabiduría al viento del amanecer.',fx:'+1 Eco · +1 Con',ef:g=>{g.eco+=1;g.conciencia+=1;}},
+  {ico:'🤝',nm:'Alianza Verde',narr:'Tres comunidades deciden unirse bajo el árbol sagrado del Consejo.',fx:'+3 Sociedad',ef:g=>{g.sociedad+=3;}},
+  {ico:'🌊',nm:'Marea de Conciencia',narr:'Una ola de despertar recorre el mundo. Millones abren los ojos.',fx:'+2 Con · +1 Soc',ef:g=>{g.conciencia+=2;g.sociedad+=1;}},
+  {ico:'☀️',nm:'Sequía Repentina',narr:'Las nubes abandonan el valle. La tierra reseca y agrietada.',fx:'-2 Agua',ef:g=>{g.agua=Math.max(0,g.agua-2);}},
+  {ico:'🛍️',nm:'Consumo Excesivo',narr:'Los centros comerciales repletos, los bosques vacíos. El karma acecha.',fx:'-1 Eco · +1 Karma',ef:g=>{g.eco=Math.max(0,g.eco-1);g.karma+=1;}},
+  {ico:'🎓',nm:'Congreso Ecológico',narr:'Líderes de todo el mundo se reúnen para compartir soluciones reales.',fx:'+2 Conciencia · +1 Soc',ef:g=>{g.conciencia+=2;g.sociedad+=1;}},
+  {ico:'🦋',nm:'Migración de Mariposas',narr:'Millones de mariposas cubren el cielo. La naturaleza celebra.',fx:'+2 Eco · +1 Con',ef:g=>{g.eco+=2;g.conciencia+=1;}},
+  {ico:'🌪️',nm:'Tormenta Imprevista',narr:'El viento sacude los cimientos. Pero después, el aire queda limpio.',fx:'-1 Eco · +2 Agua',ef:g=>{g.eco-=1;g.agua+=2;}},
+  {ico:'🤖',nm:'Tecnología Verde',narr:'Un nuevo algoritmo optimiza el uso de energía en toda la región.',fx:'+1 Energía · +1 Soc · +1 Con',ef:g=>{g.energia+=1;g.sociedad+=1;g.conciencia+=1;}},
+];
+
+const ROUND_NARR=[
+  {t:'El Mundo Despierta',n:'Los Guardianes del Consejo se reúnen por primera vez en cien años. El planeta observa, esperando. Tu primera decisión definirá el tono de todo lo que vendrá.'},
+  {t:'Las Raíces Hablan',n:'"Cada acción que tomes hoy, el mundo la recordará mañana." El árbol más anciano del Consejo te mira. Sus raíces conocen siglos de decisiones humanas.'},
+  {t:'El Equilibrio Tambalea',n:'Las consecuencias de tus primeras elecciones empiezan a manifestarse. El mundo no miente — muestra exactamente lo que sembraste.'},
+  {t:'La Prueba del Fuego',n:'Mitad del camino. Las fuerzas del caos se intensifican. Los fuertes se doblan; los sabios se adaptan. ¿Qué tipo de guardián eres?'},
+  {t:'El Momento Decisivo',n:'El mundo puede ir en muchas direcciones desde aquí. Cada acción tiene ahora un peso doble. La conciencia es tu escudo más poderoso.'},
+  {t:'La Última Gran Prueba',n:'El Consejo murmura. Los más sabios guardianes siempre encuentran su segundo aire en este momento. ¿Cuál es tu reserva oculta?'},
+  {t:'La Cuenta Regresiva',n:'Dos rondas. El futuro aún puede escribirse en verde, pero también puede colapsar en cenizas. No hay espacio para el ego ahora.'},
+  {t:'El Juicio Final',n:'Esta es tu última ronda. Los libros de historia del Consejo ya están abiertos. Lo que hagas en los próximos minutos se recordará por mil años.'},
+];
+
+// ══ ESTADO ══
+let ST={seeds:0,coleccion:{},nuevas:new Set()};
+function loadST(){try{const s=sessionStorage.getItem('ep_v2')||localStorage.getItem('ep_v2');if(s){const p=JSON.parse(s);ST.seeds=Math.max(0,p.seeds||0);ST.coleccion=p.coleccion||{};}}catch(e){}}
+function saveST(){ST.seeds=Math.max(0,ST.seeds);const d=JSON.stringify({seeds:ST.seeds,coleccion:ST.coleccion});sessionStorage.setItem('ep_v2',d);try{localStorage.setItem('ep_v2',d);}catch(e){}}
 loadST();
 
-let G={},selG=GUARDIANES[0],pendingCrisis=null;
-function sh(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById('s-'+id).classList.add('on');scrollTo(0,0);}
+let G={},selG=GUARDIANES[0],pendingCrisis=null,prevEco=50;
+
+// ══ NAVEGACIÓN ══
+function sh(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));const el=document.getElementById('s-'+id);if(el)el.classList.add('on');scrollTo(0,0);}
 function goIntro(){stopWorld();sh('intro');updateSeedsUI();}
 function goMenu(){buildMenu();sh('menu');}
-function updateSeedsUI(){['seeds-intro','seeds-game'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ST.seeds;});}
-function startGameAgain(){
-  // Reinicia con mismo guardián y comunidad
-  const comm=document.getElementById('comm-inp').value.trim()||G.comm||'Mi Comunidad';
-  document.getElementById('comm-inp').value=comm;
-  startGame();
-}
-function goRanking(){
-  // Guardar partida en ranking local
-  const pts=parseInt(document.getElementById('r-score').textContent)||0;
-  const entry={nm:G.g.nm+' '+G.g.ico,comm:G.comm||'Mi Comunidad',score:pts,eco:G.eco,ts:new Date().toLocaleDateString('es',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
-  try{const r=JSON.parse(localStorage.getItem('ep_ranking')||'[]');r.push(entry);r.sort((a,b)=>b.score-a.score);localStorage.setItem('ep_ranking',JSON.stringify(r.slice(0,20)));}catch(e){}
-  buildRankingScreen();sh('ranking');
-}
-function buildRankingScreen(){
-  const list=document.getElementById('rank-list');
-  let ranking=[];
-  try{ranking=JSON.parse(localStorage.getItem('ep_ranking')||'[]');}catch(e){}
-  if(!ranking.length){list.innerHTML='<div style="text-align:center;padding:2rem;color:var(--txts);font-size:.85rem;">Aún no hay partidas registradas.<br>¡Juega y sé el primero!</div>';return;}
-  const medals=['🥇','🥈','🥉'];
-  list.innerHTML=ranking.map((r,i)=>`
-    <div style="background:var(--bg3);border:1px solid ${i<3?'#ffc54244':'var(--border)'};border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;">
-      <div style="font-size:1.1rem;min-width:28px;">${medals[i]||i+1}</div>
-      <div style="flex:1;">
-        <div style="font-size:.84rem;font-weight:800;">${r.nm}</div>
-        <div style="font-size:.66rem;color:var(--txts);">${r.comm} · ${r.ts||''}</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:.9rem;font-weight:800;color:var(--gold2);">${r.score} pts</div>
-        <div style="font-size:.65rem;color:var(--green);">🌍 ${r.eco}/100</div>
-      </div>
-    </div>`).join('');
-}
+function goSobres(){sh('sobres');sobreTab('tienda');updateSeedsUI();}
+function goFBRanking(){sh('fbranking');fbTab('rank');renderRanking();}
 
+// ══ TUTORIAL ══
+const TUT=[
+  {ico:'🌍',title:'Bienvenido al Consejo',text:'Eres un Guardián del planeta. Tu misión: mantener el ecosistema vivo durante 8 rondas de decisiones que cambiarán el destino del mundo.',extra:{type:'hl',txt:'El juego termina si el Ecosistema llega a 0 — o ganas si mantienes el equilibrio hasta la ronda 8.'}},
+  {ico:'🎲',title:'El Dado de los Elementos',text:'Cada ronda lanzas un dado de 8 elementos. El resultado modifica el mundo automáticamente. Algunos te ayudan, otros te desafían.',extra:{type:'grid',items:[{ico:'💧',nm:'AGUA',desc:'+1 Eco +1 Agua'},{ico:'🌿',nm:'TIERRA',desc:'+2 Eco +1 Agua'},{ico:'🌀',nm:'AIRE',desc:'+1 Con +1 Energía'},{ico:'⭐',nm:'VACÍO',desc:'+2 Eco +1 Con'},{ico:'🔥',nm:'FUEGO',desc:'-2 Eco +2 Energía'},{ico:'⚡',nm:'CAOS',desc:'-2 Eco -1 Con +1 Karma'},{ico:'🌩️',nm:'TORMENTA',desc:'+2 Agua -1 Eco'},{ico:'🌅',nm:'AURORA',desc:'+1 a Todo'}]}},
+  {ico:'⚔️',title:'EGO o CONSCIENCIA',text:'Tras el dado, eliges tu camino. EGO da más energía pero acumula karma. CONSCIENCIA mejora el ecosistema y la conciencia. Ambos tienen consecuencias.',extra:{type:'grid',items:[{ico:'⚔️',nm:'EGO',desc:'+2 Energía\n+1 Karma\nMás recursos, más riesgo'},{ico:'🌀',nm:'CONSCIENCIA',desc:'+1 Eco\n+1 Conciencia\nEquilibrio sostenible'}]}},
+  {ico:'🎴',title:'Cartas de Proyecto',text:'Tienes cartas que representan emprendimientos ecológicos. Cuestan Agua y Energía, pero generan eco, sociedad y conciencia. ¡Combínalas bien!',extra:{type:'hl',txt:'Las cartas de costo 0 siempre son jugables — úsalas cada ronda para mantener el ritmo.'}},
+  {ico:'⚠️',title:'Las Crisis',text:'A veces el mundo enfrenta eventos inesperados. Tendrás que elegir entre dos respuestas. La opción A es más costosa pero siempre más ética. La B es tentadora pero peligrosa.',extra:{type:'hl',txt:'Karma acumulado = mundo que colapsa. Cada karma que evitas es una ronda ganada.'}},
+  {ico:'🏆',title:'Cómo Ganar',text:'Sobrevive las 8 rondas con el ecosistema por encima de 0. Tu puntaje final combina ecosistema, conciencia, sociedad y karma. La maestría está en el equilibrio.',extra:{type:'hl',txt:'Puntaje = Eco + Con×5 + Soc×7 - Karma×4. ¡La sociedad consciente vale más que acumular recursos!'}},
+  {ico:'🌱',title:'Semillas Guardianas',text:'Al jugar ganas Semillas — la moneda del Consejo. Con ellas abres Sobres de Cartas especiales que entran a tu mazo en futuras partidas. ¡Cada partida puede ser diferente!',extra:{type:'hl',txt:'Las cartas Legendarias que desbloquees hacen cada partida única. ¡Abre sobres y expande tu estrategia!'}},
+];
+let tutIdx=0;
+function startTutorial(){tutIdx=0;renderTut();sh('tutorial');}
+function renderTut(){
+  const step=TUT[tutIdx];
+  const dots=document.getElementById('tut-dots');
+  dots.innerHTML=TUT.map((_,i)=>`<div class="tut-dot ${i<tutIdx?'done':i===tutIdx?'on':''}"></div>`).join('');
+  document.getElementById('tut-lbl').textContent=`Paso ${tutIdx+1} de ${TUT.length}`;
+  document.getElementById('tut-prev').disabled=tutIdx===0;
+  document.getElementById('tut-next').textContent=tutIdx===TUT.length-1?'¡Empezar a jugar! →':'Siguiente →';
+  let extra='';
+  if(step.extra){
+    if(step.extra.type==='hl') extra=`<div class="tut-hl">💡 ${step.extra.txt}</div>`;
+    else if(step.extra.type==='grid') extra=`<div class="tut-grid">${step.extra.items.map(it=>`<div class="tut-item"><div class="ti-ico">${it.ico}</div><div class="ti-nm">${it.nm}</div><div class="ti-desc">${it.desc.replace(/\n/g,'<br>')}</div></div>`).join('')}</div>`;
+  }
+  document.getElementById('tut-body').innerHTML=`<div class="tut-card"><span class="tut-ico">${step.ico}</span><div class="tut-title">${step.title}</div><div class="tut-text">${step.text}</div></div>${extra}`;
+}
+function tutNext(){if(tutIdx<TUT.length-1){tutIdx++;renderTut();}else goMenu();}
+function tutPrev(){if(tutIdx>0){tutIdx--;renderTut();}}
+
+// ══ MENU ══
 function buildMenu(){
   document.getElementById('ggrid').innerHTML=GUARDIANES.map((g,i)=>`
     <div class="gcard${i===0?' sel':''}" id="gc-${g.id}" onclick="selG2('${g.id}')" style="${i===0?`border-color:${g.color};border-width:2px;`:''}">
-      <div class="gc-ico">${g.ico}</div><div class="gc-nm" style="color:${g.color}">${g.nm}</div><div class="gc-rl">${g.rol}</div>
+      <div class="gcard-ico">${g.ico}</div>
+      <div class="gcard-nm" style="color:${g.color}">${g.nm}</div>
+      <div class="gcard-rl">${g.rol}</div>
     </div>`).join('');
   updSP();
 }
@@ -701,179 +913,310 @@ function selG2(id){
   updSP();
 }
 function updSP(){
-  document.getElementById('spanel').innerHTML=`<strong style="color:${selG.color}">${selG.ico} ${selG.nm} — ${selG.rol}</strong><br><br><span style="color:var(--txts);font-size:.7rem;">⚡ PODER</span><br>${selG.poder}<br><br><span style="color:var(--txts);font-size:.7rem;">⚠️ SOMBRA</span><br><span style="color:#ff9a6a;">${selG.sombra}</span>`;
+  document.getElementById('spanel').innerHTML=`
+    <strong style="color:${selG.color}">${selG.ico} ${selG.nm} — ${selG.rol}</strong><br><br>
+    <span style="color:var(--txts);font-size:.7rem;">⚡ PODER</span><br>${selG.poder}<br><br>
+    <span style="color:var(--txts);font-size:.7rem;">⚠️ SOMBRA</span><br><span style="color:#ff9a6a;">${selG.sombra}</span><br><br>
+    <span style="color:var(--txts);font-size:.7rem;">💡 TIP</span><br><span style="color:#7ac4e8;">${selG.tip}</span>`;
 }
 
+// ══ INIT GAME ══
 function shuffle(a){const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;}
-
 function startGame(){
   const comm=document.getElementById('comm-inp').value.trim()||'Mi Comunidad';
-  G={g:selG,ronda:1,eco:50,conciencia:3,karma:0,sociedad:2,acciones:3,agua:4,energia:3,
-     deck:shuffle([...CARDS,...CARDS.slice(0,5)]),hand:[],disc:[],gpu:false,phase:'dice',
-     path:null,cpr:0,_bee:false,comm,commPts:0,seedsEarned:0};
-  for(let i=0;i<3;i++)draw();
+  // Cartas desbloqueadas de colección entran al mazo
+  const col=CARTAS_COL.filter(ct=>ST.coleccion[ct.id]>0);
+  const deck=shuffle([...CARDS,...CARDS.slice(0,5),...col]);
+  G={g:selG,maxR:MAX_RONDAS,ronda:1,
+     eco:50,conciencia:3,karma:0,sociedad:2,acciones:3,maxAcc:3,
+     agua:4,energia:3,deck,hand:[],disc:[],
+     gpu:false,phase:'dice',path:null,cpr:0,_bee:false,
+     comm,commPts:0,seedsEarned:0};
+  prevEco=50;
+  // Águila empieza con 4 acciones
+  if(G.g.id==='aguila')G.maxAcc=4;
+  for(let i=0;i<3;i++)drawCard();
   setPhase('dice');renderAll();
   setStatus('Bienvenido, Guardián '+G.g.nm+'. Lanza el dado para comenzar.');
-  showBanner('Ronda 1 de 6',ROUND_NARR[0].n.substring(0,55)+'...');
+  showBanner('Ronda 1 de '+MAX_RONDAS, ROUND_NARR[0].n.substring(0,60)+'...');
   showNarr(ROUND_NARR[0].t,ROUND_NARR[0].n);
-  drawWorld(G.eco,G.karma,G.sociedad,G.ronda);
+  drawWorld(G.eco,G.karma,G.sociedad,G.ronda,G.maxR);
   startWorld();sh('game');
 }
-function draw(){if(!G.deck.length){G.deck=shuffle([...G.disc]);G.disc=[];}if(G.deck.length&&G.hand.length<5)G.hand.push(G.deck.pop());}
+function drawCard(){
+  if(!G.deck.length){G.deck=shuffle([...G.disc]);G.disc=[];}
+  if(G.deck.length&&G.hand.length<5)G.hand.push(G.deck.pop());
+}
 
+// ══ FASES ══
 function setPhase(p){
   G.phase=p;
   const d=id=>document.getElementById(id);
-  d('dbtn').disabled=p!=='dice';d('p-ego').disabled=p!=='path';d('p-con').disabled=p!=='path';
-  d('a-col').disabled=p!=='action';d('a-pow').disabled=p!=='action'||G.g.id==='pulpo'||!G.g.apply;
-  d('a-drw').disabled=p!=='action';d('nextbtn').disabled=p!=='action';
+  d('dbtn').disabled=p!=='dice';
+  d('p-ego').disabled=p!=='path';d('p-con').disabled=p!=='path';
+  d('a-col').disabled=p!=='action';
+  d('a-pow').disabled=p!=='action'||G.g.id==='pulpo'||!G.g.apply;
+  d('a-drw').disabled=p!=='action';
+  d('nextbtn').disabled=p!=='action';
+  // Phase indicator
+  ['dice','path','action'].forEach((ph,i)=>{
+    const el=document.getElementById(['ps-dice','ps-path','ps-action'][i]);
+    if(!el)return;
+    const map={dice:0,path:1,action:2};
+    const cur=map[p];
+    el.className='phase-step'+(i===cur?' active':i<cur?' done':'');
+  });
 }
+
+// ══ DADO ══
 function rollDice(){
   let face=DICE[Math.floor(Math.random()*DICE.length)];
-  if(G.g.id==='aguila'&&!G.gpu){const r=G.g.applyRoll(G,face.id);if(r==='AIRE'){face=DICE.find(d=>d.id==='AIRE');setStatus('🦅 Águila transforma en AIRE.');}}
-  animDice(face,()=>{face.apply(G);if(G.g.id==='aguila')G.g.apply(G);clamp();renderAll();showNarr('El dado habla: '+face.label,face.narr);setStatus(face.label+' — '+face.fx);setPhase('path');fl(face.id==='CAOS'?'#440000':face.id==='FUEGO'?'#331100':'#002233');});
+  // Águila transforma elementos negativos
+  if(G.g.id==='aguila'&&!G.gpu){
+    const r=G.g.applyRoll(G,face.id);
+    if(r==='AIRE'){face=DICE.find(d=>d.id==='AIRE');setStatus('🦅 Águila transformó '+face.id+' en AIRE.');}
+  }
+  animDice(face,()=>{
+    prevEco=G.eco;
+    face.apply(G);
+    // Águila bonus acción
+    if(G.g.id==='aguila')G.g.apply(G);
+    clamp();renderAll();
+    showNarr('El dado habla: '+face.label,face.narr);
+    setStatus(face.label+' — '+face.fx);
+    setPhase('path');
+    fl(face.id==='CAOS'?'#440000':face.id==='FUEGO'?'#332200':face.id==='TORMENTA'?'#220044':'#002233');
+  });
 }
 function animDice(final,cb){
   document.getElementById('dbtn').disabled=true;
   const df=document.getElementById('dface');df.classList.add('spin');let n=0;
   const iv=setInterval(()=>{
     const r=DICE[Math.floor(Math.random()*DICE.length)];
-    document.getElementById('d-ico').textContent=r.ico;document.getElementById('d-el').textContent=r.label;document.getElementById('d-el').style.color=r.color;df.style.borderColor=r.color+'88';n++;
-    if(n>=10){clearInterval(iv);df.classList.remove('spin');document.getElementById('d-ico').textContent=final.ico;document.getElementById('d-el').textContent=final.label;document.getElementById('d-el').style.color=final.color;document.getElementById('d-fx').textContent=final.fx;df.style.borderColor=final.color;cb();}
-  },75);
+    document.getElementById('d-ico').textContent=r.ico;
+    document.getElementById('d-el').textContent=r.label;document.getElementById('d-el').style.color=r.color;
+    df.style.borderColor=r.color+'88';n++;
+    if(n>=12){clearInterval(iv);df.classList.remove('spin');
+      document.getElementById('d-ico').textContent=final.ico;
+      document.getElementById('d-el').textContent=final.label;document.getElementById('d-el').style.color=final.color;
+      document.getElementById('d-fx').textContent=final.fx;df.style.borderColor=final.color;cb();}
+  },70);
 }
+
+// ══ CAMINO ══
 function choosePath(p){
   G.path=p;
-  if(p==='ego'){G.energia+=2;G.karma+=1;if(G.g.id==='pulpo')G.conciencia+=1;setStatus('⚔️ EGO: +2 Energía, +1 Karma'+(G.g.id==='pulpo'?' · Pulpo +1 Con':'')+'.');}
-  else{G.eco+=1;G.conciencia+=1;if(G.g.id==='pulpo')G.conciencia+=1;setStatus('🌀 CONSCIENCIA: +1 Eco, +1 Conciencia'+(G.g.id==='pulpo'?' · Pulpo +1 Con extra':'')+'.');}
+  if(p==='ego'){
+    G.energia+=2;G.karma+=1;
+    if(G.g.id==='pulpo')G.conciencia+=1;
+    setStatus('⚔️ EGO: +2 Energía, +1 Karma'+(G.g.id==='pulpo'?' · Pulpo +1 Con':'')+'.');
+  } else {
+    G.eco+=1;G.conciencia+=1;
+    if(G.g.id==='pulpo')G.conciencia+=1;
+    setStatus('🌀 CONSCIENCIA: +1 Eco, +1 Conciencia'+(G.g.id==='pulpo'?' · Pulpo +1 Con extra':'')+'.');
+  }
   clamp();renderAll();setPhase('action');fl('#112244');
 }
+
+// ══ ACCIONES ══
 function act(t){
-  if(G.acciones<=0){setStatus('Sin acciones disponibles.');return;}
-  if(t==='col'){G.agua+=1;G.energia+=1;G.acciones--;setStatus('💎 +1 Agua, +1 Energía.');}
-  else if(t==='pow'){if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado.');}G.acciones--;}
-  else if(t==='drw'){draw();G.acciones--;setStatus('🃏 Robaste una carta.');}
+  if(G.acciones<=0){setStatus('Sin acciones disponibles este turno.');return;}
+  if(t==='col'){G.agua+=1;G.energia+=1;G.acciones--;setStatus('💎 Recolectaste: +1 Agua, +1 Energía.');}
+  else if(t==='pow'){if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');}G.acciones--;}
+  else if(t==='drw'){drawCard();G.acciones--;setStatus('🃏 Robaste una carta del mazo.');}
+  // Jaguar: +1 acción si eco subió
+  if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5){G.acciones++;setStatus(s=>s+' 🐆 +1 Acción Jaguar!');}
   clamp();renderAll();
 }
+
 function playCard(i){
-  const c=G.hand[i];if(!c)return;
-  if(G.agua<c.c.a||G.energia<c.c.e){setStatus('❌ Sin recursos para '+c.nm+'.');fl('#330000');return;}
+  const card=G.hand[i];if(!card)return;
+  // Elefante no puede jugar impulso
+  if(G.g.id==='elefante'&&card.tp==='imp'){setStatus('🐘 El Elefante no puede jugar cartas de Impulso.');return;}
+  if(G.agua<card.c.a||G.energia<card.c.e){setStatus('❌ Sin recursos para '+card.nm+'.');fl('#330000');return;}
   if(G.phase!=='action')return;
-  G.agua-=c.c.a;G.energia-=c.c.e;c.ef(G);
-  if(G.g.id==='tortuga')G.g.apply(G);if(G._bee){G.sociedad+=2;G._bee=false;}
-  G.disc.push(c);G.hand.splice(i,1);G.cpr++;G.commPts+=10;
-  clamp();renderAll();setStatus('✨ '+c.nm+' — '+c.txt);fl('#003311');
+  prevEco=G.eco;
+  G.agua-=card.c.a;G.energia-=card.c.e;
+  card.ef(G);
+  if(G.g.id==='tortuga')G.g.apply(G);
+  if(G._bee){G.sociedad+=2;G._bee=false;setStatus('🐝 Buff cooperación: +2 Sociedad extra!');}
+  G.disc.push(card);G.hand.splice(i,1);G.cpr++;G.commPts+=10;
+  // Jaguar bonus si eco subió
+  if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5)G.acciones++;
+  clamp();renderAll();setStatus('✨ '+card.nm+' — '+card.txt);fl('#003311');
 }
+
+// ══ SIGUIENTE RONDA ══
+function nextRound(){
+  // MEJORA: Decay escalado por ronda para crear tensión creciente
+  const decayBase=1;
+  const decayExtra=Math.floor(G.ronda/4); // rondas 4-8 más difíciles
+  G.eco-=(decayBase+decayExtra);
+  // Bonus por conciencia alta
+  if(G.conciencia>=7)G.eco+=2; // MEJORA: conciencia 7+ compensa más
+  else if(G.conciencia>=5)G.eco+=1;
+  // Abeja penaliza si no jugó
+  if(G.g.id==='abeja'&&G.cpr===0)G.eco-=2;
+  // Jaguar penaliza si no usó todas las acciones
+  if(G.g.id==='jaguar'&&G.acciones>0)G.eco-=G.acciones;
+  // Puntos comunitarios por estado
+  G.commPts+=G.eco>70?20:G.eco>50?12:G.eco>30?6:2;
+  // Karma overflow
+  if(G.karma>=3){
+    G.eco-=5;G.karma=0;fl('#550000');
+    setStatus('💀 Karma desbordado: -5 Ecosistema. Karma reiniciado.');
+  }
+  G.ronda++;G.gpu=false;G.path=null;
+  G.acciones=G.maxAcc;G.cpr=0;G._bee=false;prevEco=G.eco;
+  clamp();
+  if(G.eco<=0){endGame('colapso');return;}
+  if(G.ronda>G.maxR){endGame('fin');return;}
+  // Crisis (35%) o Evento normal
+  const hasCrisis=Math.random()<.35;
+  if(hasCrisis){triggerCrisis();return;}
+  const ev=EVENTOS[Math.floor(Math.random()*EVENTOS.length)];ev.ef(G);clamp();
+  showNarr(ev.ico+' '+ev.nm,ev.narr+' — '+ev.fx);
+  continueRound();
+}
+
+function continueRound(){
+  renderAll();setPhase('dice');
+  const rn=ROUND_NARR[Math.min(G.ronda-1,G.maxR-1)];
+  showBanner('Ronda '+G.ronda+' de '+G.maxR,rn.t);
+  showNarr(rn.t,rn.n);
+  setStatus('Ronda '+G.ronda+'. '+rn.t+'. Lanza el dado.');
+  // Celebración si eco > 80 en rondas tempranas
+  if(G.eco>=82&&G.ronda<=5){
+    celebrate('🌿','Ecosistema Floreciente','El mundo agradece tu guía. Los biomas se recuperan.','+30 🌱 Semillas');
+    earnSeeds(30);
+  }
+}
+
+// ══ CRISIS ══
 function triggerCrisis(){
   const cr=CRISES[Math.floor(Math.random()*CRISES.length)];pendingCrisis=cr;
-  document.getElementById('cr-ico').textContent=cr.ico;document.getElementById('cr-title').textContent=cr.title;
-  document.getElementById('cr-narr').textContent=cr.narr;document.getElementById('cr-fx').textContent=cr.fx;
-  document.getElementById('cr-a').textContent=cr.A.txt;document.getElementById('cr-b').textContent=cr.B.txt;
+  document.getElementById('cr-ico').textContent=cr.ico;
+  document.getElementById('cr-title').textContent=cr.title;
+  document.getElementById('cr-narr').textContent=cr.narr;
+  document.getElementById('cr-fx').textContent=cr.fx;
+  document.getElementById('cr-a').textContent=cr.A.txt;
+  document.getElementById('cr-b').textContent=cr.B.txt;
   document.getElementById('crisis-veil').classList.add('on');
 }
 function crisisChoice(opt){
   if(!pendingCrisis)return;
   if(opt==='A')pendingCrisis.A.fn(G);else pendingCrisis.B.fn(G);
-  G.commPts+=5;document.getElementById('crisis-veil').classList.remove('on');pendingCrisis=null;
-  clamp();renderAll();if(G.eco<=0){endGame('colapso');return;}continueRound();
+  G.commPts+=8;document.getElementById('crisis-veil').classList.remove('on');pendingCrisis=null;
+  clamp();renderAll();
+  if(G.eco<=0){endGame('colapso');return;}
+  continueRound();
 }
-function nextRound(){
-  G.eco-=1;if(G.conciencia>=5)G.eco+=1;if(G.g.id==='abeja'&&G.cpr===0)G.eco-=1;
-  G.commPts+=G.eco>60?15:G.eco>30?8:2;
-  if(G.karma>=3){G.eco-=4;G.karma=0;fl('#550000');setStatus('💀 Karma desbordado: -4 Eco');}
-  G.ronda++;G.gpu=false;G.path=null;G.acciones=3;G.cpr=0;G._bee=false;
-  clamp();if(G.eco<=0){endGame('colapso');return;}if(G.ronda>6){endGame('fin');return;}
-  if(Math.random()<.3){triggerCrisis();return;}
-  const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];ev.ef(G);clamp();
-  showNarr(ev.ico+' '+ev.nm,ev.narr+' — '+ev.fx);continueRound();
-}
-function continueRound(){
-  renderAll();setPhase('dice');
-  const rn=ROUND_NARR[Math.min(G.ronda-1,5)];
-  showBanner('Ronda '+G.ronda+' de 6',rn.t);showNarr(rn.t,rn.n);
-  setStatus('Ronda '+G.ronda+'. '+rn.t+'. Lanza el dado.');
-  if(G.eco>=80&&G.ronda<=4){celebrate('🌿','Ecosistema Floreciente','El mundo te agradece tu guía.','+30 🌱 Semillas Guardianas');earnaSeeds(30);}
-}
-function earnaSeeds(n){ST.seeds+=n;G.seedsEarned=(G.seedsEarned||0)+n;saveST();updateSeedsUI();}
+
+// ══ CELEBRATE ══
 function celebrate(ico,title,msg,seedsTxt){
-  const cel=document.getElementById('celebrate');
-  cel.style.display='block';
-  cel.style.pointerEvents='all';
-  document.getElementById('wb-ico').textContent=ico;
-  document.getElementById('wb-title').textContent=title;
-  document.getElementById('wb-msg').textContent=msg;
-  document.getElementById('wb-seeds').textContent=seedsTxt;
-  document.getElementById('win-banner').classList.add('on');
-  cel.classList.add('on');
+  document.getElementById('cel-ico').textContent=ico;
+  document.getElementById('cel-title').textContent=title;
+  document.getElementById('cel-msg').textContent=msg;
+  document.getElementById('cel-seeds').textContent=seedsTxt;
+  document.getElementById('celebrate').classList.add('on');
   spawnConfetti();
 }
-function closeCelebrate(){
-  document.getElementById('win-banner').classList.remove('on');
-  document.getElementById('celebrate').classList.remove('on');
-  document.getElementById('celebrate').style.display='none';
-  document.getElementById('celebrate').style.pointerEvents='none';
-}
+function closeCel(){document.getElementById('celebrate').classList.remove('on');}
+function handleCelClick(e){if(e.target===document.getElementById('celebrate'))closeCel();}
 function spawnConfetti(){
   const colors=['#5ccf9a','#ffc542','#a66cff','#6d8cff','#ff7a45','#fff'];
-  for(let i=0;i<32;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;top:-8px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.4}s;`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}
+  for(let i=0;i<35;i++){
+    const p=document.createElement('div');p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}%;top:-8px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;`;
+    document.body.appendChild(p);setTimeout(()=>p.remove(),5000);
+  }
 }
+
+// ══ CLAMP & RENDER ══
 function clamp(){
   G.eco=Math.min(100,Math.max(0,G.eco));G.conciencia=Math.min(10,Math.max(0,G.conciencia));
   G.karma=Math.min(10,Math.max(0,G.karma));G.sociedad=Math.min(10,Math.max(0,G.sociedad));
   G.agua=Math.min(99,Math.max(0,G.agua));G.energia=Math.min(99,Math.max(0,G.energia));
-  G.acciones=Math.min(4,Math.max(0,G.acciones));
+  G.acciones=Math.min(5,Math.max(0,G.acciones));
 }
-const TL={emprendimiento:'🌿 EMP',proyecto:'📋 PROY',conciencia:'🧠 CON',creación:'⚡ CREA',alianza:'🤝 ALIAN',impulso:'💥 IMP'};
+
 function renderAll(){
   const $=id=>document.getElementById(id);
-  $('tb-r').textContent='Ronda '+G.ronda+'/6';$('tb-g').textContent=G.g.ico+' '+G.g.nm;
+  $('tb-r').textContent='Ronda '+G.ronda+'/'+G.maxR;
+  $('tb-g').textContent=G.g.ico+' '+G.g.nm;
   const kc=G.karma>=2?'#ff5050':G.karma>=1?'#ff9a6a':'#5ccf9a';
   $('tb-k').textContent='☯ '+G.karma+'/3';$('tb-k').style.color=kc;
   $('cb-nm').textContent=G.comm;
-  const rank=G.commPts>200?'Guardián Supremo':G.commPts>100?'Guardián Verde':G.commPts>50?'Guardián en Ascenso':'Guardián en Formación';
+  const rank=G.commPts>300?'Guardián Supremo':G.commPts>150?'Guardián Verde':G.commPts>80?'Guardián en Ascenso':'Guardián en Formación';
   $('cb-rank').textContent=rank;$('cb-pts').textContent=G.commPts+' pts';
+  // Stats
   $('v-eco').textContent=G.eco;$('b-eco').style.width=G.eco+'%';
-  $('b-eco').style.background=G.eco>60?'#5ccf9a':G.eco>30?'#ffc542':'#ff5a5a';
-  const eb=document.getElementById('eco-box');if(G.eco<20)eb.classList.add('pulse-danger');else eb.classList.remove('pulse-danger');
+  $('b-eco').style.background=G.eco>65?'#5ccf9a':G.eco>40?'#ffc542':'#ff5a5a';
+  const eb=document.getElementById('eco-box');
+  if(G.eco<20)eb.classList.add('pulse-danger');else eb.classList.remove('pulse-danger');
   $('v-con').textContent=G.conciencia;$('b-con').style.width=(G.conciencia*10)+'%';
   $('v-soc').textContent=G.sociedad;$('b-soc').style.width=(G.sociedad*10)+'%';
-  $('v-acc').textContent=G.acciones;$('b-acc').style.width=((G.acciones/4)*100)+'%';
-  $('v-ag').textContent=G.agua;$('v-en').textContent=G.energia;$('v-dk').textContent=G.deck.length;$('v-ds').textContent=G.disc.length;
-  $('pow-ico').textContent=G.g.ico;$('a-pow').disabled=G.phase!=='action'||G.g.id==='pulpo'||!G.g.apply;
-  updateSeedsUI();
-  document.getElementById('hcnt').textContent=G.hand.length+' carta'+(G.hand.length!==1?'s':'');
+  $('v-acc').textContent=G.acciones;$('b-acc').style.width=((G.acciones/G.maxAcc)*100)+'%';
+  $('acc-max').textContent='/'+G.maxAcc;
+  $('v-ag').textContent=G.agua;$('v-en').textContent=G.energia;
+  $('v-dk').textContent=G.deck.length;$('v-ds').textContent=G.disc.length;
+  // Recursos escasos
+  document.getElementById('rbox-agua').className='rbox'+(G.agua<=1?' scarce':'');
+  document.getElementById('rbox-ener').className='rbox'+(G.energia<=1?' scarce':'');
+  $('pow-ico').textContent=G.g.ico;
+  $('a-pow').disabled=G.phase!=='action'||G.g.id==='pulpo'||!G.g.apply;
+  updateSeedsUI();renderHand();
+}
+
+const TL={emp:'🌿 EMP',proy:'📋 PROY',con:'🧠 CON',crea:'⚡ CREA',ali:'🤝 ALI',imp:'💥 IMP',
+          rara:'⭐ RARA',epica:'💜 ÉPICA',legendaria:'🏆 LEGEND',guardiana:'✨ SUPREMA'};
+function renderHand(){
   const hs=document.getElementById('hscroll');
-  if(!G.hand.length){hs.innerHTML='<div style="font-size:.72rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
-  hs.innerHTML=G.hand.map((c,i)=>{
-    const can=G.agua>=c.c.a&&G.energia>=c.c.e&&G.phase==='action';
-    const beeBdg=G._bee?'<div style="position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:#ffc542;display:flex;align-items:center;justify-content:center;font-size:.48rem;color:#07101d;font-weight:900;">🐝</div>':'';
-    return `<div class="card ${can?'':'off'}" onclick="${can?'playCard('+i+')':''}" style="border-color:${c.color}55;">${beeBdg}<div class="ct" style="color:${c.color}">${TL[c.tp]||c.tp}</div><div class="cico">${c.ico}</div><div class="cn">${c.nm}</div><div class="cfx">${c.txt}</div><div class="cco">💧${c.c.a} ⚡${c.c.e}</div></div>`;
+  document.getElementById('hcnt').textContent=G.hand.length+' carta'+(G.hand.length!==1?'s':'');
+  if(!G.hand.length){hs.innerHTML='<div style="font-size:.73rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
+  hs.innerHTML=G.hand.map((card,i)=>{
+    const can=G.agua>=card.c.a&&G.energia>=card.c.e&&G.phase==='action';
+    const isLeg=card.tp==='legendaria'||card.tp==='guardiana';
+    const beeBdg=G._bee?'<div style="position:absolute;top:-4px;right:-4px;width:13px;height:13px;border-radius:50%;background:#ffc542;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#07101d;font-weight:900;">🐝</div>':'';
+    const isNew=card._new?'<div class="card-new">NEW</div>':'';
+    return `<div class="card ${can?'':'off'} ${isLeg?'leg':''}" onclick="${can?'playCard('+i+')':''}" style="border-color:${card.color}55;">
+      ${beeBdg}${isNew}
+      <div class="ct" style="color:${card.color}">${TL[card.tp]||card.tp}</div>
+      <div class="cico">${card.ico}</div>
+      <div class="cn">${card.nm}</div>
+      <div class="cfx">${card.txt}</div>
+      <div class="cco">💧${card.c.a} ⚡${card.c.e}</div>
+    </div>`;
   }).join('');
 }
-function setStatus(m){document.getElementById('status').textContent=m;}
+
+function setStatus(m){document.getElementById('status').textContent=typeof m==='function'?m():m;}
 function showNarr(t,txt){document.getElementById('nt').textContent=t;document.getElementById('ntxt').textContent=txt;document.getElementById('narr').classList.add('on');}
 function fl(color){const f=document.getElementById('flash');f.style.background=color;f.style.opacity='.18';setTimeout(()=>f.style.opacity='0',200);}
-function showBanner(t,s){const b=document.getElementById('rbanner');document.getElementById('rbt').textContent=t;document.getElementById('rbs').textContent=s;b.classList.add('show');setTimeout(()=>b.classList.remove('show'),2500);}
+function showBanner(t,s){const b=document.getElementById('rbanner');document.getElementById('rbt').textContent=t;document.getElementById('rbs').textContent=s;b.classList.add('show');setTimeout(()=>b.classList.remove('show'),2800);}
 
+// ══ SEEDS ══
+function earnSeeds(n){ST.seeds=Math.max(0,ST.seeds+n);if(G)G.seedsEarned=(G.seedsEarned||0)+n;saveST();updateSeedsUI();}
+function updateSeedsUI(){
+  ['seeds-intro','seeds-game','seeds-store'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ST.seeds;});
+}
+
+// ══ FIN DE JUEGO ══
 function endGame(reason){
   stopWorld();
   const pts=G.eco+G.conciencia*5+G.sociedad*7-G.karma*4;
   let sg=20;if(G.eco>70)sg+=30;if(reason!=='colapso')sg+=50;
-  earnaSeeds(sg);
+  if(pts>=130)sg+=25;// Bonus por victoria suprema
+  earnSeeds(sg);
+  guardarRanking(pts);
   let ico,ttl,msg;
-  if(reason==='colapso'){ico='💀';ttl='Colapso del Ecosistema';msg='Las decisiones acumuladas quebraron el equilibrio. El mundo necesita un guardián más sabio.';}
-  else if(pts>=140){ico='🌟';ttl='Guardián Supremo';msg='Lograste el máximo equilibrio. La sociedad consciente que construiste será leyenda.';}
-  else if(pts>=110){ico='🌿';ttl='Sociedad Consciente';msg='El mundo florece gracias a tu guía. Conciencia y naturaleza caminan juntas.';}
-  else if(pts>=80){ico='⚖️';ttl='Equilibrio en Construcción';msg='La semilla del cambio está plantada. Con más práctica, el mundo florecerá.';}
-  else{ico='🌱';ttl='Despertar Temprano';msg='Cada error fue una lección. El Consejo te invita a intentarlo de nuevo.';}
-  // Solo celebrar ANTES de ir a result si fue victoria suprema
-  // El popup se auto-cierra a los 3s para no bloquear el feedback
-  if(reason!=='colapso'&&pts>=110){
-    setTimeout(()=>{
-      celebrate(ico,ttl,msg,'+'+sg+' 🌱 Semillas');
-      setTimeout(()=>closeCelebrate(),3000);
-    },300);
-  }
+  if(reason==='colapso'){ico='💀';ttl='Colapso del Ecosistema';msg='Las decisiones acumuladas quebraron el equilibrio del mundo. El Consejo llora. Pero el aprendizaje nunca muere.';}
+  else if(pts>=160){ico='🌟';ttl='Guardián Legendario';msg='Lograste el equilibrio perfecto. La sociedad consciente que construiste será estudiada por generaciones de Guardianes.';}
+  else if(pts>=130){ico='🌿';ttl='Guardián Supremo';msg='El mundo florece gracias a tu guía. Conciencia y naturaleza caminan juntas hacia el futuro.';}
+  else if(pts>=95){ico:'⚖️';ico='⚖️';ttl='Sociedad en Equilibrio';msg='Avanzaste con intención y sabiduría. La semilla del cambio está sembrada en terreno fértil.';}
+  else if(pts>=60){ico='🌱';ttl='Despertar Temprano';msg='Cada error fue una lección valiosa. El Consejo te invita a regresar con más sabiduría.';}
+  else{ico='⚠️';ttl='El Mundo Resiste';msg='El caos superó tu guía esta vez. La historia no termina aquí — regresa más preparado.';}
+  if(reason!=='colapso'){setTimeout(()=>celebrate(ico,ttl,msg,'+'+sg+' 🌱 Semillas Guardianas'),500);}
   sh('result');
   document.getElementById('r-ico').textContent=ico;document.getElementById('r-title').textContent=ttl;
   document.getElementById('r-msg').textContent=msg+' — '+G.g.ico+' '+G.g.nm;
@@ -881,67 +1224,221 @@ function endGame(reason){
   document.getElementById('r-soc').textContent=G.sociedad+'/10';document.getElementById('r-kar').textContent=G.karma;
   document.getElementById('r-seeds').textContent='+'+sg+' 🌱';
   document.getElementById('r-score').textContent=pts+' pts';
-  resetFeedback();
+  resetFB();
 }
 
-// ═══ FEEDBACK ═══
+// ══ RANKING ══
+function guardarRanking(pts){
+  try{
+    const e={nm:G.g.nm+' '+G.g.ico,comm:G.comm,score:pts,eco:G.eco,ronda:G.ronda,ts:new Date().toLocaleDateString('es',{day:'2-digit',month:'short'})};
+    const r=JSON.parse(localStorage.getItem('ep_ranking')||'[]');r.push(e);r.sort((a,b)=>b.score-a.score);
+    localStorage.setItem('ep_ranking',JSON.stringify(r.slice(0,20)));
+  }catch(e){}
+}
+function renderRanking(){
+  const lista=document.getElementById('rank-lista');if(!lista)return;
+  let r=[];try{r=JSON.parse(localStorage.getItem('ep_ranking')||'[]');}catch(e){}
+  if(!r.length){r=[{nm:'Tortuga 🐢',comm:'Comunidad Los Robles',score:215,eco:88},{nm:'Águila 🦅',comm:'Villa Verde',score:192,eco:79},{nm:'Lobo 🐺',comm:'Mi Comunidad',score:168,eco:67}];}
+  const medals=['🥇','🥈','🥉'];
+  lista.innerHTML=r.slice(0,12).map((e,i)=>`
+    <div class="rank-item" style="border-color:${i<3?'#ffc54244':'var(--border)'}">
+      <div class="rank-pos">${medals[i]||'#'+(i+1)}</div>
+      <div class="rank-info"><div class="rank-nm">${e.nm}</div><div class="rank-comm">${e.comm||'—'}</div></div>
+      <div style="text-align:right;"><div class="rank-pts">${e.score} pts</div><div class="rank-eco">🌍 ${e.eco}/100</div></div>
+    </div>`).join('');
+}
+
+// ══ FEEDBACK ══
 let FB={stars:0,cats:{fun:0,clarity:0,theme:0,design:0},tags:[],comment:''};
-const STAR_LABELS=['','😕 No fue mi juego','😐 Estuvo regular','🙂 Estuvo bien','😊 Me gustó mucho','🤩 ¡Increíble!'];
-
-function resetFeedback(){
+const STAR_LBL=['','😕 No fue lo mío','😐 Estuvo regular','🙂 Estuvo bien','😊 Me gustó mucho','🤩 ¡Increíble!'];
+function resetFB(){
   FB={stars:0,cats:{fun:0,clarity:0,theme:0,design:0},tags:[],comment:''};
-  // Asegurar que celebrate está cerrado
-  const cel=document.getElementById('celebrate');
-  cel.classList.remove('on');
-  cel.style.display='none';
-  cel.style.pointerEvents='none';
-  document.getElementById('win-banner').classList.remove('on');
-  document.getElementById('fb-sent').style.display='none';
-  document.getElementById('fb-comment').value='';
-  document.getElementById('star-label').textContent='';
+  document.getElementById('star-lbl').textContent='';
   document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
-  ['fun','clarity','theme','design'].forEach(k=>{document.querySelectorAll(`#cat-${k} .fbc-star`).forEach(s=>s.classList.remove('on'));});
+  ['fun','clarity','theme','design'].forEach(k=>document.querySelectorAll('#cat-'+k+' .fbc-star').forEach(s=>s.classList.remove('on')));
   document.querySelectorAll('.fb-tag').forEach(t=>t.classList.remove('on'));
-  updateFBProgress();
+  document.getElementById('fb-comment').value='';
+  document.getElementById('fb-sent').style.display='none';
+  document.getElementById('feedback-card').querySelectorAll('.fb-title,.fb-sub,#stars-main,.fb-cats,.fb-tags,textarea,.btn,.ghost').forEach(el=>el.style.display='');
 }
-function rateStar(n){
-  FB.stars=n;
-  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));
-  document.getElementById('star-label').textContent=STAR_LABELS[n];
-  updateFBProgress();
-}
-function rateCat(cat,n){
-  FB.cats[cat]=n;
-  document.querySelectorAll(`#cat-${cat} .fbc-star`).forEach((s,i)=>s.classList.toggle('on',i<n));
-  updateFBProgress();
-}
-function toggleTag(el,tag){
-  el.classList.toggle('on');
-  if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}
-  else FB.tags=FB.tags.filter(t=>t!==tag);
-  updateFBProgress();
-}
-function updateFBProgress(){
-  const total=6;
-  let done=0;
-  if(FB.stars>0)done++;
-  if(FB.cats.fun>0)done++;if(FB.cats.clarity>0)done++;if(FB.cats.theme>0)done++;if(FB.cats.design>0)done++;
-  if(FB.tags.length>0)done++;
-  const pct=Math.round((done/total)*100);
-  document.getElementById('fb-prog-fill').style.width=pct+'%';
-  document.getElementById('fb-prog-lbl').textContent=pct+'% completado';
-}
-function submitFeedback(){
+function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));document.getElementById('star-lbl').textContent=STAR_LBL[n];}
+function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
+function submitFB(){
   FB.comment=document.getElementById('fb-comment').value;
-  const data={...FB,guardian:G.g.nm,eco:G.eco,ronda:G.ronda,pts:document.getElementById('r-score').textContent,ts:new Date().toISOString()};
-  console.log('📊 ECO-PODERES Demo Feedback:',JSON.stringify(data,null,2));
+  const data={...FB,guardian:G.g.nm,eco:G.eco,ronda:G.ronda,score:document.getElementById('r-score').textContent,ts:new Date().toISOString()};
   try{const prev=JSON.parse(localStorage.getItem('ep_feedback')||'[]');prev.push(data);localStorage.setItem('ep_feedback',JSON.stringify(prev.slice(-50)));}catch(e){}
-  earnaSeeds(10);
-  document.getElementById('feedback-card').querySelectorAll('.gbtn, .stars-row, .fb-cats, .fb-tags, .fb-textarea, .progress-bar-h, .fb-progress-lbl').forEach(el=>el.style.display='none');
+  earnSeeds(10);
+  document.getElementById('feedback-card').querySelectorAll(':not(.fb-sent)').forEach(el=>{if(el.id!=='fb-sent')el.style.opacity='0';el.style.pointerEvents='none';});
   document.getElementById('fb-sent').style.display='block';
 }
-function skipFeedback(){goMenu();}
 
+function fbTab(tab){
+  const rv=document.getElementById('fbview-rank'),fv=document.getElementById('fbview-fb');
+  const bt=document.getElementById('fbtab-rank'),bf=document.getElementById('fbtab-fb');
+  if(tab==='rank'){rv.style.display='flex';fv.style.display='none';bt.className='tab on';bf.className='tab';renderRanking();}
+  else{rv.style.display='none';fv.style.display='flex';bf.className='tab on';bt.className='tab';renderFeedbackList();}
+}
+function renderFeedbackList(){
+  const lista=document.getElementById('fb-lista');if(!lista)return;
+  let fbs=[];try{fbs=JSON.parse(localStorage.getItem('ep_feedback')||'[]');}catch(e){}
+  if(!fbs.length){lista.innerHTML='<div style="text-align:center;padding:2rem;color:var(--txts);font-size:.82rem;">Aún no hay feedback en este dispositivo.<br><span style="color:var(--green);">Juega y deja tu opinión 🌿</span></div>';return;}
+  const st=n=>'⭐'.repeat(n)+'☆'.repeat(5-n);
+  lista.innerHTML=fbs.slice(-10).reverse().map(f=>`
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <div style="font-size:.78rem;font-weight:800;">${f.guardian||'?'} · ${f.score||'?'}</div>
+        <div style="font-size:.85rem;">${st(f.stars||0)}</div>
+      </div>
+      ${f.tags&&f.tags.length?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;">${f.tags.map(t=>`<span style="font-size:.6rem;padding:2px 7px;border-radius:10px;background:#1a1a3a;color:var(--purple);">${t}</span>`).join('')}</div>`:''}
+      ${f.comment?`<div style="font-size:.75rem;color:#aac4e8;font-style:italic;">"${f.comment}"</div>`:''}
+    </div>`).join('');
+}
+
+// ══ SISTEMA DE SOBRES ══
+const CARTAS_COL=[
+  {id:'r01',ico:'☀️',nm:'Energía Limpia+',tp:'rara',color:'#ffd700',c:{a:0,e:1},txt:'+2 soc · +1 con · +1 eco',ef:g=>{g.sociedad+=2;g.conciencia+=1;g.eco+=1;}},
+  {id:'r02',ico:'🌊',nm:'Ciclo del Agua',tp:'rara',color:'#00aaff',c:{a:1,e:0},txt:'+2 eco · +2 agua',ef:g=>{g.eco+=2;g.agua+=2;}},
+  {id:'r03',ico:'🌿',nm:'Agroecología',tp:'rara',color:'#52c26d',c:{a:1,e:1},txt:'+3 eco · +1 agua',ef:g=>{g.eco+=3;g.agua+=1;}},
+  {id:'r04',ico:'🚲',nm:'Movilidad Verde',tp:'rara',color:'#88dd88',c:{a:0,e:1},txt:'+2 soc · -1 karma',ef:g=>{g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
+  {id:'e01',ico:'🌊',nm:'Desalinización Solar',tp:'epica',color:'#00c4ff',c:{a:0,e:2},txt:'+3 agua · +2 eco · +1 soc',ef:g=>{g.agua+=3;g.eco+=2;g.sociedad+=1;}},
+  {id:'e02',ico:'🏙️',nm:'Ciudad Circular',tp:'epica',color:'#8899ff',c:{a:2,e:2},txt:'+4 soc · +2 eco',ef:g=>{g.sociedad+=4;g.eco+=2;}},
+  {id:'e03',ico:'🌬️',nm:'Parque Eólico',tp:'epica',color:'#a0d8ff',c:{a:0,e:1},txt:'+3 energía · +2 eco',ef:g=>{g.energia+=3;g.eco+=2;}},
+  {id:'e04',ico:'🌈',nm:'Visión del Futuro',tp:'epica',color:'#ff99ff',c:{a:1,e:1},txt:'+2 todo',ef:g=>{g.eco+=2;g.sociedad+=2;g.conciencia+=2;}},
+  {id:'e05',ico:'🌻',nm:'Granja Comunitaria',tp:'epica',color:'#ffdd44',c:{a:2,e:1},txt:'+2 agua · +2 soc',ef:g=>{g.agua+=2;g.sociedad+=2;}},
+  {id:'l01',ico:'🌳',nm:'Árbol Milenario',tp:'legendaria',color:'#2aff88',c:{a:1,e:1},txt:'+5 eco · +3 con · -2 karma',ef:g=>{g.eco+=5;g.conciencia+=3;g.karma=Math.max(0,g.karma-2);}},
+  {id:'l02',ico:'🐋',nm:'Canción de la Ballena',tp:'legendaria',color:'#44aaff',c:{a:2,e:0},txt:'+4 eco · +3 soc · +2 agua',ef:g=>{g.eco+=4;g.sociedad+=3;g.agua+=2;}},
+  {id:'l03',ico:'🌅',nm:'Amanecer del Consejo',tp:'legendaria',color:'#ffcc44',c:{a:1,e:1},txt:'+4 eco · +4 con · +2 soc',ef:g=>{g.eco+=4;g.conciencia+=4;g.sociedad+=2;}},
+  {id:'g01',ico:'🦋',nm:'Metamorfosis',tp:'guardiana',color:'#ff44ff',c:{a:0,e:0},txt:'+6 eco · +5 con · +4 soc',ef:g=>{g.eco+=6;g.conciencia+=5;g.sociedad+=4;}},
+  {id:'g02',ico:'🌍',nm:'Gaia Despierta',tp:'guardiana',color:'#ff44ff',c:{a:0,e:0},txt:'+8 eco · karma=0 · +5 soc',ef:g=>{g.eco+=8;g.karma=0;g.sociedad+=5;}}
+];
+const SOBRES_DEF={
+  bronce: {nm:'Bronce', ico:'📦',cost:30, borde:'#cd7f32',bg:'linear-gradient(155deg,#3d1f05,#7a3a0a)',sombra:'rgba(205,127,50,.5)', garantia:'rara',      pool:['rara','rara'],           pesos:[1,0]},
+  plata:  {nm:'Plata',  ico:'🥈',cost:70, borde:'#a8a9ad',bg:'linear-gradient(155deg,#1a2030,#2a3050)',sombra:'rgba(168,169,173,.4)',garantia:'epica',     pool:['rara','epica'],          pesos:[.4,.6]},
+  oro:    {nm:'Oro',    ico:'🏆',cost:150,borde:'#ffd700',bg:'linear-gradient(155deg,#2a2000,#4a3800)',sombra:'rgba(255,215,0,.55)', garantia:'legendaria',pool:['epica','legendaria'],   pesos:[.5,.5]},
+  suprema:{nm:'Suprema',ico:'✨',cost:300,borde:'#9933ff',bg:'linear-gradient(155deg,#1a0030,#30006a)',sombra:'rgba(153,51,255,.65)',garantia:'guardiana', pool:['legendaria','guardiana'],pesos:[.6,.4]}
+};
+const RAREZA_INFO={
+  rara:      {color:'#5ccf9a',label:'Rara',       bg:'#0a2a1a'},
+  epica:     {color:'#a66cff',label:'Épica',       bg:'#150d2e'},
+  legendaria:{color:'#ffd700',label:'Legendaria',  bg:'#1a1200'},
+  guardiana: {color:'#ff44ff',label:'Suprema',     bg:'#0d001a'}
+};
+let sobrePendiente=null;
+
+function sobreTab(tab){
+  const stBody=document.getElementById('stab-tienda-body');
+  const scBody=document.getElementById('stab-col-body');
+  const stBtn=document.getElementById('stab-tienda');
+  const scBtn=document.getElementById('stab-col');
+  if(tab==='tienda'){
+    stBody.style.display='flex';scBody.style.display='none';
+    stBtn.className='tab on';scBtn.className='tab';
+  } else {
+    stBody.style.display='none';scBody.style.display='flex';
+    scBtn.className='tab on';stBtn.className='tab';
+    renderColeccion();
+  }
+}
+
+function iniciarCompra(tipo){
+  const def=SOBRES_DEF[tipo];if(!def)return;
+  if(ST.seeds<def.cost){
+    const el=document.getElementById('seeds-store');
+    if(el){el.style.color='#ff5a5a';setTimeout(()=>el.style.color='var(--green)',800);}
+    return;
+  }
+  sobrePendiente=tipo;
+  // Configurar pantalla de apertura
+  const btn=document.getElementById('btn-abrir-sobre');
+  if(btn){btn.style.background=def.bg;btn.style.borderColor=def.borde;btn.style.boxShadow=`0 0 50px ${def.sombra},0 0 20px ${def.sombra}`;}
+  document.getElementById('ap-ico').textContent=def.ico;
+  document.getElementById('ap-nm').textContent=def.nm;
+  document.getElementById('ap-lbl').textContent='Sobre '+def.nm;
+  document.getElementById('ap-titulo').textContent='¡Toca para descubrir tus cartas!';
+  sh('apertura');
+  // Adjuntar eventos táctiles explícitamente
+  setTimeout(()=>{
+    const b=document.getElementById('btn-abrir-sobre');
+    if(!b)return;
+    const fresh=b.cloneNode(true);b.parentNode.replaceChild(fresh,b);
+    fresh.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();ejecutarApertura();});
+    fresh.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();ejecutarApertura();},{passive:false});
+  },150);
+}
+
+function ejecutarApertura(){
+  if(!sobrePendiente)return;
+  const def=SOBRES_DEF[sobrePendiente];if(!def)return;
+  if(ST.seeds<def.cost){goSobres();return;}
+  ST.seeds=Math.max(0,ST.seeds-def.cost);saveST();updateSeedsUI();
+  const c1=_cartaRareza(def.garantia);
+  const r2=_ponderado(def.pool,def.pesos);
+  const c2=_cartaRareza(r2);
+  const cartas=[c1,c2];
+  cartas.forEach(ct=>{ST.coleccion[ct.id]=(ST.coleccion[ct.id]||0)+1;ST.nuevas.add(ct.id);});
+  saveST();
+  const esLeg=def.garantia==='guardiana'?'✨ ¡CARTA GUARDIANA SUPREMA!':def.garantia==='legendaria'?'🏆 ¡Legendaria obtenida!':'🎴 ¡Cartas obtenidas!';
+  document.getElementById('reveal-title').textContent=esLeg;
+  _renderReveal(cartas);sh('reveal');
+  if(def.garantia==='legendaria'||def.garantia==='guardiana')spawnConfetti();
+  sobrePendiente=null;
+}
+
+function cerrarApertura(){sh('sobres');sobreTab('coleccion');}
+
+function _renderReveal(cartas){
+  const cont=document.getElementById('reveal-cards');if(!cont)return;
+  cont.innerHTML='';
+  cartas.forEach((ct,i)=>{
+    const ri=RAREZA_INFO[ct.tp]||{color:'#7a9abf',label:'Carta',bg:'#0d1a2e'};
+    const div=document.createElement('div');
+    div.className='reveal-card';
+    div.style.cssText=`background:${ri.bg};border-color:${ri.color};box-shadow:0 0 20px ${ri.color}55;`;
+    div.innerHTML=`<div class="rc-rar" style="color:${ri.color}">${ri.label}</div>
+      <div class="rc-ico">${ct.ico}</div>
+      <div class="rc-nm">${ct.nm}</div>
+      <div class="rc-fx">${ct.txt}</div>`;
+    cont.appendChild(div);
+    setTimeout(()=>div.classList.add('flipped'),300+i*500);
+  });
+}
+
+function renderColeccion(){
+  const grid=document.getElementById('col-grid');if(!grid)return;
+  const unicas=Object.keys(ST.coleccion).filter(id=>ST.coleccion[id]>0).length;
+  const total=CARTAS_COL.length;
+  const el1=document.getElementById('col-count'),el2=document.getElementById('col-prog');
+  if(el1)el1.textContent=unicas+' únicas';
+  if(el2)el2.textContent=unicas+'/'+total+' desbloqueadas';
+  const ord={guardiana:0,legendaria:1,epica:2,rara:3};
+  const sorted=[...CARTAS_COL].sort((a,b)=>(ord[a.tp]||4)-(ord[b.tp]||4));
+  grid.innerHTML=sorted.map(ct=>{
+    const tiene=(ST.coleccion[ct.id]||0)>0;
+    const ri=RAREZA_INFO[ct.tp]||{color:'#7a9abf'};
+    const esNueva=ST.nuevas.has(ct.id)&&tiene;
+    return `<div class="col-card ${tiene?'':'locked'} ${esNueva?'new':''}" style="border-color:${tiene?ri.color+'55':'var(--border)'};">
+      ${(ST.coleccion[ct.id]||0)>1?`<div class="cc-cnt">x${ST.coleccion[ct.id]}</div>`:''}
+      <div class="cc-ico">${tiene?ct.ico:'🔒'}</div>
+      <div class="cc-nm">${ct.nm}</div>
+      <div class="cc-rar" style="color:${ri.color};">${ri.label}</div>
+    </div>`;
+  }).join('');
+  ST.nuevas.clear();
+}
+
+function _cartaRareza(rareza){
+  const pool=CARTAS_COL.filter(ct=>ct.tp===rareza);
+  if(!pool.length)return CARTAS_COL[0];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function _ponderado(items,pesos){
+  const tot=pesos.reduce((a,b)=>a+b,0);let r=Math.random()*tot;
+  for(let i=0;i<items.length-1;i++){r-=pesos[i];if(r<=0)return items[i];}
+  return items[items.length-1];
+}
+
+// INIT
 updateSeedsUI();
 </script>
 </body>
