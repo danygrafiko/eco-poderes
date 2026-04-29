@@ -460,7 +460,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="acts">
     <button class="abtn" id="a-col" onclick="act('col')" disabled><span class="ai">💎</span>Recolectar</button>
     <button class="abtn" id="a-pow" onclick="act('pow')" disabled><span class="ai" id="pow-ico">⚡</span>Poder</button>
-    <button class="abtn" id="a-drw" onclick="act('drw')" disabled><span class="ai">🃏</span><span id="drw-lbl">Robar</span></button>
+    <button class="abtn" id="a-drw" onclick="act('drw')" disabled><span class="ai">🃏</span>Robar</button>
   </div>
   <div class="hwrap">
     <div class="hhdr"><div class="hl">Proyectos en mano</div><div class="hc" id="hcnt">0 cartas</div></div>
@@ -488,8 +488,8 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     <div style="display:flex;gap:8px;margin-top:4px;">
       <button class="btn sec" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">🔄 Jugar</button>
       <button class="btn prim" onclick="goSobres()" style="flex:1;padding:10px;font-size:.82rem;">🌱 Sobres</button>
-      <button class="btn ghost" onclick="goFBRanking()" style="flex:1;padding:10px;font-size:.78rem;">🏆 Ranking</button>
     </div>
+    <button onclick="goAccionReal()" style="width:100%;padding:11px;border-radius:50px;border:1px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);margin-top:4px;touch-action:manipulation;">🌍 Comprometer Acción Eco Real (+100 🌱)</button>
   </div>
   <div class="feedback-card">
     <div class="fb-title">¿Qué te pareció la demo?</div>
@@ -528,7 +528,8 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
       <span class="fb-sent-ico">🌱</span>
       <div class="fb-sent-title">¡Gracias, Guardián!</div>
       <div class="fb-sent-msg">Tu opinión construye un juego mejor.<br><br><strong style="color:var(--green);">+10 🌱 Semillas de Gratitud</strong></div>
-      <button class="btn prim" onclick="goMenu()" style="margin-top:12px;">🌿 Jugar de nuevo</button>
+      <button class="btn sec" onclick="goFBRanking()" style="margin-top:12px;">🏆 Ver feedback de otros</button>
+      <button class="btn prim" onclick="goIntro()" style="margin-top:8px;">Jugar de nuevo</button>
     </div>
   </div>
 </div>
@@ -598,9 +599,9 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <button class="btn prim" onclick="cerrarApertura()" style="max-width:300px;">✅ Añadir a colección</button>
   <div style="display:flex;gap:8px;max-width:300px;width:100%;">
     <button class="btn sec" onclick="goSobres()" style="flex:1;padding:10px;font-size:.8rem;">🏪 Más sobres</button>
-    <button class="btn ghost" onclick="irAFeedback()" style="flex:1;padding:10px;font-size:.8rem;">💬 Dar feedback</button>
+    <button class="btn ghost" onclick="irAFeedback()" style="flex:1;padding:10px;font-size:.8rem;">💬 Feedback</button>
   </div>
-  <button onclick="goAccionReal()" style="max-width:300px;width:100%;padding:11px;border-radius:50px;border:1px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);">🌍 Comprometer Acción Eco Real</button>
+  <button onclick="goAccionReal()" style="max-width:300px;width:100%;padding:11px;border-radius:50px;border:1px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">🌍 Acción Eco Real (+100 🌱)</button>
 </div>
 
 <!-- RANKING & FEEDBACK -->
@@ -949,12 +950,9 @@ function startGame(){
   startWorld();sh('game');
 }
 function drawCard(){
-  if(G.hand.length>=5) return; // FIX: límite duro de 5 cartas
-  if(!G.deck.length){
-    if(!G.disc.length){setStatus('⚠️ Mazo y descarte vacíos.');return;}
-    G.deck=shuffle([...G.disc]);G.disc=[];
-  }
-  if(G.deck.length) G.hand.push(G.deck.pop());
+  if(G.hand.length>=5)return;
+  if(!G.deck.length){if(!G.disc.length)return;G.deck=shuffle([...G.disc]);G.disc=[];}
+  if(G.deck.length)G.hand.push(G.deck.pop());
 }
 
 // ══ FASES ══
@@ -965,7 +963,7 @@ function setPhase(p){
   d('p-ego').disabled=p!=='path';d('p-con').disabled=p!=='path';
   d('a-col').disabled=p!=='action';
   d('a-pow').disabled=p!=='action'||G.g.id==='pulpo'||!G.g.apply;
-  d('a-drw').disabled=p!=='action';
+  d('a-drw').disabled=p!=='action'||G.hand.length>=5;
   d('nextbtn').disabled=p!=='action';
   // Phase indicator
   ['dice','path','action'].forEach((ph,i)=>{
@@ -1028,31 +1026,13 @@ function choosePath(p){
 }
 
 // ══ ACCIONES ══
-
-function cardCostA(card){return card.ca!==undefined?card.ca:(card.c?cardCostA(card):0);}
-function cardCostE(card){return card.ce!==undefined?card.ce:(card.c?cardCostE(card):0);}
 function act(t){
   if(G.acciones<=0){setStatus('Sin acciones disponibles este turno.');return;}
-  if(t==='col'){
-    G.agua+=1;G.energia+=1;G.acciones--;
-    setStatus('💎 Recolectaste: +1 Agua, +1 Energía.');
-  }
-  else if(t==='pow'){
-    if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');}
-    G.acciones--;
-  }
-  else if(t==='drw'){
-    // FIX: Límite de mano = 5, y robar cuesta 1 acción
-    if(G.hand.length>=5){setStatus('⚠️ Mano llena (máx 5 cartas). Juega una primero.');return;}
-    drawCard();
-    G.acciones--;
-    setStatus('🃏 Robaste una carta. ('+G.hand.length+'/5 en mano)');
-  }
+  if(t==='col'){G.agua+=1;G.energia+=1;G.acciones--;setStatus('💎 Recolectaste: +1 Agua, +1 Energía.');}
+  else if(t==='pow'){if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');}G.acciones--;}
+  else if(t==='drw'){if(G.hand.length>=5){setStatus('⚠️ Mano llena (5/5). Juega una carta primero.');return;}drawCard();G.acciones--;setStatus('🃏 Robaste una carta. ('+G.hand.length+'/5)');}
   // Jaguar: +1 acción si eco subió
-  if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5){
-    G.acciones++;
-    setStatus('🐆 +1 Acción Jaguar por subir ecosistema.');
-  }
+  if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5){G.acciones++;setStatus(s=>s+' 🐆 +1 Acción Jaguar!');}
   clamp();renderAll();
 }
 
@@ -1075,7 +1055,7 @@ function playCard(i){
 
 // ══ SIGUIENTE RONDA ══
 function nextRound(){
-  if(G.ronda>G.maxR||G.eco<=0)return; // Guard doble
+  if(G.ronda>G.maxR||G.eco<=0)return;
   // MEJORA: Decay escalado por ronda para crear tensión creciente
   const decayBase=1;
   const decayExtra=Math.floor(G.ronda/4); // rondas 4-8 más difíciles
@@ -1193,24 +1173,27 @@ function renderAll(){
   document.getElementById('rbox-ener').className='rbox'+(G.energia<=1?' scarce':'');
   $('pow-ico').textContent=G.g.ico;
   $('a-pow').disabled=G.phase!=='action'||G.g.id==='pulpo'||!G.g.apply;
-  // FIX: Deshabilitar robo si mano llena
-  const aDrw=document.getElementById('a-drw');
-  if(aDrw) aDrw.disabled=G.phase!=='action'||G.hand.length>=5;
-  const drwLbl=document.getElementById('drw-lbl');
-  if(drwLbl) drwLbl.textContent=G.hand.length>=5?'Mano llena':'Robar';
   updateSeedsUI();renderHand();
 }
 
 const TL={emp:'🌿 EMP',proy:'📋 PROY',con:'🧠 CON',crea:'⚡ CREA',ali:'🤝 ALI',imp:'💥 IMP',
           rara:'⭐ RARA',epica:'💜 ÉPICA',legendaria:'🏆 LEGEND',guardiana:'✨ SUPREMA'};
+
+function cardCostA(card){
+  if(!card)return 0;
+  if(card.ca!==undefined)return card.ca;
+  if(card.c&&card.c.a!==undefined)return card.c.a;
+  return 0;
+}
+function cardCostE(card){
+  if(!card)return 0;
+  if(card.ce!==undefined)return card.ce;
+  if(card.c&&card.c.e!==undefined)return card.c.e;
+  return 0;
+}
 function renderHand(){
   const hs=document.getElementById('hscroll');
-  const hMax=5;
-  const hEl=document.getElementById('hcnt');
-  if(hEl){
-    hEl.textContent=G.hand.length+'/'+hMax+' carta'+(G.hand.length!==1?'s':'');
-    hEl.style.color=G.hand.length>=5?'#ff5a5a':'var(--gold2)';
-  }
+  document.getElementById('hcnt').textContent=G.hand.length+' carta'+(G.hand.length!==1?'s':'');
   if(!G.hand.length){hs.innerHTML='<div style="font-size:.73rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
   hs.innerHTML=G.hand.map((card,i)=>{
     const can=G.agua>=cardCostA(card)&&G.energia>=cardCostE(card)&&G.phase==='action';
@@ -1223,7 +1206,7 @@ function renderHand(){
       <div class="cico">${card.ico}</div>
       <div class="cn">${card.nm}</div>
       <div class="cfx">${card.txt}</div>
-      <div class="cco">💧${cardCostA(card)} ⚡${cardCostE(card)}</div>
+      <div class="cco">💧${card.c.a} ⚡${card.c.e}</div>
     </div>`;
   }).join('');
 }
@@ -1335,26 +1318,26 @@ function renderFeedbackList(){
 
 // ══ SISTEMA DE SOBRES ══
 const CARTAS_COL=[
-  {id:"rc01",ico:"☀️",nm:"Energía Limpia+",tp:"rara",color:"#ffd700",ca:0,ce:1,txt:"+2 soc · +1 con · +1 eco",ef:function(g){g.sociedad+=2;g.conciencia+=1;g.eco+=1;}},
-  {id:"rc02",ico:"🌊",nm:"Ciclo del Agua",tp:"rara",color:"#00aaff",ca:1,ce:0,txt:"+2 eco · +2 agua",ef:function(g){g.eco+=2;g.agua+=2;}},
-  {id:"rc03",ico:"🌿",nm:"Agroecología",tp:"rara",color:"#52c26d",ca:1,ce:1,txt:"+3 eco · +1 agua",ef:function(g){g.eco+=3;g.agua+=1;}},
-  {id:"rc04",ico:"🚲",nm:"Movilidad Verde",tp:"rara",color:"#88dd88",ca:0,ce:1,txt:"+2 soc · -1 karma",ef:function(g){g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
-  {id:"rc05",ico:"🌱",nm:"Semilla Guardiana",tp:"rara",color:"#5ccf9a",ca:0,ce:0,txt:"+2 eco · +1 con",ef:function(g){g.eco+=2;g.conciencia+=1;}},
-  {id:"rc06",ico:"💧",nm:"Cosecha de Lluvia",tp:"rara",color:"#44aaff",ca:0,ce:1,txt:"+3 agua · +1 soc",ef:function(g){g.agua+=3;g.sociedad+=1;}},
-  {id:"rc07",ico:"🌞",nm:"Panel Solar",tp:"rara",color:"#ffcc44",ca:0,ce:0,txt:"+2 energía · +1 eco",ef:function(g){g.energia+=2;g.eco+=1;}},
-  {id:"rc08",ico:"🌾",nm:"Huerto Comunitario",tp:"rara",color:"#88cc55",ca:1,ce:0,txt:"+1 agua · +2 soc · +1 eco",ef:function(g){g.agua+=1;g.sociedad+=2;g.eco+=1;}},
-  {id:"rc09",ico:"♻️",nm:"Centro de Reciclaje",tp:"rara",color:"#66ccaa",ca:0,ce:1,txt:"-1 karma · +1 eco · +1 soc",ef:function(g){g.karma=Math.max(0,g.karma-1);g.eco+=1;g.sociedad+=1;}},
-  {id:"rc10",ico:"🚿",nm:"Ducha Solar",tp:"rara",color:"#55bbdd",ca:0,ce:0,txt:"+1 agua · +1 con · -1 karma",ef:function(g){g.agua+=1;g.conciencia+=1;g.karma=Math.max(0,g.karma-1);}},
-  {id:"ec01",ico:"🌊",nm:"Desalinización Solar",tp:"epica",color:"#00c4ff",ca:0,ce:2,txt:"+3 agua · +2 eco · +1 soc",ef:function(g){g.agua+=3;g.eco+=2;g.sociedad+=1;}},
-  {id:"ec02",ico:"🏙️",nm:"Ciudad Circular",tp:"epica",color:"#8899ff",ca:2,ce:2,txt:"+4 soc · +2 eco",ef:function(g){g.sociedad+=4;g.eco+=2;}},
-  {id:"ec03",ico:"🌬️",nm:"Parque Eólico",tp:"epica",color:"#a0d8ff",ca:0,ce:1,txt:"+3 energía · +2 eco",ef:function(g){g.energia+=3;g.eco+=2;}},
-  {id:"ec04",ico:"🌈",nm:"Visión del Futuro",tp:"epica",color:"#ff99ff",ca:1,ce:1,txt:"+2 eco+soc+con",ef:function(g){g.eco+=2;g.sociedad+=2;g.conciencia+=2;}},
-  {id:"ec05",ico:"🌻",nm:"Granja Comunitaria",tp:"epica",color:"#ffdd44",ca:2,ce:1,txt:"+2 agua · +2 soc",ef:function(g){g.agua+=2;g.sociedad+=2;}},
-  {id:"lc01",ico:"🌳",nm:"Árbol Milenario",tp:"legendaria",color:"#2aff88",ca:1,ce:1,txt:"+5 eco · +3 con · -2 karma",ef:function(g){g.eco+=5;g.conciencia+=3;g.karma=Math.max(0,g.karma-2);}},
-  {id:"lc02",ico:"🐋",nm:"Canción de la Ballena",tp:"legendaria",color:"#44aaff",ca:2,ce:0,txt:"+4 eco · +3 soc · +2 agua",ef:function(g){g.eco+=4;g.sociedad+=3;g.agua+=2;}},
-  {id:"lc03",ico:"🌅",nm:"Amanecer del Consejo",tp:"legendaria",color:"#ffcc44",ca:1,ce:1,txt:"+4 eco · +4 con · +2 soc",ef:function(g){g.eco+=4;g.conciencia+=4;g.sociedad+=2;}},
-  {id:"gc01",ico:"🦋",nm:"Metamorfosis",tp:"guardiana",color:"#ff44ff",ca:0,ce:0,txt:"+6 eco · +5 con · +4 soc",ef:function(g){g.eco+=6;g.conciencia+=5;g.sociedad+=4;}},
-  {id:"gc02",ico:"🌍",nm:"Gaia Despierta",tp:"guardiana",color:"#ff44ff",ca:0,ce:0,txt:"+8 eco · karma=0 · +5 soc",ef:function(g){g.eco+=8;g.karma=0;g.sociedad+=5;}}
+  {id:"rc01",ico:"☀️",nm:"Energía Limpia+",tp:"rara",color:"#ffd700",ca:0,ce:1,txt:"+2 soc+1 con+1 eco",ef:function(g){g.sociedad+=2;g.conciencia+=1;g.eco+=1;}},
+  {id:"rc02",ico:"🌊",nm:"Ciclo del Agua",tp:"rara",color:"#00aaff",ca:1,ce:0,txt:"+2 eco+2 agua",ef:function(g){g.eco+=2;g.agua+=2;}},
+  {id:"rc03",ico:"🌿",nm:"Agroecología",tp:"rara",color:"#52c26d",ca:1,ce:1,txt:"+3 eco+1 agua",ef:function(g){g.eco+=3;g.agua+=1;}},
+  {id:"rc04",ico:"🚲",nm:"Movilidad Verde",tp:"rara",color:"#88dd88",ca:0,ce:1,txt:"+2 soc-1 karma",ef:function(g){g.sociedad+=2;g.karma=Math.max(0,g.karma-1);}},
+  {id:"rc05",ico:"🌱",nm:"Semilla Guardiana",tp:"rara",color:"#5ccf9a",ca:0,ce:0,txt:"+2 eco+1 con",ef:function(g){g.eco+=2;g.conciencia+=1;}},
+  {id:"rc06",ico:"💧",nm:"Cosecha de Lluvia",tp:"rara",color:"#44aaff",ca:0,ce:1,txt:"+3 agua+1 soc",ef:function(g){g.agua+=3;g.sociedad+=1;}},
+  {id:"rc07",ico:"🌞",nm:"Panel Solar",tp:"rara",color:"#ffcc44",ca:0,ce:0,txt:"+2 energía+1 eco",ef:function(g){g.energia+=2;g.eco+=1;}},
+  {id:"rc08",ico:"🌾",nm:"Huerto Comunitario",tp:"rara",color:"#88cc55",ca:1,ce:0,txt:"+1 agua+2 soc+1 eco",ef:function(g){g.agua+=1;g.sociedad+=2;g.eco+=1;}},
+  {id:"rc09",ico:"♻️",nm:"Centro de Reciclaje",tp:"rara",color:"#66ccaa",ca:0,ce:1,txt:"-1 karma+1 eco+1 soc",ef:function(g){g.karma=Math.max(0,g.karma-1);g.eco+=1;g.sociedad+=1;}},
+  {id:"rc10",ico:"🚿",nm:"Ducha Solar",tp:"rara",color:"#55bbdd",ca:0,ce:0,txt:"+1 agua+1 con-1 karma",ef:function(g){g.agua+=1;g.conciencia+=1;g.karma=Math.max(0,g.karma-1);}},
+  {id:"ec01",ico:"🌊",nm:"Desalinización Solar",tp:"epica",color:"#00c4ff",ca:0,ce:2,txt:"+3 agua+2 eco+1 soc",ef:function(g){g.agua+=3;g.eco+=2;g.sociedad+=1;}},
+  {id:"ec02",ico:"🏙️",nm:"Ciudad Circular",tp:"epica",color:"#8899ff",ca:2,ce:2,txt:"+4 soc+2 eco",ef:function(g){g.sociedad+=4;g.eco+=2;}},
+  {id:"ec03",ico:"🌬️",nm:"Parque Eólico",tp:"epica",color:"#a0d8ff",ca:0,ce:1,txt:"+3 energía+2 eco",ef:function(g){g.energia+=3;g.eco+=2;}},
+  {id:"ec04",ico:"🌈",nm:"Visión del Futuro",tp:"epica",color:"#ff99ff",ca:1,ce:1,txt:"+2 eco soc con",ef:function(g){g.eco+=2;g.sociedad+=2;g.conciencia+=2;}},
+  {id:"ec05",ico:"🌻",nm:"Granja Comunitaria",tp:"epica",color:"#ffdd44",ca:2,ce:1,txt:"+2 agua+2 soc",ef:function(g){g.agua+=2;g.sociedad+=2;}},
+  {id:"lc01",ico:"🌳",nm:"Árbol Milenario",tp:"legendaria",color:"#2aff88",ca:1,ce:1,txt:"+5 eco+3 con-2 karma",ef:function(g){g.eco+=5;g.conciencia+=3;g.karma=Math.max(0,g.karma-2);}},
+  {id:"lc02",ico:"🐋",nm:"Ballena Guardiana",tp:"legendaria",color:"#44aaff",ca:2,ce:0,txt:"+4 eco+3 soc+2 agua",ef:function(g){g.eco+=4;g.sociedad+=3;g.agua+=2;}},
+  {id:"lc03",ico:"🌅",nm:"Amanecer del Consejo",tp:"legendaria",color:"#ffcc44",ca:1,ce:1,txt:"+4 eco+4 con+2 soc",ef:function(g){g.eco+=4;g.conciencia+=4;g.sociedad+=2;}},
+  {id:"gc01",ico:"🦋",nm:"Metamorfosis",tp:"guardiana",color:"#ff44ff",ca:0,ce:0,txt:"+6 eco+5 con+4 soc",ef:function(g){g.eco+=6;g.conciencia+=5;g.sociedad+=4;}},
+  {id:"gc02",ico:"🌍",nm:"Gaia Despierta",tp:"guardiana",color:"#ff44ff",ca:0,ce:0,txt:"+8 eco karma=0+5 soc",ef:function(g){g.eco+=8;g.karma=0;g.sociedad+=5;}}
 ];
 const SOBRES_DEF={
   bronce: {nm:'Bronce', ico:'📦',cost:30, borde:'#cd7f32',bg:'linear-gradient(155deg,#3d1f05,#7a3a0a)',sombra:'rgba(205,127,50,.5)', garantia:'rara',      pool:['rara','rara'],           pesos:[1,0]},
@@ -1482,234 +1465,67 @@ function _ponderado(items,pesos){
   return items[items.length-1];
 }
 
+// INIT
+updateSeedsUI();
 
 // ══ ACCIONES REALES ECO ══
-const ACCIONES_REALES = [
-  {
-    ico:'🌱', titulo:'Planta un árbol o semilla',
-    desc:'Planta un árbol, arbusto o semilla esta semana. Documenta con una foto.',
-    impacto:'1 árbol absorbe ~22 kg de CO₂ al año',
-    carta:'Árbol Milenario',
-    tipo:'naturaleza'
-  },
-  {
-    ico:'♻️', titulo:'Separa tus residuos por 7 días',
-    desc:'Durante una semana completa, separa orgánicos, plásticos, papel y vidrio.',
-    impacto:'Una familia promedio reduce 30% su basura al separar',
-    carta:'Centro de Reciclaje',
-    tipo:'residuos'
-  },
-  {
-    ico:'🚲', titulo:'Usa transporte limpio esta semana',
-    desc:'Camina, usa bicicleta o transporte público en vez del auto por 5 días.',
-    impacto:'Evitas ~2.4 kg de CO₂ por día sin auto',
-    carta:'Movilidad Verde',
-    tipo:'movilidad'
-  },
-  {
-    ico:'💧', titulo:'Reduce tu consumo de agua',
-    desc:'Instala una ducha corta (máx 5 min) y recoge agua fría mientras esperas la caliente.',
-    impacto:'Ahorras hasta 50 litros diarios',
-    carta:'Cosecha de Lluvia',
-    tipo:'agua'
-  },
-  {
-    ico:'🥗', titulo:'Come sin carne por 3 días',
-    desc:'Elige alimentación plant-based por al menos 3 días consecutivos.',
-    impacto:'La dieta vegetal reduce 50% la huella alimentaria',
-    carta:'Huerto Comunitario',
-    tipo:'alimentacion'
-  },
-  {
-    ico:'⚡', titulo:'Desconecta aparatos en desuso',
-    desc:'Desenchufa cargadores, TVs y electrodomésticos que no uses. 7 días.',
-    impacto:'El "stand-by" consume hasta 10% de tu electricidad',
-    carta:'Panel Solar',
-    tipo:'energia'
-  },
-  {
-    ico:'🌊', titulo:'Limpia un espacio natural',
-    desc:'Recoge basura en un parque, playa, río o calle de tu comunidad. Al menos 1 hora.',
-    impacto:'Inspiras a otros — el efecto social es multiplicador',
-    carta:'Ciclo del Agua',
-    tipo:'comunidad'
-  },
-  {
-    ico:'📢', titulo:'Comparte ECO-PODERES con 3 personas',
-    desc:'Invita a 3 personas a jugar y reflexionar sobre sus decisiones ecológicas.',
-    impacto:'La conciencia colectiva es el mayor motor de cambio',
-    carta:'Energía Limpia+',
-    tipo:'social'
-  }
+var ACCIONES_REALES=[
+  {ico:"🌱",titulo:"Planta un árbol o semilla",desc:"Planta un árbol, arbusto o semilla esta semana. Documenta con foto.",impacto:"1 árbol absorbe ~22 kg CO₂/año",tipo:"naturaleza"},
+  {ico:"♻️",titulo:"Separa residuos por 7 días",desc:"Orgánicos, plásticos, papel y vidrio separados una semana completa.",impacto:"Una familia reduce 30% su basura al separar",tipo:"residuos"},
+  {ico:"🚲",titulo:"Transporte limpio esta semana",desc:"Camina, bicicleta o transporte público en vez del auto por 5 días.",impacto:"Evitas ~2.4 kg CO₂ por día sin auto",tipo:"movilidad"},
+  {ico:"💧",titulo:"Reduce tu consumo de agua",desc:"Ducha máx 5 min y recoge agua fría mientras esperas la caliente.",impacto:"Ahorras hasta 50 litros diarios",tipo:"agua"},
+  {ico:"🥗",titulo:"Come sin carne 3 días",desc:"Alimentación plant-based por al menos 3 días consecutivos.",impacto:"La dieta vegetal reduce 50% la huella alimentaria",tipo:"alimentacion"},
+  {ico:"⚡",titulo:"Desconecta aparatos en desuso",desc:"Desenchufa cargadores y electrodomésticos que no uses. 7 días.",impacto:"El stand-by consume hasta 10% de tu electricidad",tipo:"energia"},
+  {ico:"🌊",titulo:"Limpia un espacio natural",desc:"Recoge basura en parque, playa, río o calle. Al menos 1 hora.",impacto:"Inspiras a otros — el efecto social multiplica",tipo:"comunidad"},
+  {ico:"📢",titulo:"Comparte ECO-PODERES",desc:"Invita a 3 personas a jugar y reflexionar sobre decisiones ecológicas.",impacto:"La conciencia colectiva es el mayor motor de cambio",tipo:"social"}
 ];
 
 function goAccionReal(){
-  sh('accion');
-  document.getElementById('accion-completada').style.display='none';
+  sh("accion");
+  document.getElementById("accion-completada").style.display="none";
+  document.getElementById("acciones-lista").style.display="flex";
   renderAcciones();
 }
 
 function renderAcciones(){
-  const lista = document.getElementById('acciones-lista');
-  if(!lista) return;
-  // Mostrar 4 acciones aleatorias para variedad
-  const shuffled = [...ACCIONES_REALES].sort(()=>Math.random()-.5).slice(0,4);
-  lista.innerHTML = shuffled.map((a,i)=>`
-    <div onclick="elegirAccion(${ACCIONES_REALES.indexOf(a)})"
-      style="background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:14px;
-             cursor:pointer;transition:all .15s;touch-action:manipulation;"
-      onmouseover="this.style.borderColor='var(--green)'"
-      onmouseout="this.style.borderColor='var(--border)'">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-        <span style="font-size:1.8rem;">${a.ico}</span>
-        <div>
-          <div style="font-size:.84rem;font-weight:800;color:var(--txt);">${a.titulo}</div>
-          <div style="font-size:.64rem;color:var(--green);">Desbloquea: 🎴 ${a.carta}</div>
-        </div>
-      </div>
-      <div style="font-size:.75rem;color:var(--txts);line-height:1.6;margin-bottom:6px;">${a.desc}</div>
-      <div style="font-size:.68rem;background:#0a1a0a;border-radius:8px;padding:5px 9px;color:#5ccf9a;">
-        🌍 Impacto: ${a.impacto}
-      </div>
-    </div>`).join('');
+  var lista=document.getElementById("acciones-lista");
+  if(!lista)return;
+  var shuffled=ACCIONES_REALES.slice().sort(function(){return Math.random()-.5;}).slice(0,4);
+  lista.innerHTML=shuffled.map(function(a,i){
+    var idx=ACCIONES_REALES.indexOf(a);
+    return '<div onclick="elegirAccion('+idx+')" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;touch-action:manipulation;">'
+      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">'
+      +'<span style="font-size:1.8rem;">'+a.ico+'</span>'
+      +'<div><div style="font-size:.84rem;font-weight:800;">'+a.titulo+'</div>'
+      +'<div style="font-size:.64rem;color:var(--green);">+100 🌱 Semillas Guardianas</div></div></div>'
+      +'<div style="font-size:.75rem;color:var(--txts);line-height:1.6;margin-bottom:6px;">'+a.desc+'</div>'
+      +'<div style="font-size:.68rem;background:#0a1a0a;border-radius:8px;padding:5px 9px;color:#5ccf9a;">🌍 '+a.impacto+'</div>'
+      +'</div>';
+  }).join("");
 }
 
 function elegirAccion(idx){
-  const accion = ACCIONES_REALES[idx];
-  if(!accion) return;
-  // Otorgar semillas
+  var accion=ACCIONES_REALES[idx];
+  if(!accion)return;
   earnSeeds(100);
-  // Guardar en colección simbólica
-  ST.coleccion['accion_'+accion.tipo] = (ST.coleccion['accion_'+accion.tipo]||0)+1;
-  saveST();
-  // Mostrar confirmación
-  document.getElementById('acciones-lista').style.display='none';
-  const comp = document.getElementById('accion-completada');
-  document.getElementById('accion-msg').textContent = 
-    '¡Comprometiste "'+accion.titulo+'"! '+accion.desc+' Recuerda documentarlo con una foto para inspirar a tu comunidad.';
-  comp.style.display='block';
+  document.getElementById("acciones-lista").style.display="none";
+  document.getElementById("accion-msg").textContent="¡Comprometiste: "+accion.titulo+"! "+accion.desc;
+  document.getElementById("accion-completada").style.display="block";
   spawnConfetti();
   updateSeedsUI();
 }
 
-// ══ MEJORA REVEAL CARTAS — Más lento y dramático ══
-// Parchear _renderReveal para animación más lenta
-const _origRenderReveal = _renderReveal;
-window._renderRevealPatched = function(cartas){
-  const cont=document.getElementById('reveal-cards');if(!cont)return;
-  cont.innerHTML='';
-  cartas.forEach((ct,i)=>{
-    const ri=RAREZA_INFO[ct.tp]||{color:'#7a9abf',label:'Carta',bg:'#0d1a2e'};
-    const div=document.createElement('div');
-    div.className='reveal-card';
-    div.style.cssText=`background:${ri.bg};border-color:${ri.color};box-shadow:0 0 25px ${ri.color}66;`;
-    div.innerHTML=`<div class="rc-rar" style="color:${ri.color}">${ri.label}</div>
-      <div class="rc-ico">${ct.ico}</div>
-      <div class="rc-nm">${ct.nm}</div>
-      <div class="rc-fx">${ct.txt}</div>
-      <div style="font-size:.62rem;color:${ri.color};margin-top:6px;padding:3px 8px;background:${ri.color}22;border-radius:8px;display:inline-block;">+al mazo en próx. partida</div>`;
-    cont.appendChild(div);
-    // Delay dramático: 600ms entre cartas
-    setTimeout(()=>{
-      div.classList.add('flipped');
-      if(ri.label==='Legendaria'||ri.label==='Suprema') spawnConfetti();
-    }, 500+i*700);
-  });
-};
-
-// ══ MEJORA: Indicador de conciencia protegiendo eco ══
-const _origRenderAll = renderAll;
-window.renderAll = function(){
-  _origRenderAll();
-  // Indicador visual cuando conciencia protege
-  const conEl = document.getElementById('v-con');
-  if(G&&G.conciencia>=5&&conEl){
-    conEl.style.textShadow = G.conciencia>=7?'0 0 12px #a66cff':'0 0 6px #a66cff55';
-  } else if(conEl){
-    conEl.style.textShadow = 'none';
-  }
-  // Indicador de botón "Acción Real" en resultado si aplica
-  const resultScreen = document.getElementById('s-result');
-  if(resultScreen?.classList.contains('on') && !document.getElementById('btn-accion-result')){
-    const extraBtn = document.createElement('button');
-    extraBtn.id = 'btn-accion-result';
-    extraBtn.className = 'btn prim';
-    extraBtn.style.cssText = 'background:linear-gradient(135deg,#1a5a1a,#1a3a1a);margin-top:6px;';
-    extraBtn.textContent = '🌍 Comprometer Acción Eco Real (+100 🌱)';
-    extraBtn.onclick = goAccionReal;
-    const rcard = resultScreen.querySelector('.rcard');
-    if(rcard) rcard.appendChild(extraBtn);
-  }
-};
-
-// ══ MEJORA: Sonido sutil al abrir sobre (Web Audio API) ══
-function playOpenSound(){
-  try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.frequency.setValueAtTime(440,ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(880,ctx.currentTime+.3);
-    gain.gain.setValueAtTime(.15,ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.5);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime+.5);
-  }catch(e){}
-}
-
-// ══ MEJORA: Sonido al lanzar dado ══
-function playDiceSound(){
-  try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    [0,.05,.1].forEach((t,i)=>{
-      const osc=ctx.createOscillator(),gain=ctx.createGain();
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.frequency.value=200+i*50;
-      gain.gain.setValueAtTime(.1,ctx.currentTime+t);
-      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.08);
-      osc.start(ctx.currentTime+t);osc.stop(ctx.currentTime+t+.1);
-    });
-  }catch(e){}
-}
-
-// Parchear ejecutarApertura para añadir sonido
-const _origEjecutar = ejecutarApertura;
-window.ejecutarApertura = function(){
-  playOpenSound();
-  _origEjecutar();
-};
-
-// Parchear rollDice para sonido
-const _origRollDice = rollDice;
-window.rollDice = function(){
-  playDiceSound();
-  _origRollDice();
-};
-
-// ══ MEJORA: _renderReveal parcheada activa ══
-window._renderReveal = window._renderRevealPatched;
-
-// Inicializar
-updateSeedsUI();
-
-// INIT
-updateSeedsUI();
-
-// Ir a feedback desde sobres
 function irAFeedback(){
-  const resultScreen = document.getElementById('s-result');
-  // Si hay resultado activo, ir ahí directamente
-  if(resultScreen && document.getElementById('r-score')?.textContent !== '0 pts'){
-    sh('result');
-    // Scroll al formulario de feedback
-    setTimeout(()=>{
-      const fbCard = document.querySelector('.feedback-card');
-      if(fbCard) fbCard.scrollIntoView({behavior:'smooth'});
-    }, 300);
+  var score=document.getElementById("r-score");
+  if(score&&score.textContent!=="0 pts"){
+    sh("result");
+    setTimeout(function(){
+      var fb=document.querySelector(".feedback-card");
+      if(fb)fb.scrollIntoView({behavior:"smooth"});
+    },300);
   } else {
-    // Si no hay partida, ir al ranking tab feedback
     goFBRanking();
-    setTimeout(()=>fbTab('fb'), 300);
+    setTimeout(function(){fbTab("fb");},300);
   }
 }
 
@@ -1719,34 +1535,24 @@ function irAFeedback(){
 <div class="screen z1" id="s-accion" style="padding:14px;gap:12px;justify-content:flex-start;">
   <div style="text-align:center;width:100%;">
     <div style="font-family:var(--ffd);font-size:1.2rem;font-weight:900;color:var(--green);">🌍 Del Juego al Mundo Real</div>
-    <div style="font-size:.78rem;color:var(--txts);margin-top:4px;">Tus decisiones en el juego pueden convertirse en acciones reales.<br>Elige una y gana <strong style="color:var(--gold2);">+100 🌱 Semillas Guardianas</strong></div>
+    <div style="font-size:.78rem;color:var(--txts);margin-top:4px;line-height:1.65;">Tus decisiones en el juego inspiran acciones reales.<br>Elige una acción y gana <strong style="color:var(--gold2);">+100 🌱 Semillas</strong></div>
   </div>
-
-  <!-- ACCIONES DISPONIBLES -->
-  <div style="display:flex;flex-direction:column;gap:8px;width:100%;" id="acciones-lista">
-    <!-- Generadas dinámicamente -->
-  </div>
-
-  <!-- ACCIÓN COMPLETADA -->
+  <div style="display:flex;flex-direction:column;gap:8px;width:100%;" id="acciones-lista"></div>
   <div id="accion-completada" style="display:none;background:#0a1a0a;border:2px solid var(--green);border-radius:14px;padding:18px;text-align:center;width:100%;">
     <div style="font-size:2rem;margin-bottom:8px;">🌱</div>
-    <div style="font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--green);margin-bottom:6px;">¡Acción Comprometida!</div>
+    <div style="font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--green);margin-bottom:6px;">¡Compromiso Guardián!</div>
     <div style="font-size:.8rem;color:#aaddcc;line-height:1.65;margin-bottom:12px;" id="accion-msg"></div>
     <div style="font-size:1.2rem;font-weight:900;color:var(--gold2);margin-bottom:14px;">+100 🌱 Semillas Guardianas</div>
-    <div style="font-size:.72rem;color:var(--txts);">Recuerda: cada acción real que tomes<br>protege el ecosistema que cuidas en el juego.</div>
+    <div style="font-size:.7rem;color:var(--txts);background:#0d1a2e;border-radius:8px;padding:10px;line-height:1.7;">
+      🎴 <strong style="color:var(--gold2);">Versión mesa física:</strong><br>
+      Esta acción te da 1 sobre de cartas físicas reales.<br>
+      <span style="color:var(--green);">Cada acción eco real = 1 sobre físico</span>
+    </div>
   </div>
-
-  <div style="background:#0a1525;border:1px solid var(--border2);border-radius:10px;padding:12px;font-size:.72rem;color:var(--txts);line-height:1.75;width:100%;">
-    <strong style="color:var(--gold2);">🎴 Para la versión de mesa física:</strong><br>
-    Estas mismas acciones te dan Cartas Especiales para tu mazo real.<br>
-    <span style="color:var(--green);">Cada acción eco real = 1 sobre de cartas físicas.</span>
-  </div>
-
   <div style="display:flex;gap:8px;width:100%;">
     <button class="btn sec" onclick="goIntro()" style="flex:1;padding:10px;font-size:.82rem;">← Inicio</button>
-    <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">▶ Jugar más</button>
+    <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">▶ Jugar</button>
   </div>
 </div>
-
 </body>
 </html>
