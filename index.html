@@ -353,8 +353,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     <div class="cel-msg" id="cel-msg"></div>
     <div class="cel-seeds" id="cel-seeds"></div>
     <div style="display:flex;flex-direction:column;gap:8px;">
-      <button class="btn prim" onclick="closeCel();goSobres();">🌱 Ir a Tienda de Sobres</button>
-      <button class="btn sec" onclick="closeCel();">Ver resultado y dar feedback</button>
+      <button id="cel-btn" class="btn prim" onclick="closeCel();">Ver resultado y dar feedback →</button>
     </div>
   </div>
 </div>
@@ -378,7 +377,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="intro-orb">🌍</div>
   <div class="intro-logo" style="font-size:2.8rem;letter-spacing:3px;line-height:1;">ECO-PODERES</div>
   <div class="intro-sub" style="letter-spacing:5px;font-size:.76rem;color:var(--teal);">EL CONSEJO DE GUARDIANES</div>
-  <div class="demo-badge">🧪 Demo v0.5 — Rancagua</div>
+  <div class="demo-badge">🧪 Demo v0.6 — Rancagua</div>
   <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
     <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
@@ -392,7 +391,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
       <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="ver-tag">ECO-PODERES v0.5 · danygrafiko © 2025</div>
+  <div class="ver-tag">ECO-PODERES v0.6 · danygrafiko © 2025</div>
 </div>
 
 <!-- TUTORIAL -->
@@ -560,9 +559,10 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
       <span class="fb-sent-ico">🌱</span>
       <div class="fb-sent-title">¡Gracias, Guardián!</div>
       <div class="fb-sent-msg">Tu opinión construye un juego mejor.<br><br><strong style="color:var(--green);">+10 🌱 Semillas de Gratitud</strong></div>
-      <button class="btn prim" onclick="goMenu()" style="margin-top:12px;width:100%;">Jugar de nuevo</button>
-      <button class="btn sec" onclick="reabrirFeedback()" style="margin-top:8px;width:100%;">Editar mi feedback</button>
-      <button class="btn ghost" onclick="goFBRanking()" style="margin-top:8px;width:100%;">Ver ranking y feedback</button>
+      <div style="font-size:.75rem;color:var(--green);margin-bottom:12px;">¡Gracias! Tu opinión ayuda a mejorar el juego.</div>
+      <button class="btn prim" onclick="goSobres()" style="width:100%;margin-bottom:8px;">🌱 Abrir Sobres de Cartas</button>
+      <button class="btn sec" onclick="goMenu()" style="width:100%;margin-bottom:8px;">🔄 Jugar de nuevo</button>
+      <button class="btn ghost" onclick="goFBRanking()" style="width:100%;">🏆 Ver ranking</button>
     </div>
   </div>
 </div>
@@ -816,7 +816,25 @@ const GUARDIANES=[
    poder:'Gana +1 acción cada vez que el ecosistema sube. Máx. 5 acciones.',
    sombra:'Pierde 2 eco si termina ronda sin usar todas sus acciones.',
    tip:'Maximiza cada acción — el Jaguar no puede desperdiciar nada.',
-   apply:g=>{/* se aplica en renderAll cuando eco sube */}},
+   apply:g=>{/* se aplica en renderAll cuando eco sube */}},,
+  {id:'condor',ico:'🦅',nm:'Cóndor',color:'#c084fc',rol:'Sabiduría',
+   poder:'Poder: Revela las 2 próximas cartas del mazo para decidir si robar.',
+   sombra:'Si el mazo tiene menos de 2 cartas el poder no funciona.',
+   tip:'Úsalo antes de robar para evitar cartas costosas con pocos recursos.',
+   apply:function(g){
+     if(g.deck.length>=2){
+       var a=g.deck[g.deck.length-1];var b=g.deck[g.deck.length-2];
+       setStatus('🦅 Visión del Cóndor: '+a.nm+' (💧'+cardCostA(a)+') · '+b.nm+' (💧'+cardCostA(b)+')');
+     }else{setStatus('🦅 Mazo insuficiente para usar visión.');}
+   }},
+  {id:'delfin',ico:'🐬',nm:'Delfín',color:'#22d3ee',rol:'Armonía',
+   poder:'Poder: +2 Sociedad y elimina 1 Karma gracias a la empatía comunitaria.',
+   sombra:'Si Karma es 0, el poder da solo +1 Sociedad.',
+   tip:'Úsalo cuando se acumula karma o después de decisiones EGO.',
+   apply:function(g){
+     if(g.karma>0){g.karma=Math.max(0,g.karma-1);g.sociedad+=2;setStatus('🐬 Armonía: +2 Soc -1 Karma');}
+     else{g.sociedad+=1;setStatus('🐬 Armonía: +1 Soc (Karma ya era 0)');}
+   }}
 ];
 
 // CARTAS BASE — 16 cartas con mejor balance
@@ -1150,9 +1168,9 @@ function playCard(i){
   const card=G.hand[i];if(!card)return;
   if(G.phase!=='action')return;
   // Límite de cartas por turno según ronda
-  var maxCartas = G.ronda >= 5 ? 2 : 1;
+  var maxCartas = 3; // máximo 3 cartas por turno
   if(G.cartasJugadasTurno >= maxCartas){
-    setStatus('⚠️ Solo puedes jugar '+maxCartas+' carta'+(maxCartas>1?'s':'')+' por turno en esta ronda.');
+    setStatus('⚠️ Límite alcanzado: máximo '+maxCartas+' cartas por turno.');
     return;
   }
   // Elefante no puede jugar impulso
@@ -1347,7 +1365,7 @@ function renderAll(){
     else dkEl.style.color='var(--txt)';
   }
   // Indicador límite cartas jugadas
-  var maxC=G.ronda>=5?2:1;
+  var maxC=3;
   var accEl=document.getElementById('v-acc');
   if(accEl&&G.phase==='action'){
     accEl.textContent=G.acciones+(G.cartasJugadasTurno>0?' ('+G.cartasJugadasTurno+'/'+maxC+'🃏)':'');
@@ -1399,7 +1417,7 @@ function renderHand(){
   }
   if(!G.hand.length){hs.innerHTML='<div style="font-size:.73rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
   hs.innerHTML=G.hand.map((card,i)=>{
-    var maxC2=G.ronda>=5?2:1;
+    var maxC2=3;
     const can=G.agua>=cardCostA(card)&&G.energia>=cardCostE(card)&&G.phase==='action'&&G.cartasJugadasTurno<maxC2;
     const isLeg=card.tp==='legendaria'||card.tp==='guardiana';
     const beeBdg=G._bee?'<div style="position:absolute;top:-4px;right:-4px;width:13px;height:13px;border-radius:50%;background:#ffc542;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#07101d;font-weight:900;">🐝</div>':'';
@@ -1441,12 +1459,22 @@ function endGame(reason){
   else if(pts>=95){ico='⚖️';ttl='Sociedad en Equilibrio';msg='Avanzaste con intención y sabiduría. La semilla del cambio está sembrada en terreno fértil.';}
   else if(pts>=60){ico='🌱';ttl='Despertar Temprano';msg='Cada error fue una lección valiosa. El Consejo te invita a regresar con más sabiduría.';}
   else{ico='⚠️';ttl='El Mundo Resiste';msg='El caos superó tu guía esta vez. La historia no termina aquí — regresa más preparado.';}
+  sh('result');
   if(reason!=='colapso'){
     setTimeout(function(){
-      celebrate(ico, ttl, msg, '+'+sg+' Semillas', 'Ver resultado →', null);
-    }, 500);
+      // Mostrar celebrate — botón lleva a ver resultado (ya está en result)
+      var celBt = document.getElementById('cel-btn');
+      if(celBt) celBt.onclick = function(){ 
+        document.getElementById('celebrate').classList.remove('on');
+        // Scroll al feedback
+        setTimeout(function(){
+          var fb = document.querySelector('.feedback-card');
+          if(fb) fb.scrollIntoView({behavior:'smooth'});
+        }, 300);
+      };
+      celebrate(ico, ttl, msg, '+'+sg+' Semillas');
+    }, 600);
   }
-  sh('result');
   document.getElementById('r-ico').textContent=ico;document.getElementById('r-title').textContent=ttl;
   document.getElementById('r-msg').textContent=msg+' — '+G.g.ico+' '+G.g.nm;
   document.getElementById('r-eco').textContent=G.eco+'/100';document.getElementById('r-con').textContent=G.conciencia+'/10';
