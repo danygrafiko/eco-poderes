@@ -1518,43 +1518,43 @@ var COMUNAS_CHILE = [
 ];
 
 function filtrarComunas(val){
-  var lista = document.getElementById('comunas-lista');
+  var lista=document.getElementById('comunas-lista');
   if(!lista)return;
   if(!val||val.length<1){lista.style.display='none';return;}
-  var filtradas = COMUNAS_CHILE.filter(function(c){
-    return c.toLowerCase().indexOf(val.toLowerCase())>=0;
+  var filtradas=COMUNAS_CHILE.filter(function(com){
+    return com.toLowerCase().indexOf(val.toLowerCase())>=0;
   }).slice(0,6);
   if(!filtradas.length){lista.style.display='none';return;}
   lista.style.display='block';
-  lista.innerHTML = filtradas.map(function(c){
-    return '<div onclick="selComuna(\'' + c + '\')" style="padding:8px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);" onmouseover="this.style.background='#1a2f4a'" onmouseout="this.style.background=''">'+c+'</div>';
+  lista.innerHTML=filtradas.map(function(com){
+    return '<div class="comuna-opt" data-comuna="'+com+'" style="padding:8px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);">'+com+'</div>';
   }).join('');
 }
 
-function selComuna(nombre){
-  var inp = document.getElementById('comm-inp');
-  if(inp) inp.value = nombre;
-  var lista = document.getElementById('comunas-lista');
-  if(lista) lista.style.display='none';
-}
-
 function mostrarComunas(){
-  var inp = document.getElementById('comm-inp');
-  if(inp&&inp.value) filtrarComunas(inp.value);
-  else {
-    var lista = document.getElementById('comunas-lista');
-    if(lista){
-      lista.style.display='block';
-      lista.innerHTML = COMUNAS_CHILE.slice(0,8).map(function(c){
-        return '<div onclick="selComuna(\'' + c + '\')" style="padding:8px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);">'+c+'</div>';
-      }).join('');
-    }
-  }
+  var inp=document.getElementById('comm-inp');
+  var lista=document.getElementById('comunas-lista');
+  if(!lista)return;
+  var val=inp?inp.value:'';
+  if(val){filtrarComunas(val);return;}
+  lista.style.display='block';
+  lista.innerHTML=COMUNAS_CHILE.slice(0,8).map(function(com){
+    return '<div class="comuna-opt" data-comuna="'+com+'" style="padding:8px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);">'+com+'</div>';
+  }).join('');
 }
 
 document.addEventListener('click',function(e){
-  if(!e.target.closest('#comm-inp')&&!e.target.closest('#comunas-lista')){
-    var l=document.getElementById('comunas-lista');if(l)l.style.display='none';
+  // Cerrar lista de comunas
+  var inp=document.getElementById('comm-inp');
+  var lista=document.getElementById('comunas-lista');
+  if(lista){
+    if(e.target.classList.contains('comuna-opt')){
+      var nombre=e.target.getAttribute('data-comuna');
+      if(nombre&&inp){inp.value=nombre;}
+      lista.style.display='none';
+    } else if(!e.target.closest('#comm-inp')&&!e.target.closest('#comunas-lista')){
+      lista.style.display='none';
+    }
   }
 });
 
@@ -1578,20 +1578,26 @@ function goAccionReal(){
 }
 
 function renderAcciones(){
-  var lista=document.getElementById('acciones-lista');if(!lista)return;
+  var lista=document.getElementById('acciones-lista');
+  if(!lista)return;
   var shuffled=ACCIONES_REALES.slice().sort(function(){return Math.random()-.5;}).slice(0,4);
-  lista.innerHTML=shuffled.map(function(a){
+  lista.innerHTML='';
+  shuffled.forEach(function(a){
     var idx=ACCIONES_REALES.indexOf(a);
-    return '<div onclick="elegirAccion('+idx+')" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;touch-action:manipulation;transition:border-color .15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">'
-      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">'
+    var div=document.createElement('div');
+    div.style.cssText='background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;touch-action:manipulation;transition:border-color .15s;';
+    div.setAttribute('data-accion-idx',idx);
+    div.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">'
       +'<span style="font-size:1.8rem;">'+a.ico+'</span>'
       +'<div><div style="font-size:.84rem;font-weight:800;color:var(--txt);">'+a.titulo+'</div>'
       +'<div style="font-size:.64rem;color:var(--green);">+100 🌱 Semillas Guardianas</div></div></div>'
       +'<div style="font-size:.75rem;color:var(--txts);line-height:1.6;margin-bottom:6px;">'+a.desc+'</div>'
-      +'<div style="font-size:.68rem;background:#0a1a0a;border-radius:8px;padding:5px 9px;color:#5ccf9a;">🌍 '+a.impacto+'</div>'
-      +'</div>';
-  }).join('');
+      +'<div style="font-size:.68rem;background:#0a1a0a;border-radius:8px;padding:5px 9px;color:#5ccf9a;">🌍 '+a.impacto+'</div>';
+    div.addEventListener('click',function(){elegirAccion(idx);});
+    lista.appendChild(div);
+  });
 }
+
 
 function elegirAccion(idx){
   var a=ACCIONES_REALES[idx];if(!a)return;
