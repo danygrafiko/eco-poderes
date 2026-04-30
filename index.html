@@ -4,18 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>ECO-PODERES — El Consejo de Guardianes</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --bg:#07101d;--bg2:#0d1a2e;--bg3:#111b31;--bg4:#0a1525;
+  --bg:#060d18;--bg2:#0b1628;--bg3:#0f1e35;--bg4:#08111f;
   --gold:#ffe7a8;--gold2:#ffc542;--gold3:#e8a800;
-  --green:#5ccf9a;--green2:#3aaf7a;--green3:#1d7a50;
-  --blue:#6d8cff;--purple:#a66cff;--purple2:#7a44cc;
-  --red:#ff5a5a;--orange:#ff8c42;
-  --txt:#e8f0ff;--txts:#7a9abf;--txtd:#3a5a7f;
-  --border:#1a2f4a;--border2:#243858;
-  --r:14px;--ff:'Nunito',sans-serif;--ffd:'Cinzel',serif;
+  --green:#4ecb8d;--green2:#2da86a;--green3:#1a7a4a;
+  --blue:#5a82ff;--purple:#9d60ff;--purple2:#7040cc;
+  --teal:#2dd4bf;--cyan:#22d3ee;
+  --red:#ff4d4d;--orange:#ff8c42;
+  --txt:#edf2ff;--txts:#6b8ab0;--txtd:#2a4a6f;
+  --border:#162840;--border2:#1e3555;
+  --r:14px;--ff:'Space Grotesk','Nunito',sans-serif;--ffd:'Cinzel',serif;
+  --shadow-card:0 8px 32px rgba(0,0,0,.45);
+  --glow-green:0 0 20px rgba(78,203,141,.2);
+  --glow-gold:0 0 20px rgba(255,197,66,.2);
 }
 html,body{background:var(--bg);color:var(--txt);font-family:var(--ff);min-height:100vh;overflow-x:hidden;max-width:480px;margin:0 auto;}
 canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
@@ -25,9 +29,11 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* BUTTONS */
 .btn{padding:12px 20px;border-radius:50px;border:none;font-family:var(--ff);font-size:.92rem;font-weight:800;cursor:pointer;transition:all .15s;touch-action:manipulation;width:100%;}
-.btn.prim{background:linear-gradient(135deg,#4a6aee,#8a50e0);color:#fff;box-shadow:0 4px 20px #4a6aee33;}
+.btn.prim{background:linear-gradient(135deg,#4a6aff,#9050f0);color:#fff;box-shadow:0 4px 24px rgba(74,106,255,.35);letter-spacing:.3px;}
+.btn.prim:hover{box-shadow:0 6px 28px rgba(74,106,255,.5);transform:translateY(-1px);}
 .btn.prim:active{transform:scale(.97);}
-.btn.sec{background:transparent;border:1.5px solid var(--green);color:var(--green);}
+.btn.sec{background:transparent;border:1.5px solid var(--green);color:var(--green);letter-spacing:.3px;}
+.btn.sec:hover{background:rgba(78,203,141,.08);box-shadow:var(--glow-green);}
 .btn.sec:active{background:#0a1f15;}
 .btn.gold{background:linear-gradient(135deg,#9a6600,#cc8800);color:#fff;}
 .btn.danger{background:linear-gradient(135deg,#8a1a1a,#cc2222);color:#fff;}
@@ -48,7 +54,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 /* CELEBRATE */
 .celebrate-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .celebrate-overlay.on{display:flex;}
-.cel-card{background:linear-gradient(135deg,#081808,#080820);border:2px solid var(--green);border-radius:22px;padding:28px 22px;text-align:center;max-width:310px;width:92%;position:relative;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);}
+.cel-card{background:linear-gradient(160deg,#061408,#060820);border:2px solid var(--green);border-radius:24px;padding:30px 24px;text-align:center;max-width:320px;width:92%;position:relative;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);box-shadow:0 0 60px rgba(78,203,141,.2),var(--shadow-card);}
 @keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 .cel-close{position:absolute;top:8px;right:12px;background:rgba(255,255,255,.1);border:none;color:#aaa;font-size:1rem;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .cel-ico{font-size:3rem;display:block;margin-bottom:8px;}
@@ -60,11 +66,11 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* ============ INTRO ============ */
 #s-intro{justify-content:center;text-align:center;gap:1rem;padding:2rem 1.5rem;}
-.intro-orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a0a5e,#07101d);border:2px solid #6633aa44;display:flex;align-items:center;justify-content:center;font-size:3.5rem;margin:0 auto;animation:orbFloat 4s ease-in-out infinite;}
+.intro-orb{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a0a5e,#040818);border:1.5px solid rgba(100,50,200,.3);display:flex;align-items:center;justify-content:center;font-size:3.8rem;margin:0 auto;animation:orbFloat 4s ease-in-out infinite;box-shadow:0 0 60px rgba(80,40,180,.25),inset 0 0 40px rgba(80,40,180,.1);}
 @keyframes orbFloat{0%,100%{transform:translateY(0);box-shadow:0 0 30px #6633aa22}50%{transform:translateY(-10px);box-shadow:0 0 50px #8844cc44}}
 .intro-logo{font-family:var(--ffd);font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,#ffe7a8,#c88cff,#6d8cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;}
 .intro-sub{font-size:.78rem;color:var(--gold2);letter-spacing:4px;text-transform:uppercase;}
-.demo-badge{display:inline-flex;align-items:center;gap:5px;background:#1a0a30;border:1px solid #6633aa;border-radius:20px;padding:4px 14px;font-size:.7rem;color:#c88cff;}
+.demo-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(120,60,220,.12);border:1px solid rgba(120,60,220,.4);border-radius:20px;padding:5px 16px;font-size:.7rem;color:#c48cff;letter-spacing:.3px;backdrop-filter:blur(8px);}
 .intro-desc{font-size:.88rem;color:var(--txts);line-height:1.8;max-width:340px;margin:0 auto;}
 .intro-btns{display:flex;flex-direction:column;gap:9px;width:100%;max-width:300px;margin:0 auto;}
 .ver-tag{font-size:.62rem;color:var(--txtd);}
@@ -72,7 +78,8 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 /* ============ MENU ============ */
 #s-menu{padding:1rem;gap:.8rem;}
 .ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;}
-.gcard{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 7px;text-align:center;cursor:pointer;transition:all .2s;touch-action:manipulation;}
+.gcard{background:linear-gradient(160deg,var(--bg3),var(--bg4));border:1.5px solid var(--border);border-radius:var(--r);padding:13px 8px;text-align:center;cursor:pointer;transition:all .2s;touch-action:manipulation;}
+.gcard:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.4);}
 .gcard:active{transform:scale(.97);}
 .gcard.sel{border-width:2px;}
 .gcard-ico{font-size:2rem;margin-bottom:5px;}
@@ -85,13 +92,13 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* ============ GAME ============ */
 #s-game{padding:7px;gap:5px;}
-.topbar{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:7px 11px;}
+.topbar{width:100%;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--border2);border-radius:12px;padding:8px 12px;box-shadow:var(--shadow-card);}
 .tb-ronda{font-size:.75rem;color:var(--gold2);font-weight:800;font-family:var(--ffd);}
 .tb-g{font-size:.84rem;font-weight:800;}
 .tb-k{font-size:.72rem;}
 
 /* WORLD */
-#world-canvas{width:100%;border-radius:12px;display:block;border:1px solid var(--border);}
+#world-canvas{width:100%;border-radius:14px;display:block;border:1px solid var(--border2);box-shadow:0 4px 24px rgba(0,0,0,.4);}
 
 /* COMM BANNER */
 .comm-banner{width:100%;background:linear-gradient(135deg,#0a1a0a,#0a1525);border:1px solid #1a3a2a;border-radius:9px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;}
@@ -101,7 +108,8 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* STATS */
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:100%;}
-.sbox{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 10px;position:relative;overflow:hidden;}
+.sbox{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--border2);border-radius:11px;padding:9px 11px;position:relative;overflow:hidden;transition:border-color .3s;}
+.sbox:hover{border-color:var(--border2);}
 .sbox::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.02));pointer-events:none;}
 .sl{font-size:.6rem;color:var(--txts);text-transform:uppercase;letter-spacing:.4px;}
 .sv{font-size:1.2rem;font-weight:800;}
@@ -119,10 +127,10 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* PHASE INDICATOR */
 .phase-track{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;border-radius:9px;overflow:hidden;border:1px solid var(--border);}
-.phase-step{padding:6px 4px;text-align:center;font-size:.63rem;font-weight:800;color:var(--txtd);background:var(--bg4);transition:all .3s;border-right:1px solid var(--border);}
+.phase-step{padding:7px 4px;text-align:center;font-size:.64rem;font-weight:800;color:var(--txtd);background:var(--bg4);transition:all .3s;border-right:1px solid var(--border);}
 .phase-step:last-child{border-right:none;}
-.phase-step.active{background:#1a3a2a;color:var(--green);}
-.phase-step.done{background:#0a1a10;color:var(--green2);}
+.phase-step.active{background:linear-gradient(135deg,#0f2a1a,#0a1f28);color:var(--teal);text-shadow:0 0 8px rgba(45,212,191,.4);}
+.phase-step.done{background:#08150a;color:var(--green2);}
 
 /* DICE */
 .dwrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px;width:100%;}
@@ -158,7 +166,8 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .hc{font-size:.63rem;color:var(--gold2);}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:3px;}
 .hscroll::-webkit-scrollbar{height:3px;}.hscroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-.card{min-width:90px;max-width:96px;background:var(--bg4);border:1.5px solid #1e3050;border-radius:10px;padding:9px 7px;cursor:pointer;transition:all .2s;text-align:center;flex-shrink:0;position:relative;touch-action:manipulation;}
+.card{min-width:92px;max-width:98px;background:linear-gradient(160deg,var(--bg3),var(--bg4));border:1.5px solid var(--border2);border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .2s;text-align:center;flex-shrink:0;position:relative;touch-action:manipulation;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.card:not(.off):hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(0,0,0,.5);}
 .card:not(.off):active{transform:translateY(-6px);box-shadow:0 10px 24px rgba(0,0,0,.6);}
 .card.off{opacity:.4;cursor:default;}
 .card.leg{box-shadow:0 0 12px rgba(255,215,0,.35);}
@@ -170,7 +179,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .card-new{position:absolute;top:-5px;right:-5px;background:#ff4444;color:#fff;font-size:.48rem;font-weight:900;padding:2px 5px;border-radius:6px;font-family:var(--ffd);}
 
 /* STATUS */
-.status{background:#040d04;border:1px solid #0f2a12;border-radius:9px;padding:8px 11px;font-size:.76rem;color:#7fffc4;line-height:1.6;min-height:38px;width:100%;}
+.status{background:linear-gradient(135deg,#030a03,#040d08);border:1px solid #0f2a18;border-radius:11px;padding:9px 13px;font-size:.76rem;color:#5eeba0;line-height:1.6;min-height:40px;width:100%;border-left:3px solid var(--green);}
 
 /* NEXT ROUND */
 .nextbtn{width:100%;background:linear-gradient(135deg,#1a5a3a,#1a3a8a);color:#fff;border:none;padding:13px;border-radius:11px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:var(--ff);transition:all .15s;touch-action:manipulation;}
@@ -180,7 +189,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 /* CRISIS */
 .crisis-veil{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);pointer-events:none;transition:background .5s;}
 .crisis-veil.on{pointer-events:all;background:rgba(50,0,0,.9);}
-.crisis-box{background:#100505;border:2px solid #cc2222;border-radius:20px;padding:22px 18px;max-width:310px;text-align:center;transform:scale(0);transition:transform .3s .1s;width:92%;}
+.crisis-box{background:linear-gradient(155deg,#130305,#1a0505);border:2px solid #cc2222;border-radius:22px;padding:24px 20px;max-width:320px;text-align:center;transform:scale(0);transition:transform .35s cubic-bezier(.175,.885,.32,1.275);width:92%;box-shadow:0 0 60px rgba(200,0,0,.25);}
 .crisis-veil.on .crisis-box{transform:scale(1);}
 .cr-ico{font-size:2.5rem;margin-bottom:6px;display:block;}
 .cr-title{font-size:1rem;font-weight:900;color:#ff5a5a;margin-bottom:6px;font-family:var(--ffd);}
@@ -197,7 +206,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* ============ RESULTADO ============ */
 #s-result{justify-content:flex-start;gap:9px;}
-.rcard{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:22px;width:100%;}
+.rcard{background:linear-gradient(160deg,var(--bg3),var(--bg4));border:1px solid var(--border2);border-radius:22px;padding:24px;width:100%;box-shadow:var(--shadow-card);}
 .r-ico{font-size:3rem;display:block;margin-bottom:6px;text-align:center;}
 .r-title{font-size:1.3rem;font-weight:900;text-align:center;font-family:var(--ffd);margin-bottom:5px;}
 .r-msg{font-size:.82rem;color:var(--txts);line-height:1.65;margin-bottom:14px;text-align:center;}
@@ -322,6 +331,13 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .ti-desc{font-size:.66rem;color:var(--txts);line-height:1.4;}
 .tut-footer{width:100%;padding:12px 14px;display:flex;gap:8px;background:var(--bg2);border-top:1px solid var(--border);}
 </style>
+<link rel="manifest" id="pwa-manifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ECO-PODERES">
+<meta name="theme-color" content="#060d18">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23060d18'/%3E%3Ctext y='360' font-size='340' text-anchor='middle' x='256'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 <canvas id="stars"></canvas>
@@ -360,20 +376,23 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 <!-- INTRO -->
 <div class="screen on z1" id="s-intro">
   <div class="intro-orb">🌍</div>
-  <div class="intro-logo">ECO-PODERES</div>
-  <div class="intro-sub">El Consejo de Guardianes</div>
-  <div class="demo-badge">🧪 Demo v0.4 — Rancagua</div>
+  <div class="intro-logo" style="font-size:2.8rem;letter-spacing:3px;line-height:1;">ECO-PODERES</div>
+  <div class="intro-sub" style="letter-spacing:5px;font-size:.76rem;color:var(--teal);">EL CONSEJO DE GUARDIANES</div>
+  <div class="demo-badge">🧪 Demo v0.5 — Rancagua</div>
   <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
     <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
     <button class="btn sec" onclick="goMenu()">▶ Jugar directamente</button>
+    <button id="install-btn" onclick="installPWA()" style="display:none;width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--teal);background:rgba(45,212,191,.08);color:var(--teal);font-size:.85rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">
+      📲 Instalar como App
+    </button>
     <button onclick="goFBRanking()" style="width:100%;padding:11px;border-radius:50px;border:1px solid var(--gold2);background:transparent;color:var(--gold2);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Ranking y Feedback</button>
     <button onclick="goAccionReal()" style="width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Comprometer Accion Eco Real</button>
     <div class="seeds-pill" style="justify-content:center;">
       <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="ver-tag">ECO-PODERES v0.4 · danygrafiko © 2025</div>
+  <div class="ver-tag">ECO-PODERES v0.5 · danygrafiko © 2025</div>
 </div>
 
 <!-- TUTORIAL -->
@@ -640,6 +659,25 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     <button class="btn sec" onclick="goIntro()" style="flex:1;padding:10px;font-size:.82rem;">← Inicio</button>
     <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">▶ Jugar</button>
   </div>
+  <!-- Config Google Sheets -->
+  <details style="width:100%;margin-top:4px;">
+    <summary style="font-size:.72rem;color:var(--txts);cursor:pointer;padding:8px;background:var(--bg4);border-radius:8px;list-style:none;display:flex;align-items:center;gap:6px;">
+      <span>⚙️</span><span>Configurar Google Sheets (admin)</span>
+    </summary>
+    <div style="background:var(--bg4);border:1px solid var(--border2);border-radius:0 0 12px 12px;padding:12px;margin-top:-4px;">
+      <div style="font-size:.68rem;color:var(--txts);line-height:1.6;margin-bottom:8px;">
+        Pega la URL de tu Apps Script para recibir feedback en tu hoja de cálculo en tiempo real.
+      </div>
+      <input id="sheets-url-input" type="url" placeholder="https://script.google.com/macros/s/..."
+        style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;font-size:.72rem;color:var(--txt);font-family:var(--ff);margin-bottom:6px;box-sizing:border-box;">
+      <div style="display:flex;gap:8px;">
+        <button onclick="guardarSheetsURL()" class="btn sec" style="flex:1;padding:7px;font-size:.72rem;">Guardar URL</button>
+        <button onclick="verFeedbackLocal()" class="btn ghost" style="flex:1;padding:7px;font-size:.72rem;">Ver datos locales</button>
+      </div>
+      <div id="sheets-url-status" style="font-size:.68rem;color:var(--green);margin-top:6px;text-align:center;min-height:16px;"></div>
+    </div>
+  </details>
+
 </div>
 
 <script>
@@ -954,7 +992,7 @@ function startGame(){
      agua:5,energia:4,deck,hand:[],disc:[],
      gpu:false,phase:'dice',path:null,cpr:0,_bee:false,
      comm,commPts:0,seedsEarned:0,
-     amenaza:null,proximaAmenaza:3,quizPendiente:false};
+     amenaza:null,proximaAmenaza:3,quizPendiente:false,mazoPrestado:false,cartasJugadasTurno:0};
   prevEco=50;
   // Águila empieza con 4 acciones
   if(G.g.id==='aguila')G.maxAcc=4;
@@ -968,8 +1006,24 @@ function startGame(){
 }
 function drawCard(){
   if(G.hand.length>=5)return;
-  if(!G.deck.length){if(!G.disc.length)return;G.deck=shuffle([...G.disc]);G.disc=[];}
-  if(G.deck.length)G.hand.push(G.deck.pop());
+  if(!G.deck.length){
+    if(!G.disc.length){
+      // Mazo agotado — tensión real
+      setStatus('⚠️ Mazo agotado. Administra tus cartas en mano.');
+      return;
+    }
+    // Reciclar descarte UNA sola vez por partida
+    if(!G.mazoPrestado){
+      G.mazoPrestado = true;
+      G.deck = shuffle([...G.disc]);
+      G.disc = [];
+      setStatus('♻️ Mazo reciclado — última oportunidad. Úsalas bien.');
+    } else {
+      setStatus('⚠️ Mazo agotado definitivamente. Solo tienes las cartas en mano.');
+      return;
+    }
+  }
+  if(G.deck.length) G.hand.push(G.deck.pop());
 }
 
 // ══ FASES ══
@@ -1041,6 +1095,11 @@ function choosePath(p){
   G.path=p;
   if(p==='ego'){
     G.energia+=2;G.karma+=1;
+    // EGO BONUS: si eliges EGO puedes robar 1 carta EXTRA (pero con riesgo)
+    if(G.hand.length<5){
+      drawCard();
+      setStatus('⚔️ EGO: +2 Energía, +1 Karma, +1 Carta (riesgo alto).');
+    }
     // EGO ahora también genera sociedad si tenemos proyectos activos
     var socialBonus = G.cpr > 0 ? 1 : 0;
     if(socialBonus) G.sociedad+=1;
@@ -1053,6 +1112,11 @@ function choosePath(p){
     setStatus('⚔️ EGO: +2 Energía, +1 Karma'+(socialBonus?' +1 Soc':'')+'.');
   } else {
     G.eco+=1;G.conciencia+=1;
+    // CON con alta conciencia: ver carta del tope antes de robar
+    if(G.conciencia>=6 && G.deck.length>0){
+      var topCard = G.deck[G.deck.length-1];
+      setStatus('🌀 CONSCIENCIA: Visión elevada — próxima carta: '+topCard.nm+' ('+topCard.txt+')');
+    }
     if(G.g.id==='pulpo') G.conciencia+=1;
     // CON saturación: si ya tienes conciencia alta, el beneficio baja
     // pero protege mejor contra amenazas ecológicas
@@ -1084,16 +1148,22 @@ function act(t){
 
 function playCard(i){
   const card=G.hand[i];if(!card)return;
+  if(G.phase!=='action')return;
+  // Límite de cartas por turno según ronda
+  var maxCartas = G.ronda >= 5 ? 2 : 1;
+  if(G.cartasJugadasTurno >= maxCartas){
+    setStatus('⚠️ Solo puedes jugar '+maxCartas+' carta'+(maxCartas>1?'s':'')+' por turno en esta ronda.');
+    return;
+  }
   // Elefante no puede jugar impulso
   if(G.g.id==='elefante'&&card.tp==='imp'){setStatus('🐘 El Elefante no puede jugar cartas de Impulso.');return;}
-  if(G.agua<cardCostA(card)||G.energia<cardCostE(card)){setStatus('❌ Sin recursos para '+card.nm+'.');fl('#330000');return;}
-  if(G.phase!=='action')return;
+  if(G.agua<cardCostA(card)||G.energia<cardCostE(card)){setStatus('❌ Sin recursos para '+card.nm+'. Usa RECOLECTAR primero.');fl('#330000');return;}
   prevEco=G.eco;
   G.agua-=cardCostA(card);G.energia-=cardCostE(card);
   card.ef(G);
   if(G.g.id==='tortuga')G.g.apply(G);
   if(G._bee){G.sociedad+=2;G._bee=false;setStatus('🐝 Buff cooperación: +2 Sociedad extra!');}
-  G.disc.push(card);G.hand.splice(i,1);G.cpr++;G.commPts+=10;
+  G.cartasJugadasTurno++;G.disc.push(card);G.hand.splice(i,1);G.cpr++;G.commPts+=10;
   // Jaguar bonus si eco subió
   if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5)G.acciones++;
   clamp();renderAll();setStatus('✨ '+card.nm+' — '+card.txt);fl('#003311');
@@ -1144,7 +1214,7 @@ function nextRound(){
     setStatus('💀 Karma desbordado: -5 Ecosistema. Karma reiniciado.');
   }
   G.ronda++;G.gpu=false;G.path=null;
-  G.acciones=G.maxAcc;G.cpr=0;G._bee=false;prevEco=G.eco;
+  G.acciones=G.maxAcc;G.cpr=0;G._bee=false;G.cartasJugadasTurno=0;prevEco=G.eco;
   clamp();
   if(G.eco<=0){endGame('colapso');return;}
   if(G.ronda>G.maxR){endGame('fin');return;}
@@ -1157,21 +1227,43 @@ function nextRound(){
 }
 
 function continueRound(){
-  // Mostrar quiz si está pendiente
+  // Si el juego ya terminó, no continuar
+  if(!G || G.ronda > G.maxR || document.querySelector('.screen.on')?.id === 's-result') return;
+  // ═══ FLUJO DE MINI-JUEGOS ═══
+  sh('game');
+  renderAll();
+
+  // Quiz eco (rondas 3 y 6)
   if(G.quizPendiente){
-    G.quizPendiente = false;
-    setTimeout(function(){ triggerQuiz(); }, 500);
+    G.quizPendiente=false;
+    setTimeout(function(){triggerQuiz();},600);
     return;
   }
-  renderAll();setPhase('dice');
+
+  // Mini-juegos de identidad local
+  var mjRondas={2:'areav',4:'especie',5:'reciclaje',7:'especie'};
+  var mj=mjRondas[G.ronda];
+  if(mj && !G['mj_'+G.ronda]){
+    G['mj_'+G.ronda]=true;
+    setTimeout(function(){
+      if(mj==='especie') triggerEspecie(null);
+      else if(mj==='reciclaje') triggerReciclaje(null);
+      else triggerAreaVerde(null);
+    },600);
+    return;
+  }
+
+  // Flujo normal
+  setPhase('dice');
   const rn=ROUND_NARR[Math.min(G.ronda-1,G.maxR-1)];
   showBanner('Ronda '+G.ronda+' de '+G.maxR,rn.t);
   showNarr(rn.t,rn.n);
   setStatus('Ronda '+G.ronda+'. '+rn.t+'. Lanza el dado.');
-  // Celebración si eco > 80 en rondas tempranas
-  if(G.eco>=82&&G.ronda<=5){
-    celebrate('🌿','Ecosistema Floreciente','El mundo agradece tu guía. Los biomas se recuperan.','+30 🌱 Semillas');
-    earnSeeds(30);
+  // Eco alto → bonus silencioso sin celebrate (para no confundir con fin de juego)
+  if(G.eco>=82 && G.ronda>=2 && G.ronda<=6 && !G._ecoFlorece){
+    G._ecoFlorece = true;
+    earnSeeds(20);
+    showBanner('🌿 Ecosistema Floreciente', 'Bonus +20 semillas — el mundo agradece tu guía');
   }
 }
 
@@ -1196,23 +1288,27 @@ function crisisChoice(opt){
 }
 
 // ══ CELEBRATE ══
-function celebrate(ico,title,msg,seedsTxt){
-  document.getElementById('cel-ico').textContent=ico;
-  document.getElementById('cel-title').textContent=title;
-  document.getElementById('cel-msg').textContent=msg;
-  document.getElementById('cel-seeds').textContent=seedsTxt;
-  document.getElementById('celebrate').classList.add('on');
-  spawnConfetti();
-}
-function closeCel(){document.getElementById('celebrate').classList.remove('on');}
-function handleCelClick(e){if(e.target===document.getElementById('celebrate'))closeCel();}
-function spawnConfetti(){
-  const colors=['#5ccf9a','#ffc542','#a66cff','#6d8cff','#ff7a45','#fff'];
-  for(let i=0;i<35;i++){
-    const p=document.createElement('div');p.className='confetti-piece';
-    p.style.cssText=`left:${Math.random()*100}%;top:-8px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;`;
-    document.body.appendChild(p);setTimeout(()=>p.remove(),5000);
+function celebrate(ico,title,msg,seedsTxt,btnTxt,btnFn){
+  var cel = document.getElementById('celebrate');
+  if(!cel) return;
+  var icoEl = document.getElementById('cel-ico');
+  var titEl = document.getElementById('cel-title');
+  var msgEl = document.getElementById('cel-msg');
+  var subEl = document.getElementById('cel-seeds');
+  var btnEl = document.getElementById('cel-btn');
+  if(icoEl) icoEl.textContent = ico;
+  if(titEl) titEl.textContent = title;
+  if(msgEl) msgEl.textContent = msg;
+  if(subEl) subEl.textContent = seedsTxt || '';
+  if(btnEl){
+    btnEl.textContent = btnTxt || 'Continuar →';
+    btnEl.onclick = function(){
+      cel.classList.remove('on');
+      if(btnFn) btnFn();
+    };
   }
+  cel.classList.add('on');
+  spawnConfetti();
 }
 
 // ══ CLAMP & RENDER ══
@@ -1243,19 +1339,46 @@ function renderAll(){
   $('acc-max').textContent='/'+G.maxAcc;
   $('v-ag').textContent=G.agua;$('v-en').textContent=G.energia;
   $('v-dk').textContent=G.deck.length;$('v-ds').textContent=G.disc.length;
+  // Color del mazo según urgencia
+  var dkEl=document.getElementById('v-dk');
+  if(dkEl){
+    if(G.mazoPrestado) dkEl.style.color='#ff5a5a'; // último reciclaje
+    else if(G.deck.length<=3) dkEl.style.color='#ffc542'; // pocas cartas
+    else dkEl.style.color='var(--txt)';
+  }
+  // Indicador límite cartas jugadas
+  var maxC=G.ronda>=5?2:1;
+  var accEl=document.getElementById('v-acc');
+  if(accEl&&G.phase==='action'){
+    accEl.textContent=G.acciones+(G.cartasJugadasTurno>0?' ('+G.cartasJugadasTurno+'/'+maxC+'🃏)':'');
+  }
   // Recursos escasos
   document.getElementById('rbox-agua').className='rbox'+(G.agua<=1?' scarce':'');
   document.getElementById('rbox-ener').className='rbox'+(G.energia<=1?' scarce':'');
   $('pow-ico').textContent=G.g.ico;
   $('a-pow').disabled=G.phase!=='action'||G.g.id==='pulpo'||!G.g.apply;
-  updateSeedsUI();renderHand();
+  updateSeedsUI();renderHand();actualizarAmenazaUI();
 }
 
 const TL={emp:'🌿 EMP',proy:'📋 PROY',con:'🧠 CON',crea:'⚡ CREA',ali:'🤝 ALI',imp:'💥 IMP',
           rara:'⭐ RARA',epica:'💜 ÉPICA',legendaria:'🏆 LEGEND',guardiana:'✨ SUPREMA'};
 
-function cardCostA(card){if(!card)return 0;if(card.ca!==undefined)return card.ca;if(card.c&&card.c.a!==undefined)return card.c.a;return 0;}
-function cardCostE(card){if(!card)return 0;if(card.ce!==undefined)return card.ce;if(card.c&&card.c.e!==undefined)return card.c.e;return 0;}
+function cardCostA(card){
+  if(!card)return 0;
+  if(card.ca!==undefined)return card.ca;
+  if(card.c&&card.c.a!==undefined)return card.c.a;
+  return 0;
+}
+function cardCostE(card){
+  if(!card)return 0;
+  if(card.ce!==undefined)return card.ce;
+  if(card.c&&card.c.e!==undefined)return card.c.e;
+  return 0;
+}
+
+
+
+
 function renderHand(){
   const hs=document.getElementById('hscroll');
   var hMax=5;
@@ -1265,8 +1388,9 @@ function renderHand(){
     hEl.style.color=G.hand.length>=5?'#ff5a5a':'var(--gold2)';
   }
   // Sugerencia contextual automática
-  if(G.phase==='action'){
+  if(G.phase==='action' && G.hand && G.hand.length > 0){
     var hayCartasJugables=G.hand.some(function(card){
+      if(!card) return false;
       return G.agua>=cardCostA(card)&&G.energia>=cardCostE(card);
     });
     if(!hayCartasJugables&&G.acciones>0&&G.agua<2){
@@ -1275,7 +1399,8 @@ function renderHand(){
   }
   if(!G.hand.length){hs.innerHTML='<div style="font-size:.73rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
   hs.innerHTML=G.hand.map((card,i)=>{
-    const can=G.agua>=cardCostA(card)&&G.energia>=cardCostE(card)&&G.phase==='action';
+    var maxC2=G.ronda>=5?2:1;
+    const can=G.agua>=cardCostA(card)&&G.energia>=cardCostE(card)&&G.phase==='action'&&G.cartasJugadasTurno<maxC2;
     const isLeg=card.tp==='legendaria'||card.tp==='guardiana';
     const beeBdg=G._bee?'<div style="position:absolute;top:-4px;right:-4px;width:13px;height:13px;border-radius:50%;background:#ffc542;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#07101d;font-weight:900;">🐝</div>':'';
     const isNew=card._new?'<div class="card-new">NEW</div>':'';
@@ -1285,7 +1410,7 @@ function renderHand(){
       <div class="cico">${card.ico}</div>
       <div class="cn">${card.nm}</div>
       <div class="cfx">${card.txt}</div>
-      <div class="cco">💧${card.c.a} ⚡${card.c.e}</div>
+      <div class="cco">💧${cardCostA(card)} ⚡${cardCostE(card)}</div>
     </div>`;
   }).join('');
 }
@@ -1316,7 +1441,11 @@ function endGame(reason){
   else if(pts>=95){ico='⚖️';ttl='Sociedad en Equilibrio';msg='Avanzaste con intención y sabiduría. La semilla del cambio está sembrada en terreno fértil.';}
   else if(pts>=60){ico='🌱';ttl='Despertar Temprano';msg='Cada error fue una lección valiosa. El Consejo te invita a regresar con más sabiduría.';}
   else{ico='⚠️';ttl='El Mundo Resiste';msg='El caos superó tu guía esta vez. La historia no termina aquí — regresa más preparado.';}
-  if(reason!=='colapso'){setTimeout(()=>celebrate(ico,ttl,msg,'+'+sg+' 🌱 Semillas Guardianas'),500);}
+  if(reason!=='colapso'){
+    setTimeout(function(){
+      celebrate(ico, ttl, msg, '+'+sg+' Semillas', 'Ver resultado →', null);
+    }, 500);
+  }
   sh('result');
   document.getElementById('r-ico').textContent=ico;document.getElementById('r-title').textContent=ttl;
   document.getElementById('r-msg').textContent=msg+' — '+G.g.ico+' '+G.g.nm;
@@ -1359,46 +1488,83 @@ function resetFB(){
   document.querySelectorAll('.fb-tag').forEach(t=>t.classList.remove('on'));
   document.getElementById('fb-comment').value='';
   document.getElementById('fb-sent').style.display='none';
-  document.getElementById('feedback-card').querySelectorAll('.fb-title,.fb-sub,#stars-main,.fb-cats,.fb-tags,textarea,.btn,.ghost').forEach(el=>el.style.display='');
+  (document.getElementById('feedback-card')||{querySelectorAll:function(){return [];}}).querySelectorAll('.fb-title,.fb-sub,#stars-main,.fb-cats,.fb-tags,textarea,.btn,.ghost').forEach(el=>el.style.display='');
 }
 function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));document.getElementById('star-lbl').textContent=STAR_LBL[n];}
 function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
 function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
 
-function resetFB(){
-  FB={stars:0,cats:{fun:0,clarity:0,theme:0,design:0},tags:[],comment:''};
-  document.getElementById('star-lbl').textContent='';
-  document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
-  ['fun','clarity','theme','design'].forEach(k=>document.querySelectorAll('#cat-'+k+' .fbc-star').forEach(s=>s.classList.remove('on')));
-  document.querySelectorAll('.fb-tag').forEach(t=>t.classList.remove('on'));
-  document.getElementById('fb-comment').value='';
-  document.getElementById('fb-sent').style.display='none';
-  document.getElementById('feedback-card').querySelectorAll('.fb-title,.fb-sub,#stars-main,.fb-cats,.fb-tags,textarea,.btn,.ghost').forEach(el=>el.style.display='');
-}
-function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));document.getElementById('star-lbl').textContent=STAR_LBL[n];}
+
+
 function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
 function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
 
-function resetFB(){
-  FB={stars:0,cats:{fun:0,clarity:0,theme:0,design:0},tags:[],comment:''};
-  document.getElementById('star-lbl').textContent='';
-  document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
-  ['fun','clarity','theme','design'].forEach(k=>document.querySelectorAll('#cat-'+k+' .fbc-star').forEach(s=>s.classList.remove('on')));
-  document.querySelectorAll('.fb-tag').forEach(t=>t.classList.remove('on'));
-  document.getElementById('fb-comment').value='';
-  document.getElementById('fb-sent').style.display='none';
-  document.getElementById('feedback-card').querySelectorAll('.fb-title,.fb-sub,#stars-main,.fb-cats,.fb-tags,textarea,.btn,.ghost').forEach(el=>el.style.display='');
-}
-function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));document.getElementById('star-lbl').textContent=STAR_LBL[n];}
+
+
 function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
 function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
 function submitFB(){
-  FB.comment=document.getElementById('fb-comment').value;
-  const data={...FB,guardian:G.g.nm,eco:G.eco,ronda:G.ronda,score:document.getElementById('r-score').textContent,ts:new Date().toISOString()};
-  try{const prev=JSON.parse(localStorage.getItem('ep_feedback')||'[]');prev.push(data);localStorage.setItem('ep_feedback',JSON.stringify(prev.slice(-50)));}catch(e){}
+  var commentEl = document.getElementById('fb-comment');
+  FB.comment = commentEl ? commentEl.value : '';
+  var scoreEl = document.getElementById('r-score');
+  var data = {
+    stars: FB.stars,
+    cats: FB.cats,
+    tags: FB.tags ? FB.tags.slice() : [],
+    comment: FB.comment,
+    guardian: G ? G.g.nm : '?',
+    eco: G ? G.eco : 0,
+    conciencia: G ? G.conciencia : 0,
+    sociedad: G ? G.sociedad : 0,
+    ronda: G ? G.ronda : 0,
+    score: scoreEl ? scoreEl.textContent : '?',
+    villa: G ? G.comm : '',
+    version: 'v0.5',
+    ts: new Date().toISOString()
+  };
+  // 1. Guardar localmente
+  try{
+    var prev = JSON.parse(localStorage.getItem('ep_feedback')||'[]');
+    prev.push(data);
+    localStorage.setItem('ep_feedback', JSON.stringify(prev.slice(-50)));
+  }catch(e){}
+  // 2. Enviar a Google Sheets si está configurado
+  var SHEETS_URL = localStorage.getItem('ep_sheets_url') || '';
+  if(SHEETS_URL && SHEETS_URL.startsWith('https://script.google.com')){
+    var payload = {
+      timestamp: data.ts,
+      guardian: data.guardian,
+      villa: data.villa,
+      estrellas: data.stars,
+      eco_final: data.eco,
+      conciencia: data.conciencia,
+      sociedad: data.sociedad,
+      puntaje: data.score,
+      diversion: data.cats ? (data.cats.fun || 0) : 0,
+      claridad: data.cats ? (data.cats.clarity || 0) : 0,
+      diseno: data.cats ? (data.cats.design || 0) : 0,
+      etiquetas: data.tags ? data.tags.join(',') : '',
+      comentario: data.comment,
+      version: data.version
+    };
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    }).catch(function(e){ console.log('Sheets offline:', e.message); });
+  }
   earnSeeds(10);
-  document.getElementById('feedback-card').querySelectorAll(':not(.fb-sent)').forEach(el=>{if(el.id!=='fb-sent')el.style.opacity='0';el.style.pointerEvents='none';});
-  document.getElementById('fb-sent').style.display='block';
+  updateSeedsUI();
+  // Ocultar formulario elemento por elemento
+  var toHide=['.fb-title','.fb-sub','.stars-row','#star-lbl','.fb-cats','.fb-tags','.fb-textarea'];
+  toHide.forEach(function(sel){
+    var el=document.querySelector('.feedback-card '+sel);if(el)el.style.display='none';
+  });
+  var btns=document.querySelectorAll('.feedback-card > button');
+  if(btns) btns.forEach(function(b){b.style.display='none';});
+  var sentEl=document.getElementById('fb-sent');
+  if(sentEl) sentEl.style.display='block';
 }
 
 function fbTab(tab){
@@ -1741,48 +1907,221 @@ function actualizarAmenazaUI(){
 
 // ══ ECO QUIZ ══
 var ECO_PREGUNTAS = [
-  {cat:"Cambio Climático",
-   pregunta:"¿Cuánto ha subido la temperatura global promedio desde la era preindustrial?",
-   ops:["0.5°C","1.1°C","2.5°C","3°C"], correcta:1,
-   exp:"La temperatura global ha subido ~1.1°C desde la era preindustrial. Parece poco, pero basta para derretir glaciares y alterar el clima global."},
-  {cat:"Agua Dulce",
-   pregunta:"¿Qué porcentaje del agua de la Tierra es agua dulce accesible?",
-   ops:["25%","10%","3%","0.3%"], correcta:3,
-   exp:"Solo el 0.3% del agua de la Tierra es dulce y accesible. El 97% es salada y el resto está congelada en glaciares."},
-  {cat:"Biodiversidad",
-   pregunta:"¿Cuántas especies se extinguen estimativamente cada día en el mundo?",
-   ops:["1-2","10-20","50-150","500+"], correcta:2,
-   exp:"Se estima que se extinguen entre 50 y 150 especies diariamente. La mayoría antes de ser descubiertas por la ciencia."},
-  {cat:"Energía",
-   pregunta:"¿Qué energía renovable creció más rápido en el mundo en los últimos 5 años?",
-   ops:["Eólica","Hidroeléctrica","Solar fotovoltaica","Geotérmica"], correcta:2,
-   exp:"La energía solar fotovoltaica es la de mayor crecimiento. En 2023 representó el 75% de toda la nueva capacidad renovable instalada."},
-  {cat:"Residuos",
-   pregunta:"¿Cuántos años tarda en degradarse una botella de plástico en la naturaleza?",
-   ops:["10 años","100 años","400-500 años","5.000 años"], correcta:2,
-   exp:"Una botella de plástico tarda entre 400 y 500 años en degradarse. En ese tiempo, se fragmenta en microplásticos que contaminan suelos y océanos."},
-  {cat:"Alimentación",
-   pregunta:"¿Qué porcentaje de las emisiones globales de CO2 proviene de la ganadería?",
-   ops:["5%","14.5%","30%","45%"], correcta:1,
-   exp:"La ganadería produce el 14.5% de las emisiones globales. Comer menos carne roja es una de las acciones individuales de mayor impacto."},
-  {cat:"Bosques",
-   pregunta:"¿Cuántos árboles se talan en el mundo cada minuto?",
-   ops:["100","1.000","15.000+","50.000"], correcta:2,
-   exp:"Se talan más de 15.000 árboles por minuto. Los bosques absorben el 30% del CO2 que emitimos. Su pérdida acelera el cambio climático."},
-  {cat:"Océanos",
-   pregunta:"¿Cuánto plástico entra al océano cada año?",
-   ops:["100.000 ton","1 millón ton","8 millones ton","50 millones ton"], correcta:2,
-   exp:"8 millones de toneladas de plástico llegan al océano anualmente. Equivale a vaciar un camión de basura por minuto al mar."},
-  {cat:"Chile",
-   pregunta:"¿Qué porcentaje de la electricidad de Chile proviene de fuentes renovables hoy?",
-   ops:["15%","30%","55%","80%"], correcta:2,
-   exp:"Chile superó el 55% de generación eléctrica renovable. Con el desierto de Atacama, tiene el mayor potencial solar del planeta."},
-  {cat:"Rancagua",
-   pregunta:"¿Qué río pasa por Rancagua y es vital para la región de O'Higgins?",
-   ops:["Río Maule","Río Biobío","Río Cachapoal","Río Rapel"], correcta:2,
-   exp:"El Río Cachapoal es fundamental para Rancagua. Provee agua para consumo humano, agricultura y su cuenca alberga gran biodiversidad."}
-];
 
+  // ── RANCAGUA IDENTIDAD LOCAL ──────────────────────────
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿En qué año fue fundada la ciudad de Rancagua?",
+   ops:["1691","1743","1810","1872"], correcta:1,
+   exp:"Rancagua fue fundada el 5 de octubre de 1743 por el Gobernador José Antonio Manso de Velasco. Su nombre mapuche 'Rangkagua' significa 'lugar donde se junta el agua'."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Cómo se llama el río que atraviesa la ciudad de Rancagua?",
+   ops:["Río Maule","Río Tinguiririca","Río Cachapoal","Río Rapel"], correcta:2,
+   exp:"El Río Cachapoal nace en los Andes y pasa por el sector oriente de Rancagua. Es vital para el riego agrícola y el abastecimiento de agua de la región."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Qué mineral histórico hace famosa a la región de O'Higgins?",
+   ops:["Oro","Plata","Cobre","Litio"], correcta:2,
+   exp:"El Cobre de El Teniente, ubicado a 44 km de Rancagua, es la mina de cobre subterránea más grande del mundo. Fue nacionalizada en 1971 por Salvador Allende."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Qué batalla histórica ocurrió en Rancagua en 1814?",
+   ops:["Batalla de Chacabuco","Batalla de Maipú","Desastre de Rancagua","Batalla del Roble"], correcta:2,
+   exp:"El Desastre de Rancagua (1-2 octubre 1814) fue una derrota patriota liderada por O'Higgins. Marcó el fin de la Patria Vieja e inició la Reconquista española."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Cuántos habitantes tiene aproximadamente la ciudad de Rancagua según el Censo 2024?",
+   ops:["80.000","150.000","236.000","320.000"], correcta:2,
+   exp:"Rancagua tiene aproximadamente 236.363 habitantes según el Censo 2024, siendo la quinta ciudad más poblada de Chile y capital de la Región de O'Higgins."},
+
+  // ── ÁREAS VERDES Y ESPACIOS PÚBLICOS ─────────────────
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Cuál es el parque más histórico y central de Rancagua?",
+   ops:["Parque Los Álamos","Parque Centenario","Parque El Teniente","Parque Sur"], correcta:1,
+   exp:"El Parque Centenario está en el corazón de Rancagua. Tiene árboles centenarios, una laguna artificial y es punto de encuentro familiar desde hace generaciones."},
+
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Qué humedal de importancia para aves migratorias está cerca de Rancagua?",
+   ops:["Humedal El Yali","Humedal Los Lirios","Humedal Batuco","Laguna Aculeo"], correcta:1,
+   exp:"El Humedal Los Lirios está en Requínoa, a 30 km de Rancagua. Es un sitio Ramsar que alberga más de 100 especies de aves, incluyendo flamencos y taguas."},
+
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Cuántos metros cuadrados de área verde por habitante recomienda la OMS?",
+   ops:["3 m²","9 m²","15 m²","25 m²"], correcta:1,
+   exp:"La OMS recomienda 9 m² de área verde por habitante como mínimo. Rancagua trabaja para aumentar sus espacios verdes, especialmente en poblaciones periféricas."},
+
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Qué beneficio comprobado tienen los árboles en las calles urbanas?",
+   ops:["Solo estética","Reducen temperatura hasta 8°C","Aumentan tráfico","Solo dan sombra"], correcta:1,
+   exp:"Los árboles urbanos pueden reducir la temperatura local hasta 8°C en comparación con calles sin vegetación. Este efecto se llama 'isla de frescor' y es clave ante el calor extremo."},
+
+  // ── FLORA NATIVA O'HIGGINS ────────────────────────────
+  {cat:"Flora Nativa",
+   pregunta:"¿Cuál árbol nativo de Chile produce saponina usada como jabón natural?",
+   ops:["Peumo","Boldo","Quillay","Maqui"], correcta:2,
+   exp:"El Quillay (Quillaja saponaria) produce saponinas en su corteza. Los mapuches lo usaban para lavar ropa y cabello. Hoy sus extractos se usan en cosmética y farmacia."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Qué árbol nativo tiene hojas aromáticas usadas en infusiones medicinales para el hígado?",
+   ops:["Espino","Boldo","Litre","Colliguay"], correcta:1,
+   exp:"El Boldo (Peumus boldus) es endémico de Chile. Sus hojas contienen boldina, con propiedades digestivas y hepáticas. Chile exporta extracto de boldo a Europa y Asia."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Cuál es el árbol nacional de Chile según el Ministerio de Agricultura?",
+   ops:["Araucaria","Peumo","Maqui","Quillay"], correcta:2,
+   exp:"El Maqui (Aristotelia chilensis) fue declarado árbol nacional de Chile. Sus bayas moradas tienen el mayor contenido de antocianinas de cualquier fruto conocido."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿En qué estación florecen los Espinos, árbol típico del Valle Central?",
+   ops:["Invierno","Primavera (agosto-septiembre)","Verano","Otoño"], correcta:1,
+   exp:"El Espino (Vachellia caven) florece en agosto-septiembre llenando el Valle Central de flores amarillas perfumadas. Es símbolo del paisaje de O'Higgins y resistente a la sequía."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Qué planta nativa de riberas tiene hojas rugosas usadas para curar heridas?",
+   ops:["Canelo","Matico","Muña","Cedrón"], correcta:1,
+   exp:"El Matico (Buddleja globosa) crece junto al Río Cachapoal. Es una planta medicinal tradicional usada para cicatrización. Sus hojas en polvo se aplican directamente en heridas."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Por qué los árboles nativos son mejores que exóticos para plantar en Rancagua?",
+   ops:["No lo son, los exóticos crecen más rápido","Usan menos agua y apoyan fauna local","Son más decorativos","Son más económicos"], correcta:1,
+   exp:"Los árboles nativos están adaptados al clima local, necesitan hasta 80% menos agua y sirven de alimento y refugio a aves e insectos nativos que los exóticos no pueden sostener."},
+
+  // ── FAUNA NATIVA ─────────────────────────────────────
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Qué ave rapaz pequeña se puede ver cazando en parques y campos de Rancagua?",
+   ops:["Cóndor","Cernícalo","Halcón peregrino","Águila"], correcta:1,
+   exp:"El Cernícalo (Falco sparverius) es el rapaz más común en zonas urbanas de Rancagua. Lo verás volando estático sobre campos y parques, cazando insectos y ratones."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Qué animal nativo controla naturalmente la población de ratones en la región?",
+   ops:["Perro doméstico","Zorro culpeo","Puma","Coipo"], correcta:1,
+   exp:"El Zorro culpeo (Lycalopex culpaeus) habita los cerros alrededor de Rancagua y es un controlador natural de roedores. Su caza ilegal desregula el ecosistema del Valle Central."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Qué ave acuática negra con frente blanca es típica del Lago Rapel, cerca de Rancagua?",
+   ops:["Garza Boyera","Pato Jergón","Tagua","Huairavo"], correcta:2,
+   exp:"La Tagua (Fulica armata) es un ave territorial y agresiva que vive en el Lago Rapel a 60 km de Rancagua. Construye nidos flotantes y es indicador de la salud de los humedales."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Cuántas especies de aves se han registrado en el Humedal Los Lirios cerca de Rancagua?",
+   ops:["15 especies","40 especies","100+ especies","250 especies"], correcta:2,
+   exp:"El Humedal Los Lirios alberga más de 100 especies de aves, incluyendo flamencos, taguas, garzas y aves migratorias del hemisferio norte. Es uno de los humedales más importantes de Chile Central."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Por qué es importante no cortar los cerros con vegetación nativa alrededor de Rancagua?",
+   ops:["Solo por estética","Son hábitat de zorro, cernícalo y reptiles nativos","Para turismo","Para control del clima"], correcta:1,
+   exp:"Los cerros con quillayes, espinos y peumos alrededor de Rancagua son el último refugio de zorros, cernícalos, lagartijas y culebras nativas. Sin esa vegetación, estas especies desaparecen del paisaje."},
+
+  // ── AGUA Y AHORRO HÍDRICO ─────────────────────────────
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Cuántos litros de agua se ahorran al cerrar la llave mientras te cepillas los dientes?",
+   ops:["2 litros","10 litros","25 litros","50 litros"], correcta:1,
+   exp:"Dejar la llave abierta al cepillarse desperdicia aproximadamente 10 litros por minuto. Chile enfrenta estrés hídrico severo: la zona central ha perdido 30% de sus lluvias en 30 años."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Qué porcentaje del agua dulce de Chile se usa en agricultura?",
+   ops:["20%","45%","70%","90%"], correcta:2,
+   exp:"El 70% del agua dulce en Chile se destina a la agricultura. La Región de O'Higgins, con sus viñedos y frutales, es una de las zonas de mayor consumo hídrico agrícola del país."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Cuántos litros de agua se necesitan para producir 1 kg de carne de vacuno?",
+   ops:["500 litros","2.000 litros","8.000 litros","15.500 litros"], correcta:3,
+   exp:"Se necesitan 15.500 litros de agua para producir 1 kg de carne de vacuno. Reducir el consumo de carne roja es una de las acciones individuales de mayor impacto en el uso del agua."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Qué es la 'megasequía' que afecta a la zona central de Chile?",
+   ops:["Una sola temporada seca","15 años consecutivos con lluvias bajo el promedio","Falta de ríos","Solo afecta el desierto"], correcta:1,
+   exp:"La megasequía es un período de más de 15 años de lluvias bajo el promedio histórico en Chile Central (desde 2010). Rancagua y el Valle del Cachapoal son zonas críticas de este fenómeno."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Cómo puedes reutilizar el agua fría mientras esperas la caliente en la ducha?",
+   ops:["No se puede reutilizar","Recogerla en un balde para regar plantas","Dejarla correr","Mezclarla con detergente"], correcta:1,
+   exp:"Recoger el agua fría inicial en un balde puede darte entre 5-10 litros por ducha. Úsala para regar plantas, limpiar o llenar el estanque del baño. En Rancagua se pierden millones de litros así al año."},
+
+  // ── RECICLAJE Y RESIDUOS ──────────────────────────────
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Cuántos años tarda en degradarse una colilla de cigarrillo en la naturaleza?",
+   ops:["6 meses","2 años","10 años","25 años"], correcta:2,
+   exp:"Una colilla tarda entre 10 y 15 años en degradarse y contamina hasta 50 litros de agua. Las riberas del Cachapoal y plazas de Rancagua son afectadas frecuentemente por este residuo."},
+
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Qué porcentaje de los residuos domésticos chilenos son reciclados actualmente?",
+   ops:["Menos del 1%","8%","25%","40%"], correcta:1,
+   exp:"Chile recicla solo alrededor del 8% de sus residuos. La Ley REP (Responsabilidad Extendida del Productor) busca llegar al 60% en 2030. Tú puedes marcar la diferencia en tu villa."},
+
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Cuántas veces puede reciclarse el vidrio sin perder calidad?",
+   ops:["Solo 1 vez","3-5 veces","10 veces","Infinitas veces"], correcta:3,
+   exp:"El vidrio es 100% reciclable de forma infinita sin perder calidad ni pureza. Reciclarlo ahorra 30% de energía comparado con fabricar vidrio nuevo. En Rancagua hay puntos limpios en varias municipalidades."},
+
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Qué residuo NO va en el contenedor de papel/cartón?",
+   ops:["Cajas de cereal aplastadas","Revistas de papel brillante","Periódicos","Cajas de huevos"], correcta:1,
+   exp:"Las revistas con plastificado brillante y el papel parafinado NO son reciclables junto al papel. Su recubrimiento plástico contamina el lote de reciclaje. Solo papel mate y cartón limpio."},
+
+  // ── CAMBIO CLIMÁTICO Y ENERGÍA ────────────────────────
+  {cat:"Clima y Energía",
+   pregunta:"¿Cuánto ha aumentado la temperatura promedio en Chile en los últimos 50 años?",
+   ops:["0.2°C","0.8°C","1.5°C","3°C"], correcta:1,
+   exp:"Chile ha experimentado un aumento de aproximadamente 0.8°C en su temperatura promedio en 50 años. En la zona central, las olas de calor son cada vez más frecuentes e intensas."},
+
+  {cat:"Clima y Energía",
+   pregunta:"¿Qué porcentaje de la electricidad de Chile proviene de energías renovables hoy?",
+   ops:["15%","35%","55%","80%"], correcta:2,
+   exp:"Chile superó el 55% de generación eléctrica renovable gracias al solar en Atacama y la eólica. La meta es llegar al 80% en 2030, uno de los objetivos más ambiciosos de América Latina."},
+
+  {cat:"Clima y Energía",
+   pregunta:"¿Cuánto CO2 absorbe un árbol adulto al año en promedio?",
+   ops:["2 kg","22 kg","100 kg","500 kg"], correcta:1,
+   exp:"Un árbol adulto absorbe aproximadamente 22 kg de CO2 al año. Plantar árboles nativos en Rancagua no solo ayuda al clima global — también da sombra, reduce el ruido y mejora el bienestar."},
+
+  {cat:"Clima y Energía",
+   pregunta:"¿Cuál es la principal fuente de energía renovable con más crecimiento en Chile?",
+   ops:["Hidroeléctrica","Eólica","Solar fotovoltaica","Geotérmica"], correcta:2,
+   exp:"La energía solar fotovoltaica es la de mayor crecimiento en Chile. El Desierto de Atacama tiene la mayor radiación solar del planeta. En 2023, el solar fue el 75% de toda la nueva capacidad renovable instalada."},
+
+  // ── CONSEJOS ECOLÓGICOS PRÁCTICOS ────────────────────
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Qué significa el concepto 'km 0' en alimentación?",
+   ops:["Comida sin calorías","Alimentos producidos localmente sin transporte largo","Comida gratis","Dieta vegana"], correcta:1,
+   exp:"'Km 0' son alimentos producidos a menos de 100 km de donde se consumen. Comprar en ferias locales de Rancagua reduce la huella de carbono del transporte y apoya a agricultores de la región."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Cuánto CO2 se evita por cada km que recorres en bicicleta en vez de auto?",
+   ops:["0 — bici no emite nada de todas formas","150 gramos de CO2","250 gramos de CO2","500 gramos de CO2"], correcta:2,
+   exp:"Cada km en bicicleta en lugar de auto evita 250 gramos de CO2. En Rancagua hay ciclovías que conectan varios barrios. Si 1.000 personas usan bicicleta solo 5 km al día, se evitan 450 toneladas de CO2 al año."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Qué es el 'stand-by' de los electrodomésticos y por qué importa?",
+   ops:["Modo de máxima eficiencia","Consumo eléctrico en reposo que suma hasta 10% de la cuenta","Ahorro automático","Solo afecta televisores"], correcta:1,
+   exp:"El stand-by es el consumo eléctrico cuando un aparato está apagado pero enchufado. Puede representar hasta el 10% de tu cuenta de luz. Desenchufar cargadores y electrodomésticos ahorra dinero y CO2."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Cuál de estas acciones tiene el mayor impacto individual en reducir tu huella de carbono?",
+   ops:["Reciclar el papel","Apagar luces al salir","Reducir el consumo de carne roja","Usar bolsas reutilizables"], correcta:2,
+   exp:"Reducir el consumo de carne roja tiene el mayor impacto individual: la ganadería produce el 14.5% de las emisiones globales. Una persona que come sin carne 3 días a la semana puede reducir su huella hasta un 35%."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Qué es el compostaje y para qué sirve?",
+   ops:["Reciclar plásticos","Transformar residuos orgánicos en abono para plantas","Tratar aguas residuales","Clasificar metales"], correcta:1,
+   exp:"El compostaje convierte restos de frutas, verduras y jardín en abono natural en 2-3 meses. Una familia puede compostar hasta 1 kg de residuos orgánicos diarios, reduciendo su basura en un 30%."},
+
+  // ── SEGURIDAD CIUDADANA Y ENTORNO ─────────────────────
+  {cat:"Entorno y Convivencia",
+   pregunta:"¿Cómo contribuyen los espacios verdes a la seguridad ciudadana?",
+   ops:["No tienen relación","Estudios muestran que reducen el delito hasta un 9%","Solo generan más delito","Solo son útiles de día"], correcta:1,
+   exp:"Estudios en ciudades del mundo muestran que parques bien mantenidos reducen el delito hasta 9% en el entorno. La presencia de árboles y espacios verdes genera mayor apropiación del espacio por los vecinos."},
+
+  {cat:"Entorno y Convivencia",
+   pregunta:"¿Qué beneficio tiene conocer las especies de plantas y aves de tu barrio?",
+   ops:["Ninguno práctico","Genera identidad, pertenencia y motivación para cuidar el entorno","Solo sirve para turismo","Es solo conocimiento científico"], correcta:1,
+   exp:"Conocer la flora y fauna local crea un vínculo emocional con el territorio. Los vecinos que conocen y nombran los árboles de su calle los cuidan más y participan más en la limpieza y protección del espacio público."},
+
+  {cat:"Entorno y Convivencia",
+   pregunta:"¿Cuántos chilenos viven en zonas urbanas hoy?",
+   ops:["50%","70%","88%","99%"], correcta:2,
+   exp:"El 88% de los chilenos vive en ciudades. Por eso, las decisiones sobre áreas verdes, transporte y reciclaje en ciudades como Rancagua tienen un impacto enorme en el medioambiente del país."}
+];
 var quizTimer = null;
 var quizTiempoRestante = 0;
 var quizPreguntaActual = null;
@@ -1864,7 +2203,8 @@ function responderQuiz(idx){
 }
 
 function cerrarQuiz(){
-  continueRound();
+  sh('game');
+  setTimeout(function(){ continueRound(); }, 300);
 }
 
 // ══ REABRIR FEEDBACK ══
@@ -1886,12 +2226,663 @@ function reabrirFeedback(){
   },200);
 }
 
-// Parchear renderAll para actualizar amenaza UI
-var _renderAllOrig = renderAll;
-renderAll = function(){
-  _renderAllOrig();
-  actualizarAmenazaUI();
+// actualizarAmenazaUI se llama desde renderAll directamente
+
+
+// ══ ESPECIES NATIVAS DE RANCAGUA / O'HIGGINS ══
+var ESPECIES_RANCAGUA = [
+  {
+    cat:"Árbol Nativo",
+    ico:"🌳", nombre:"Peumo",
+    pistas:"Árbol siempreverde de hasta 15m. Sus frutos rojos son alimento para peucos y zorros. Muy común en quebradas y cerros de la región de O'Higgins. Sus hojas tienen un olor aromático característico.",
+    ops:["Peumo","Quillay","Boldo","Litre"], correcta:0,
+    info:"El Peumo (Cryptocarya alba) es uno de los árboles más emblemáticos del bosque esclerófilo chileno. En Rancagua se puede ver en los cerros y quebradas del sector oriente.",
+    bonus_eco:2, bonus_seeds:15
+  },
+  {
+    cat:"Árbol Nativo",
+    ico:"🌿", nombre:"Boldo",
+    pistas:"Sus hojas se usan en infusión para el hígado. Arbusto o árbol pequeño de hoja perenne y aromática. Los mapuches lo usaban medicinalmente. Muy valorado en la medicina tradicional chilena.",
+    ops:["Maqui","Boldo","Peumo","Espino"], correcta:1,
+    info:"El Boldo (Peumus boldus) es endémico de Chile. Sus hojas contienen boldina, sustancia con propiedades medicinales. En O'Higgins crece naturalmente en los cerros.",
+    bonus_eco:2, bonus_seeds:12
+  },
+  {
+    cat:"Árbol Nativo",
+    ico:"🌾", nombre:"Quillay",
+    pistas:"Su corteza produce saponina, usada como champú natural. Árbol resistente a la sequía. Hojas pequeñas y duras. Los mapuches lo llamaban 'árbol del jabón'. Muy frecuente en zonas semiáridas.",
+    ops:["Quillay","Espino","Litre","Colliguay"], correcta:0,
+    info:"El Quillay (Quillaja saponaria) es endémico de Chile. Su corteza contiene saponinas usadas en cosmética y medicina. Resiste bien la sequía del valle central.",
+    bonus_eco:3, bonus_seeds:18
+  },
+  {
+    cat:"Arbusto Nativo",
+    ico:"🫐", nombre:"Maqui",
+    pistas:"Sus bayas moradas son antioxidantes y se hacen chicha. Arbusto de hasta 4m. Crece en bordes de caminos y quebradas. Los mapuches lo usaban para teñir telas y en rituales. Frutos en verano.",
+    ops:["Zarzamora","Maqui","Murta","Arrayán"], correcta:1,
+    info:"El Maqui (Aristotelia chilensis) es el árbol nacional de Chile. Sus frutos son ricos en antocianinas. En Rancagua crece en las quebradas del sector oriente de la ciudad.",
+    bonus_eco:2, bonus_seeds:14
+  },
+  {
+    cat:"Ave Nativa",
+    ico:"🦆", nombre:"Tagua",
+    pistas:"Ave acuática negra con escudo frontal blanco. Vive en lagos y ríos lentos. Construye nidos flotantes. Símbolo del lago Rapel, que está muy cerca de Rancagua. Agresiva en época de cría.",
+    ops:["Garza","Tagua","Pato jergón","Huairavo"], correcta:1,
+    info:"La Tagua (Fulica armata) es muy común en el lago Rapel, a solo 60 km de Rancagua. Es un ave típica del ecosistema acuático de la Región de O'Higgins.",
+    bonus_eco:2, bonus_seeds:12
+  },
+  {
+    cat:"Ave Nativa",
+    ico:"🦅", nombre:"Cernícalo",
+    pistas:"Pequeño rapaz que caza en vuelo estático. Cola rojiza con banda negra. Vive en bordes de ciudades y campos. Se adapta bien a zonas urbanas. Muy visible en postes y cables eléctricos.",
+    ops:["Tiuque","Cernícalo","Halcón peregrino","Quiltrín"], correcta:1,
+    info:"El Cernícalo (Falco sparverius) es el rapaz más común en Rancagua. Lo puedes ver cazando insectos y roedores en parques, orillas de canales y terrenos baldíos de la ciudad.",
+    bonus_eco:2, bonus_seeds:13
+  },
+  {
+    cat:"Planta Medicinal",
+    ico:"🌱", nombre:"Matico",
+    pistas:"Planta de hojas rugosas y aromáticas. Usada para curar heridas y problemas digestivos. Crece en bordes de ríos y quebradas húmedas. Sus hojas tienen nervios muy marcados. Nombre mapuche.",
+    ops:["Matico","Romero","Muña","Canelo"], correcta:0,
+    info:"El Matico (Buddleja globosa) crece naturalmente cerca del río Cachapoal. Es una planta medicinal tradicional chilena usada para cicatrización y digestión.",
+    bonus_eco:2, bonus_seeds:11
+  },
+  {
+    cat:"Animal Nativo",
+    ico:"🦊", nombre:"Zorro culpeo",
+    pistas:"El mayor zorro de Chile. Pelaje gris-rojizo con patas canelas. Activo de noche y madrugada. Come roedores, conejos y frutos. Vive en cerros y quebradas alrededor de Rancagua.",
+    ops:["Zorro chilla","Zorro culpeo","Chingue","Quique"], correcta:1,
+    info:"El Zorro culpeo (Lycalopex culpaeus) habita los cerros que rodean Rancagua. Es fundamental para controlar poblaciones de roedores. Está amenazado por la caza ilegal.",
+    bonus_eco:3, bonus_seeds:16
+  }
+];
+
+var AREAS_VERDES_RANCAGUA = [
+  {
+    tipo:"Parque Urbano",
+    ico:"🌳",
+    nombre:"Parque Centenario",
+    desc:"El parque más histórico de Rancagua, con árboles centenarios y juegos infantiles. Lugar de encuentro familiar por generaciones. Tiene una laguna artificial y arboles nativos.",
+    ops:["Centro histórico","Sector sur","Sector norte","Sector oriente"], correcta:0,
+    info:"El Parque Centenario está en el centro de Rancagua, entre las calles Cuevas y Millán. Es el pulmón verde del centro histórico y tiene árboles de más de 100 años.",
+    bonus_eco:2, bonus_seeds:12
+  },
+  {
+    tipo:"Río y Área Natural",
+    ico:"🌊",
+    nombre:"Río Cachapoal",
+    desc:"El río que da vida a Rancagua. Sus riberas son hábitat de aves acuáticas, anfibios y vegetación nativa. La limpieza de sus orillas es una acción de seguridad ciudadana y ambiental.",
+    ops:["Sector oriente","Sector norte","Sector sur","Centro"], correcta:0,
+    info:"El Cachapoal nace en los Andes y pasa por el sector oriente de Rancagua. La municipalidad tiene programas de revegetación de sus orillas con especies nativas.",
+    bonus_eco:3, bonus_seeds:15
+  },
+  {
+    tipo:"Plaza",
+    ico:"🏛️",
+    nombre:"Plaza de Los Héroes",
+    desc:"El corazón de Rancagua. Plaza histórica donde se dió el Grito de la Independencia. Tiene árboles de gran porte y es punto de encuentro cívico. Fue declarada Monumento Nacional.",
+    ops:["Centro","Norte","Sur","Oriente"], correcta:0,
+    info:"La Plaza de Los Héroes es el centro geográfico y simbólico de Rancagua. Tiene palmeras y árboles que superan los 80 años. Es punto de referencia de identidad local.",
+    bonus_eco:2, bonus_seeds:10
+  },
+  {
+    tipo:"Área Verde",
+    ico:"🌿",
+    nombre:"Parque Los Álamos",
+    desc:"Gran espacio verde con áreas de ejercicio, canchas y ciclovías. Muy frecuentado por familias de varios sectores de la ciudad. Tiene especies arbóreas variadas.",
+    ops:["Sector norte","Centro","Sector sur","Sector oriente"], correcta:0,
+    info:"Los Álamos es uno de los parques más grandes de Rancagua, ubicado en el sector norte. Es un espacio clave para la actividad física y el encuentro comunitario.",
+    bonus_eco:2, bonus_seeds:12
+  },
+  {
+    tipo:"Humedal",
+    ico:"🦢",
+    nombre:"Humedal Los Lirios",
+    desc:"Ecosistema acuático protegido con aves migratorias y vegetación palustre. Fácil de visitar desde Rancagua. Es un sitio Ramsar de importancia para aves del cono sur.",
+    ops:["Requínoa (30 km)","Machalí","Graneros","San Fernando"], correcta:0,
+    info:"Los Lirios está en Requínoa, a 30 km de Rancagua. Es un humedal de importancia hemisférica que protege más de 100 especies de aves, incluyendo flamencos.",
+    bonus_eco:4, bonus_seeds:20
+  }
+];
+
+var especieTimer = null;
+var especiePreguntaActual = null;
+var especieCallback = null;
+
+function triggerEspecie(cb){
+  especieCallback = cb || null;
+  especiePreguntaActual = ESPECIES_RANCAGUA[Math.floor(Math.random()*ESPECIES_RANCAGUA.length)];
+  sh('especie');
+  renderEspecie(especiePreguntaActual);
+}
+
+function triggerAreaVerde(cb){
+  especieCallback = cb || null;
+  var av = AREAS_VERDES_RANCAGUA[Math.floor(Math.random()*AREAS_VERDES_RANCAGUA.length)];
+  especiePreguntaActual = av;
+  sh('areav');
+  // Poblar pantalla
+  var tipoEl = document.getElementById('av-tipo');
+  var icoEl = document.getElementById('av-icono');
+  var nmEl = document.getElementById('av-nombre');
+  var descEl = document.getElementById('av-desc');
+  var opsEl = document.getElementById('av-opciones');
+  var resEl = document.getElementById('areav-resultado');
+  if(tipoEl) tipoEl.textContent = av.tipo;
+  if(icoEl) icoEl.textContent = av.ico;
+  if(nmEl) nmEl.textContent = av.nombre;
+  if(descEl) descEl.textContent = av.desc;
+  if(resEl) resEl.style.display = 'none';
+  document.getElementById('areav-card').style.display = 'block';
+  if(opsEl){
+    opsEl.innerHTML='';
+    av.ops.forEach(function(op,i){
+      var btn=document.createElement('button');
+      btn.className='btn ghost';
+      btn.style.cssText='text-align:left;padding:10px 14px;font-size:.84rem;';
+      btn.textContent=op;
+      btn.addEventListener('click',function(){responderAreaV(i);});
+      opsEl.appendChild(btn);
+    });
+  }
+}
+
+function renderEspecie(e){
+  var catEl=document.getElementById('esp-categoria');
+  var icoEl=document.getElementById('esp-icono');
+  var pistasEl=document.getElementById('esp-pistas');
+  var opsEl=document.getElementById('esp-opciones');
+  var resEl=document.getElementById('especie-resultado');
+  var cardEl=document.getElementById('especie-card');
+  if(catEl) catEl.textContent=e.cat;
+  if(icoEl) icoEl.textContent=e.ico;
+  if(pistasEl) pistasEl.textContent=e.pistas;
+  if(resEl) resEl.style.display='none';
+  if(cardEl) cardEl.style.display='block';
+  if(opsEl){
+    opsEl.innerHTML='';
+    e.ops.forEach(function(op,i){
+      var btn=document.createElement('button');
+      btn.className='btn ghost';
+      btn.style.cssText='text-align:left;padding:10px 14px;font-size:.84rem;';
+      btn.textContent=op;
+      btn.addEventListener('click',function(){responderEspecie(i);});
+      opsEl.appendChild(btn);
+    });
+  }
+  // Timer 20 segundos
+  var tiempo=200;
+  if(especieTimer) clearInterval(especieTimer);
+  especieTimer=setInterval(function(){
+    tiempo--;
+    var fill=document.getElementById('especie-timer-fill');
+    if(fill){fill.style.width=(tiempo/200*100)+'%';fill.style.background=tiempo<50?'#ff5a5a':'var(--green)';}
+    if(tiempo<=0){clearInterval(especieTimer);responderEspecie(-1);}
+  },100);
+}
+
+function responderEspecie(idx){
+  if(especieTimer) clearInterval(especieTimer);
+  var e=especiePreguntaActual;if(!e)return;
+  var correcto=idx===e.correcta;
+  document.getElementById('especie-card').style.display='none';
+  var resEl=document.getElementById('especie-resultado');
+  var resIco=document.getElementById('esp-res-ico');
+  var resTit=document.getElementById('esp-res-titulo');
+  var resInfo=document.getElementById('esp-res-info');
+  if(resEl){resEl.style.display='block';resEl.style.background=correcto?'#0a1f0a':'#1a0a0a';resEl.style.border='1.5px solid '+(correcto?'var(--green)':'#cc2222');}
+  if(resIco) resIco.textContent=idx===-1?'⏱️':correcto?'✅':'❌';
+  if(resTit){resTit.textContent=correcto?'¡Correcto! +'+e.bonus_eco+' Eco, +'+e.bonus_seeds+' Semillas':'Incorrecto. La respuesta es: '+e.ops[e.correcta];resTit.style.color=correcto?'var(--green)':'#ff5a5a';}
+  if(resInfo) resInfo.textContent=e.info;
+  if(correcto){G.eco+=e.bonus_eco;earnSeeds(e.bonus_seeds);spawnConfetti();}else{G.eco-=1;}
+  clamp();
+}
+
+function cerrarEspecie(){
+  sh('game');
+  setTimeout(function(){
+    if(especieCallback){var cb=especieCallback;especieCallback=null;cb();}
+    else continueRound();
+  },300);
+}
+
+function responderAreaV(idx){
+  var av=especiePreguntaActual;if(!av)return;
+  var correcto=idx===av.correcta;
+  document.getElementById('areav-card').style.display='none';
+  var resEl=document.getElementById('areav-resultado');
+  var resIco=document.getElementById('av-res-ico');
+  var resTit=document.getElementById('av-res-titulo');
+  var resInfo=document.getElementById('av-res-info');
+  if(resEl){resEl.style.display='block';resEl.style.background=correcto?'#0a1f0a':'#1a0a0a';resEl.style.border='1.5px solid '+(correcto?'var(--green)':'#cc2222');}
+  if(resIco) resIco.textContent=correcto?'✅':'❌';
+  if(resTit){resTit.textContent=correcto?'¡Correcto! +'+av.bonus_eco+' Eco, +'+av.bonus_seeds+' Semillas':'Incorrecto. Es: '+av.ops[av.correcta];resTit.style.color=correcto?'var(--green)':'#ff5a5a';}
+  if(resInfo) resInfo.textContent=av.info;
+  if(correcto){G.eco+=av.bonus_eco;earnSeeds(av.bonus_seeds);spawnConfetti();}else{G.eco-=1;}
+  clamp();
+}
+
+function cerrarAreaV(){
+  sh('game');
+  setTimeout(function(){
+    if(especieCallback){var cb=especieCallback;especieCallback=null;cb();}
+    else continueRound();
+  },300);
+}
+
+// ══ INTEGRAR MINI-JUEGOS AL FLUJO DE RONDAS ══
+// Ronda 2: Área verde (identidad local)
+// Ronda 4: Especie nativa (biodiversidad)
+// Ronda 6: Quiz eco (cambio climático)
+// Ronda 7: Especie o área verde (refuerzo)
+var MINIJUEGO_RONDAS = {2:'areav', 4:'especie', 7:'especie'};
+
+// continueRound manejado directamente
+
+
+// ══ MINI-JUEGO: RECICLAJE ══
+var RESIDUOS = [
+  // ── NIVEL 1: Fácil — residuos obvios ──────────────
+  {ico:"🍌",nm:"Cáscara de banana",bin:"organico",nivel:1,
+   dato:"Los residuos orgánicos se convierten en compost en 2-3 meses. En Rancagua hay composteras comunitarias en varios parques."},
+  {ico:"🍎",nm:"Corazón de manzana",bin:"organico",nivel:1,
+   dato:"Un hogar promedio produce 1 kg de residuos orgánicos al día. El compostaje reduce el metano que producen en el vertedero."},
+  {ico:"📰",nm:"Periódico",bin:"papel",nivel:1,
+   dato:"Reciclar una tonelada de papel ahorra 17 árboles y 26.000 litros de agua. El papel tiene hasta 7 ciclos de reciclaje."},
+  {ico:"🍷",nm:"Botella de vino vacía",bin:"vidrio",nivel:1,
+   dato:"El vidrio es 100% reciclable infinitas veces sin perder calidad. En la Región de O'Higgins hay puntos limpios en cada municipalidad."},
+  {ico:"🥤",nm:"Botella de agua plástica",bin:"plastico",nivel:1,
+   dato:"Chile produce 1 millón de botellas plásticas al día. Solo el 8% se recicla. Siempre aplasta la botella antes de reciclar."},
+  {ico:"🥬",nm:"Restos de lechuga",bin:"organico",nivel:1,
+   dato:"Los vegetales se degradan en 2-4 semanas en compostaje vs 6 meses en vertedero. Todo residuo de verdura va al orgánico."},
+  {ico:"📦",nm:"Caja de cartón limpia",bin:"papel",nivel:1,
+   dato:"El cartón corrugado es uno de los materiales más reciclados en Chile. Siempre aplánalo para que ocupe menos espacio."},
+  {ico:"🫙",nm:"Frasco de vidrio de mermelada",bin:"vidrio",nivel:1,
+   dato:"Enjuaga siempre los frascos antes de reciclar. La comida adherida contamina un lote completo de vidrio reciclado."},
+
+  // ── NIVEL 2: Medio — residuos confusos ────────────
+  {ico:"🧃",nm:"Tetra Pak de jugo",bin:"plastico",nivel:2,
+   dato:"El Tetra Pak es reciclable pero va con plásticos, no con papel. Está hecho de capas de cartón, plástico y aluminio laminadas."},
+  {ico:"🍕",nm:"Caja de pizza con grasa",bin:"organico",nivel:2,
+   dato:"La caja de pizza con grasa o restos de comida NO va en papel — la grasa contamina el reciclaje. Va en orgánico o basura general."},
+  {ico:"🛍️",nm:"Bolsa plástica de supermercado",bin:"plastico",nivel:2,
+   dato:"Las bolsas plásticas están prohibidas en Chile desde 2020. Las que aún existen van en plástico. Mejor: usa bolsas reutilizables."},
+  {ico:"🥫",nm:"Tarro de conserva vacío",bin:"plastico",nivel:2,
+   dato:"Los tarros de hojalata van en plástico (metales) en muchos municipios. En Rancagua consulta el punto limpio más cercano."},
+  {ico:"✉️",nm:"Sobre con ventana plástica",bin:"papel",nivel:2,
+   dato:"Los sobres con ventana transparente SÍ son reciclables en papel. La ventana plástica es tan pequeña que no contamina el proceso."},
+  {ico:"🧴",nm:"Botella de shampoo vacía",bin:"plastico",nivel:2,
+   dato:"Los envases de higiene van en plástico. Enjuágalos antes de reciclar. Aplastarlos ahorra espacio y facilita la clasificación."},
+  {ico:"🍵",nm:"Bolsa de té usada",bin:"organico",nivel:2,
+   dato:"Las bolsas de té se pueden compostar directamente. Los posos de café también son excelente abono para plantas de interior."},
+  {ico:"📮",nm:"Revista con portada brillante",bin:"organico",nivel:2,
+   dato:"¡Trampa! Las revistas con plastificado brillante NO son reciclables en papel. Su recubrimiento plástico contamina el lote. Van a basura general."},
+
+  // ── NIVEL 3: Difícil — casos especiales ───────────
+  {ico:"🔋",nm:"Pila alcalina usada",bin:"organico",nivel:3,
+   dato:"¡Peligro! Las pilas contienen mercurio, cadmio y plomo. NUNCA van en basura normal. Lleva las pilas a puntos de reciclaje especiales en supermercados y municipalidades."},
+  {ico:"💡",nm:"Ampolleta LED",bin:"organico",nivel:3,
+   dato:"Las ampolletas LED son RAEE (Residuos de Aparatos Eléctricos). Van en puntos especiales. Duran 25 veces más que las incandescentes."},
+  {ico:"📱",nm:"Celular viejo",bin:"organico",nivel:3,
+   dato:"Los celulares son RAEE con metales valiosos (oro, plata, cobre). En Chile la Ley REP obliga a fabricantes a recibir equipos usados para reciclaje."},
+  {ico:"🪟",nm:"Vidrio de ventana roto",bin:"organico",nivel:3,
+   dato:"¡Trampa! El vidrio de ventanas, espejos y cristales templados NO va en el contenedor de vidrio — tienen composición distinta y rompen el proceso de reciclaje."},
+  {ico:"🍼",nm:"Botella de vidrio tintada (verde)",bin:"vidrio",nivel:3,
+   dato:"El vidrio de color SÍ es reciclable, pero idealmente separado por color (verde, marrón, transparente). Si no hay separación, igual va en vidrio."},
+  {ico:"🧻",nm:"Rollo de papel higiénico",bin:"papel",nivel:3,
+   dato:"El tubo de cartón del papel higiénico SÍ es reciclable en papel. Acumúlalos y llévalos al punto de reciclaje mensualmente."},
+  {ico:"☕",nm:"Cápsula de café de aluminio",bin:"plastico",nivel:3,
+   dato:"Las cápsulas de aluminio (tipo Nespresso) tienen programa de reciclaje especial. Muchas tiendas las reciben. El aluminio se recicla infinitas veces."},
+  {ico:"🩺",nm:"Mascarilla quirúrgica",bin:"organico",nivel:3,
+   dato:"Las mascarillas quirúrgicas son residuos especiales — plástico no reciclable. Van en bolsa sellada a basura general. Nunca al orgánico ni a la calle."},
+  {ico:"🪣",nm:"Envase de pintura vacío y seco",bin:"plastico",nivel:3,
+   dato:"Los tarros de pintura VACÍOS y SECOS pueden ir en metales/plásticos. Con pintura dentro son residuo peligroso y deben llevarse a punto especial."},
+  {ico:"🌿",nm:"Ramas y poda de jardín",bin:"organico",nivel:3,
+   dato:"Los restos de poda van en orgánico o en el servicio especial de retiro de la municipalidad. No los quemes — el humo contamina el aire de tu barrio."},
+  {ico:"🥚",nm:"Huevera de cartón",bin:"papel",nivel:3,
+   dato:"Las hueveras de cartón SÍ son reciclables aunque estén sucias. El papel marrón resistente se recicla bien. También sirven como maceteros para semillas."},
+  {ico:"🧼",nm:"Jabón de barra usado",bin:"organico",nivel:3,
+   dato:"Los restos de jabón son biodegradables y van en orgánico. En compostera pueden funcionar como repelente de insectos si se trituran."},
+  {ico:"🎁",nm:"Papel de regalo con brillo",bin:"organico",nivel:3,
+   dato:"El papel de regalo con brillo metálico o plástico NO es reciclable. El papel mate simple sí. Cuando compres papel de regalo, elige el mate para poder reciclarlo."},
+  {ico:"🧺",nm:"Ropa en mal estado",bin:"organico",nivel:3,
+   dato:"La ropa muy deteriorada no sirve para donar pero tiene reciclaje textil. Muchas tiendas tienen contenedores de ropa. Nunca la tires a la basura normal."},
+  {ico:"🍳",nm:"Aceite de cocina usado",bin:"organico",nivel:3,
+   dato:"El aceite usado NUNCA va por el desagüe — contamina hasta 1.000 litros de agua. Guárdalo en botella cerrada y llévalo a puntos de reciclaje de aceite."}
+];
+
+// ══ DIFICULTAD PROGRESIVA ══
+// Nivel determinado por ronda del juego
+function getNivelReciclaje(){
+  if(!G) return 1;
+  if(G.ronda <= 3) return 1;
+  if(G.ronda <= 6) return 2;
+  return 3;
+}
+
+];
+
+var recTimer = null;
+var recTiempoRestante = 0;
+var recItems = [];
+var recIndex = 0;
+var recAciertos = 0;
+var recCallback = null;
+
+function triggerReciclaje(cb) {
+  recCallback = cb || null;
+  var nivel = getNivelReciclaje();
+  // Filtrar por nivel: nivel 1 solo fáciles, nivel 2 mezcla, nivel 3 todos
+  var pool;
+  if(nivel === 1){
+    pool = RESIDUOS.filter(function(r){ return r.nivel === 1; });
+  } else if(nivel === 2){
+    var faciles = RESIDUOS.filter(function(r){ return r.nivel === 1; }).slice(0,4);
+    var medios = RESIDUOS.filter(function(r){ return r.nivel === 2; });
+    pool = faciles.concat(medios);
+  } else {
+    // Nivel 3: mayoría difíciles
+    var base = RESIDUOS.filter(function(r){ return r.nivel <= 2; }).slice(0,3);
+    var dificiles = RESIDUOS.filter(function(r){ return r.nivel === 3; });
+    pool = base.concat(dificiles);
+  }
+  // Tomar 8 mezclados
+  recItems = pool.slice().sort(function(){ return Math.random() - .5; }).slice(0, 8);
+  recIndex = 0;
+  recAciertos = 0;
+  sh('reciclaje');
+  document.getElementById('rec-resultado').style.display = 'none';
+  document.getElementById('rec-item-card').style.display = 'block';
+  document.getElementById('rec-bins').style.display = 'grid';
+  document.getElementById('rec-feedback').textContent = '';
+  renderResiduo();
+  iniciarTimerReciclaje();
+}
+
+function renderResiduo() {
+  var item = recItems[recIndex];
+  if (!item) return;
+  document.getElementById('rec-item-ico').textContent = item.ico;
+  document.getElementById('rec-item-nm').textContent = item.nm;
+  // Hint según dificultad del ítem
+  var hint = item.nivel === 3 ? '⚠️ Caso especial — ¡piénsalo bien!' :
+             item.nivel === 2 ? '🤔 ¿Estás seguro?' : '¿En qué contenedor va?';
+  document.getElementById('rec-item-hint').textContent = hint;
+  // Mostrar nivel actual
+  var nivel = getNivelReciclaje();
+  var nivelTxt = document.getElementById('rec-nivel-txt');
+  if(nivelTxt){
+    var lvlLabel = nivel === 1 ? '⭐ Nivel Básico' : nivel === 2 ? '⭐⭐ Nivel Medio' : '⭐⭐⭐ Nivel Experto';
+    nivelTxt.textContent = lvlLabel + ' — ' + (recItems.length - recIndex) + ' residuos restantes';
+    nivelTxt.style.color = nivel === 3 ? '#ff8c42' : nivel === 2 ? 'var(--gold2)' : 'var(--txts)';
+  }
+  document.getElementById('rec-score').textContent = recAciertos;
+  document.getElementById('rec-left').textContent = recItems.length - recIndex;
+}
+
+function iniciarTimerReciclaje() {
+  var nivel2 = getNivelReciclaje();
+  // Timer: 30s fácil, 22s medio, 15s difícil
+  var tiempoBase = nivel2 === 1 ? 300 : nivel2 === 2 ? 220 : 150;
+  recTiempoRestante = tiempoBase;
+  var _timerBase = tiempoBase; // para calcular el porcentaje
+  if (recTimer) clearInterval(recTimer);
+  recTimer = setInterval(function() {
+    recTiempoRestante--;
+    var fill = document.getElementById('rec-timer-bar');
+    var lbl = document.getElementById('rec-timer');
+    var pill = document.getElementById('rec-timer-pill');
+    var _base = typeof _timerBase !== 'undefined' ? _timerBase : 300;
+    if (fill) fill.style.width = (recTiempoRestante / _base * 100) + '%';
+    if (fill) fill.style.background = recTiempoRestante < 60 ? '#ff4d4d' : 'var(--teal)';
+    if (lbl) lbl.textContent = Math.ceil(recTiempoRestante / 10);
+    if (pill) pill.style.color = recTiempoRestante < 60 ? '#ff4d4d' : 'var(--txt)';
+    if (recTiempoRestante <= 0) {
+      clearInterval(recTimer);
+      finalizarReciclaje();
+    }
+  }, 100);
+}
+
+function clasificar(bin) {
+  var item = recItems[recIndex];
+  if (!item) return;
+  var correcto = item.bin === bin;
+  var fb = document.getElementById('rec-feedback');
+
+  var nivel3 = getNivelReciclaje();
+  if (correcto) {
+    recAciertos++;
+    var bonus = nivel3 === 3 ? '¡Difícil! +2pts' : '¡Correcto!';
+    if (fb) { fb.textContent = '✅ ' + bonus; fb.style.color = 'var(--green)'; }
+    if (nivel3 === 3) recAciertos++; // doble punto en nivel difícil
+    if (typeof spawnConfetti === 'function' && nivel3 >= 2) spawnConfetti();
+  } else {
+    var nombres = {organico:'Orgánico 🟢', plastico:'Plástico 🔵', papel:'Papel/Cartón 🟡', vidrio:'Vidrio 🟤'};
+    var penalMsg = nivel3 === 3 ? ' (nivel difícil: -1 eco)' : '';
+    if (fb) { fb.textContent = '❌ Era: ' + nombres[item.bin] + penalMsg; fb.style.color = '#ff5a5a'; }
+    if (nivel3 === 3 && typeof G !== 'undefined' && G){ G.eco -= 1; }
+  }
+
+  recIndex++;
+  if (recIndex >= recItems.length) {
+    clearInterval(recTimer);
+    setTimeout(finalizarReciclaje, 600);
+  } else {
+    setTimeout(renderResiduo, 700);
+  }
+}
+
+function finalizarReciclaje() {
+  if (recTimer) clearInterval(recTimer);
+  var pct = Math.round(recAciertos / recItems.length * 100);
+  var ecoBonus = Math.round(recAciertos * 0.5);
+  var seedsBonus = recAciertos * 8;
+
+  // Aplicar bonos al juego
+  if (typeof G !== 'undefined' && G) {
+    G.eco += ecoBonus;
+    if (typeof clamp === 'function') clamp();
+  }
+  if (typeof earnSeeds === 'function') earnSeeds(seedsBonus);
+  if (typeof updateSeedsUI === 'function') updateSeedsUI();
+
+  // Dato educativo del último ítem o random
+  var dato = recItems[Math.floor(Math.random() * recItems.length)].dato;
+
+  document.getElementById('rec-item-card').style.display = 'none';
+  document.getElementById('rec-bins').style.display = 'none';
+  document.getElementById('rec-feedback').textContent = '';
+
+  var res = document.getElementById('rec-resultado');
+  var ico = document.getElementById('rec-res-ico');
+  var tit = document.getElementById('rec-res-titulo');
+  var stats = document.getElementById('rec-res-stats');
+  var datoEl = document.getElementById('rec-res-dato');
+
+  if (res) res.style.display = 'block';
+  if (ico) ico.textContent = pct >= 75 ? '🌟' : pct >= 50 ? '♻️' : '📚';
+  if (tit) {
+    tit.textContent = pct >= 75 ? '¡Excelente reciclador!' : pct >= 50 ? '¡Buen intento!' : '¡Sigue practicando!';
+    tit.style.color = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--gold2)' : 'var(--txts)';
+  }
+  if (stats) stats.textContent = recAciertos + ' de ' + recItems.length + ' correctos (' + pct + '%) · +' + ecoBonus + ' Eco · +' + seedsBonus + ' Semillas';
+  if (datoEl) datoEl.textContent = '💡 ' + dato;
+}
+
+function cerrarReciclaje() {
+  sh('game');
+  setTimeout(function() {
+    if (recCallback) { var cb = recCallback; recCallback = null; cb(); }
+    else if (typeof continueRound === 'function') continueRound();
+  }, 300);
+}
+
+
+// ══ PWA: MANIFEST + SERVICE WORKER ══
+(function(){
+  // Manifest dinámico
+  var manifest = {
+    name: 'ECO-PODERES — El Consejo de Guardianes',
+    short_name: 'ECO-PODERES',
+    description: 'Juego de decisiones ecológicas con identidad local de Rancagua',
+    start_url: '.',
+    display: 'standalone',
+    background_color: '#060d18',
+    theme_color: '#060d18',
+    orientation: 'portrait',
+    categories: ['games', 'education', 'lifestyle'],
+    lang: 'es-CL',
+    icons: [
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%23060d18'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%230b1628' stroke='%234ecb8d' stroke-width='8'/%3E%3Ctext y='330' font-size='220' text-anchor='middle' x='256'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E",
+        sizes: '512x512',
+        type: 'image/svg+xml',
+        purpose: 'any maskable'
+      },
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='30' fill='%23060d18'/%3E%3Ctext y='140' font-size='130' text-anchor='middle' x='96'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E",
+        sizes: '192x192',
+        type: 'image/svg+xml',
+        purpose: 'any maskable'
+      }
+    ]
+  };
+
+  var blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+  var url = URL.createObjectURL(blob);
+  var link = document.getElementById('pwa-manifest');
+  if(link) link.href = url;
+
+  // Service Worker para caché offline
+  if('serviceWorker' in navigator){
+    var swCode = [
+      "var CACHE='eco-poderes-v05';",
+      "var URLS=['/','./'];",
+      "self.addEventListener('install',function(e){",
+      "  e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(URLS);}));",
+      "  self.skipWaiting();",
+      "});",
+      "self.addEventListener('activate',function(e){",
+      "  e.waitUntil(caches.keys().then(function(keys){",
+      "    return Promise.all(keys.filter(function(k){return k!==CACHE;}).map(function(k){return caches.delete(k);}));",
+      "  }));",
+      "  self.clients.claim();",
+      "});",
+      "self.addEventListener('fetch',function(e){",
+      "  e.respondWith(caches.match(e.request).then(function(r){",
+      "    return r||fetch(e.request).then(function(res){",
+      "      var clone=res.clone();",
+      "      caches.open(CACHE).then(function(c){c.put(e.request,clone);});",
+      "      return res;",
+      "    }).catch(function(){return caches.match('/');});",
+      "  }));",
+      "});"
+    ].join('\n');
+
+    var swBlob = new Blob([swCode], {type:'application/javascript'});
+    var swUrl = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl, {scope:'./'}).then(function(reg){
+      console.log('ECO-PODERES SW registrado:', reg.scope);
+    }).catch(function(e){
+      console.log('SW opcional no disponible:', e.message);
+    });
+  }
+
+  // Banner de instalación
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    // Mostrar botón de instalar en la intro
+    var installBtn = document.getElementById('install-btn');
+    if(installBtn) installBtn.style.display = 'flex';
+  });
+
+  window.addEventListener('appinstalled', function(){
+    var installBtn = document.getElementById('install-btn');
+    if(installBtn) installBtn.style.display = 'none';
+    deferredPrompt = null;
+    if(typeof showBanner === 'function') showBanner('✅ ¡Instalado!', 'ECO-PODERES ahora está en tu pantalla de inicio');
+  });
+
+  window.installPWA = function(){
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(r){
+      if(r.outcome === 'accepted') console.log('PWA instalada');
+      deferredPrompt = null;
+    });
+  };
+})();
+
+
+// ══ CONFIGURACIÓN GOOGLE SHEETS ══
+function guardarSheetsURL(){
+  var inp = document.getElementById('sheets-url-input');
+  var status = document.getElementById('sheets-url-status');
+  if(!inp) return;
+  var url = inp.value.trim();
+  if(!url){
+    if(status){ status.textContent = 'URL vacía — Sheets desactivado'; status.style.color='var(--txts)'; }
+    localStorage.removeItem('ep_sheets_url');
+    return;
+  }
+  if(!url.startsWith('https://script.google.com')){
+    if(status){ status.textContent = '⚠️ Debe ser una URL de script.google.com'; status.style.color='#ff5a5a'; }
+    return;
+  }
+  localStorage.setItem('ep_sheets_url', url);
+  if(status){ status.textContent = '✅ URL guardada. Feedback activo.'; status.style.color='var(--green)'; }
+}
+
+// Cargar URL guardada al abrir el panel
+var _origGoFBRanking = goFBRanking;
+goFBRanking = function(){
+  _origGoFBRanking();
+  setTimeout(function(){
+    var inp = document.getElementById('sheets-url-input');
+    var saved = localStorage.getItem('ep_sheets_url');
+    if(inp && saved) inp.value = saved;
+  }, 200);
 };
+
+// ══ DATOS LOCALES: Ver feedback guardado ══
+function verFeedbackLocal(){
+  var data = [];
+  try{ data = JSON.parse(localStorage.getItem('ep_feedback')||'[]'); }catch(e){}
+  if(!data.length){
+    alert('No hay feedback guardado aún.');
+    return;
+  }
+  var resumen = 'Feedback guardado (' + data.length + ' registros):\n\n';
+  data.slice(-5).forEach(function(fb, i){
+    resumen += (i+1) + '. ' + (fb.guardian||'?') + ' | ' + (fb.villa||'sin villa') + ' | ' + fb.stars + '★ | ' + (fb.ts||'').substring(0,10) + '\n';
+  });
+  resumen += '\n(mostrando últimos 5)';
+  alert(resumen);
+}
+
+// ══ INSTRUCCIONES GOOGLE APPS SCRIPT ══
+// Para configurar Google Sheets:
+// 1. Abrir Google Sheets → Extensiones → Apps Script
+// 2. Pegar este código:
+/*
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  var row = [
+    data.timestamp, data.guardian, data.villa, data.estrellas,
+    data.eco_final, data.conciencia, data.sociedad, data.puntaje,
+    data.diversion, data.claridad, data.diseno,
+    data.etiquetas, data.comentario, data.version
+  ];
+  sheet.appendRow(row);
+  return ContentService.createTextOutput('OK').setMimeType(ContentService.MimeType.TEXT);
+}
+*/
+// 3. Implementar → Nueva implementación → App web → Cualquiera
+// 4. Copiar la URL y pegarla en el campo de configuración del juego
 
 </script>
 
@@ -1933,6 +2924,118 @@ renderAll = function(){
     <div style="font-size:.92rem;font-weight:800;margin-bottom:6px;" id="quiz-res-titulo">¡Correcto!</div>
     <div style="font-size:.8rem;color:var(--txts);line-height:1.65;margin-bottom:12px;" id="quiz-res-exp"></div>
     <button class="btn prim" onclick="cerrarQuiz()" style="max-width:240px;">Continuar partida →</button>
+  </div>
+</div>
+
+<!-- MINI-JUEGO: RECONOCE LA ESPECIE -->
+<div class="screen z1" id="s-especie" style="padding:14px;gap:10px;justify-content:flex-start;">
+  <div style="text-align:center;width:100%;">
+    <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--green);">🌿 Reconoce la Especie</div>
+    <div style="font-size:.72rem;color:var(--txts);margin-top:4px;">Flora y fauna de Rancagua y la Región de O'Higgins</div>
+  </div>
+  <div id="especie-timer-bar" style="height:4px;background:var(--border);border-radius:2px;width:100%;overflow:hidden;">
+    <div id="especie-timer-fill" style="height:100%;background:var(--green);width:100%;transition:width 0.1s linear;border-radius:2px;"></div>
+  </div>
+  <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;width:100%;" id="especie-card">
+    <div style="font-size:.65rem;color:var(--gold2);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;" id="esp-categoria">Árbol Nativo</div>
+    <!-- Representación visual con emojis y descripción -->
+    <div style="font-size:3.5rem;text-align:center;margin-bottom:10px;padding:16px;background:var(--bg4);border-radius:10px;" id="esp-icono">🌳</div>
+    <div style="font-size:.8rem;color:var(--txts);line-height:1.7;margin-bottom:14px;font-style:italic;" id="esp-pistas">
+      Pistas de identificación aparecen aquí
+    </div>
+    <div style="font-size:.72rem;font-weight:800;color:var(--txt);margin-bottom:8px;">¿Qué especie es?</div>
+    <div style="display:flex;flex-direction:column;gap:7px;" id="esp-opciones"></div>
+  </div>
+  <div id="especie-resultado" style="display:none;width:100%;border-radius:14px;padding:16px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:6px;" id="esp-res-ico">✅</div>
+    <div style="font-size:.92rem;font-weight:900;margin-bottom:6px;" id="esp-res-titulo"></div>
+    <div style="font-size:.76rem;color:var(--txts);line-height:1.7;margin-bottom:14px;" id="esp-res-info"></div>
+    <button class="btn prim" onclick="cerrarEspecie()" style="max-width:240px;">Continuar partida →</button>
+  </div>
+</div>
+
+<!-- MINI-JUEGO: ÁREA VERDE (dónde está) -->
+<div class="screen z1" id="s-areav" style="padding:14px;gap:10px;justify-content:flex-start;">
+  <div style="text-align:center;width:100%;">
+    <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--blue);">🗺️ Conoce tu Ciudad</div>
+    <div style="font-size:.72rem;color:var(--txts);margin-top:4px;">Parques, plazas y áreas verdes de Rancagua</div>
+  </div>
+  <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;width:100%;" id="areav-card">
+    <div style="font-size:.65rem;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;" id="av-tipo">Área Verde</div>
+    <div style="font-size:3rem;text-align:center;margin-bottom:8px;padding:14px;background:var(--bg4);border-radius:10px;" id="av-icono">🌳</div>
+    <div style="font-size:.88rem;font-weight:900;color:var(--txt);margin-bottom:6px;" id="av-nombre">Parque de Rancagua</div>
+    <div style="font-size:.78rem;color:var(--txts);line-height:1.7;margin-bottom:14px;" id="av-desc">Descripción del lugar</div>
+    <div style="font-size:.72rem;font-weight:800;color:var(--txt);margin-bottom:8px;">¿En qué sector de Rancagua está?</div>
+    <div style="display:flex;flex-direction:column;gap:7px;" id="av-opciones"></div>
+  </div>
+  <div id="areav-resultado" style="display:none;width:100%;border-radius:14px;padding:16px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:6px;" id="av-res-ico">✅</div>
+    <div style="font-size:.92rem;font-weight:900;margin-bottom:6px;" id="av-res-titulo"></div>
+    <div style="font-size:.76rem;color:var(--txts);line-height:1.7;margin-bottom:14px;" id="av-res-info"></div>
+    <button class="btn prim" onclick="cerrarAreaV()" style="max-width:240px;">Continuar partida →</button>
+  </div>
+</div>
+
+<!-- MINI-JUEGO: RECICLAJE -->
+<div class="screen z1" id="s-reciclaje" style="padding:14px;gap:10px;justify-content:flex-start;overflow-y:auto;">
+  <div style="text-align:center;width:100%;">
+    <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--teal);">♻️ Separa los Residuos</div>
+    <div style="font-size:.72rem;color:var(--txts);margin-top:3px;" id="rec-nivel-txt">Toca cada residuo y elige el contenedor correcto</div>
+  </div>
+
+  <!-- Puntuación y tiempo -->
+  <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+    <div style="font-size:.8rem;font-weight:800;color:var(--gold2);">Puntaje: <span id="rec-score">0</span></div>
+    <div style="font-size:.8rem;color:var(--txts);">Quedan: <span id="rec-left" style="color:var(--txt);font-weight:800;">8</span></div>
+    <div id="rec-timer-pill" style="font-size:.8rem;font-weight:800;padding:3px 10px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;">
+      <span id="rec-timer">30</span>s
+    </div>
+  </div>
+  <div style="height:3px;background:var(--border);border-radius:2px;width:100%;overflow:hidden;">
+    <div id="rec-timer-bar" style="height:100%;background:var(--teal);width:100%;transition:width 0.1s linear;border-radius:2px;"></div>
+  </div>
+
+  <!-- Residuo actual a clasificar -->
+  <div id="rec-item-card" style="width:100%;background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1.5px solid var(--border2);border-radius:16px;padding:18px;text-align:center;">
+    <div style="font-size:3.5rem;margin-bottom:8px;" id="rec-item-ico">🍌</div>
+    <div style="font-size:.92rem;font-weight:800;color:var(--txt);margin-bottom:4px;" id="rec-item-nm">Cáscara de banana</div>
+    <div style="font-size:.72rem;color:var(--txts);" id="rec-item-hint">¿En qué contenedor va?</div>
+  </div>
+
+  <!-- Contenedores como botones grandes -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;" id="rec-bins">
+    <button onclick="clasificar('organico')" style="background:linear-gradient(135deg,#0d2b0a,#0a200a);border:2px solid #2a7a1a;border-radius:14px;padding:14px 8px;cursor:pointer;touch-action:manipulation;transition:all .15s;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟢</div>
+      <div style="font-size:.8rem;font-weight:800;color:#5ccf5c;">Orgánico</div>
+      <div style="font-size:.62rem;color:#3a8a3a;margin-top:2px;">restos de comida · poda</div>
+    </button>
+    <button onclick="clasificar('plastico')" style="background:linear-gradient(135deg,#0a1a2e,#080e20);border:2px solid #1a5a9a;border-radius:14px;padding:14px 8px;cursor:pointer;touch-action:manipulation;transition:all .15s;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🔵</div>
+      <div style="font-size:.8rem;font-weight:800;color:#5a9aff;">Plástico</div>
+      <div style="font-size:.62rem;color:#3a6aaa;margin-top:2px;">botellas · envases</div>
+    </button>
+    <button onclick="clasificar('papel')" style="background:linear-gradient(135deg,#1e1a0a,#150f00);border:2px solid #8a7a1a;border-radius:14px;padding:14px 8px;cursor:pointer;touch-action:manipulation;transition:all .15s;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟡</div>
+      <div style="font-size:.8rem;font-weight:800;color:#ccaa30;">Papel/Cartón</div>
+      <div style="font-size:.62rem;color:#8a7a1a;margin-top:2px;">diarios · cajas</div>
+    </button>
+    <button onclick="clasificar('vidrio')" style="background:linear-gradient(135deg,#0d1a1a,#08100e);border:2px solid #1a6a5a;border-radius:14px;padding:14px 8px;cursor:pointer;touch-action:manipulation;transition:all .15s;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟤</div>
+      <div style="font-size:.8rem;font-weight:800;color:#4abba0;">Vidrio</div>
+      <div style="font-size:.62rem;color:#2a8a7a;margin-top:2px;">botellas · frascos</div>
+    </button>
+  </div>
+
+  <!-- Feedback inmediato -->
+  <div id="rec-feedback" style="width:100%;text-align:center;min-height:32px;font-size:.84rem;font-weight:800;transition:opacity .3s;"></div>
+
+  <!-- Resultado final -->
+  <div id="rec-resultado" style="display:none;width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:16px;padding:20px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:8px;" id="rec-res-ico">♻️</div>
+    <div style="font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--teal);margin-bottom:6px;" id="rec-res-titulo">¡Bien reciclado!</div>
+    <div style="font-size:.82rem;color:var(--txts);line-height:1.7;margin-bottom:10px;" id="rec-res-stats"></div>
+    <div style="font-size:.72rem;color:var(--txts);background:var(--bg4);border-radius:10px;padding:10px;line-height:1.7;margin-bottom:14px;" id="rec-res-dato"></div>
+    <button class="btn prim" onclick="cerrarReciclaje()" style="max-width:240px;">Continuar partida →</button>
   </div>
 </div>
 </body>
