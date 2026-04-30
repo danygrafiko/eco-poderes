@@ -884,7 +884,7 @@ const TUT=[
   {ico:'🎲',title:'El Dado de los Elementos',text:'Cada ronda lanzas un dado de 8 elementos. El resultado modifica el mundo automáticamente. Algunos te ayudan, otros te desafían.',extra:{type:'grid',items:[{ico:'💧',nm:'AGUA',desc:'+1 Eco +1 Agua'},{ico:'🌿',nm:'TIERRA',desc:'+2 Eco +1 Agua'},{ico:'🌀',nm:'AIRE',desc:'+1 Con +1 Energía'},{ico:'⭐',nm:'VACÍO',desc:'+2 Eco +1 Con'},{ico:'🔥',nm:'FUEGO',desc:'-2 Eco +2 Energía'},{ico:'⚡',nm:'CAOS',desc:'-2 Eco -1 Con +1 Karma'},{ico:'🌩️',nm:'TORMENTA',desc:'+2 Agua -1 Eco'},{ico:'🌅',nm:'AURORA',desc:'+1 a Todo'}]}},
   {ico:'⚔️',title:'EGO o CONSCIENCIA',text:'Tras el dado, eliges tu camino. EGO da más energía pero acumula karma. CONSCIENCIA mejora el ecosistema y la conciencia. Ambos tienen consecuencias.',extra:{type:'grid',items:[{ico:'⚔️',nm:'EGO',desc:'+2 Energía\n+1 Karma\nMás recursos, más riesgo'},{ico:'🌀',nm:'CONSCIENCIA',desc:'+1 Eco\n+1 Conciencia\nEquilibrio sostenible'}]}},
   {ico:'🎴',title:'Cartas de Proyecto',text:'Tienes cartas que representan emprendimientos ecológicos. Cuestan Agua y Energía, pero generan eco, sociedad y conciencia. ¡Combínalas bien!',extra:{type:'hl',txt:'Las cartas de costo 0 siempre son jugables — úsalas cada ronda para mantener el ritmo.'}},
-  {ico:'⚠️',title:'Las Crisis',text:'A veces el mundo enfrenta eventos inesperados. Tendrás que elegir entre dos respuestas. La opción A es más costosa pero siempre más ética. La B es tentadora pero peligrosa.',extra:{type:'hl',txt:'Karma acumulado = mundo que colapsa. Cada karma que evitas es una ronda ganada.'}},
+  {ico:'💎',title:'Acciones cada ronda',text:'Tras elegir tu camino tienes 3 acciones. Cada una con propósito estratégico.',extra:{type:'grid',items:[{ico:'💎',nm:'RECOLECTAR',desc:'+1 Agua y +1 Energía. Úsalo cuando necesitas recursos.'},{ico:'⚡',nm:'PODER',desc:'Activa el poder único de tu Guardián animal.'},{ico:'🃏',nm:'ROBAR',desc:'Añade carta a tu mano. Máximo 5 cartas.'},{ico:'🌿',nm:'JUGAR CARTA',desc:'Activa un proyecto ecológico. Cuesta Agua y Energía.'}]}},
   {ico:'🏆',title:'Cómo Ganar',text:'Sobrevive las 8 rondas con el ecosistema por encima de 0. Tu puntaje final combina ecosistema, conciencia, sociedad y karma. La maestría está en el equilibrio.',extra:{type:'hl',txt:'Puntaje = Eco + Con×5 + Soc×7 - Karma×4. ¡La sociedad consciente vale más que acumular recursos!'}},
   {ico:'🌱',title:'Semillas Guardianas',text:'Al jugar ganas Semillas — la moneda del Consejo. Con ellas abres Sobres de Cartas especiales que entran a tu mazo en futuras partidas. ¡Cada partida puede ser diferente!',extra:{type:'hl',txt:'Las cartas Legendarias que desbloquees hacen cada partida única. ¡Abre sobres y expande tu estrategia!'}},
 ];
@@ -1617,18 +1617,7 @@ function irAFeedback(){
   }
 }
 
-// ══ TUTORIAL MEJORADO — explicar recolectar, poder, cartas ══
-// Reemplazar TUT[5] para explicar mejor las acciones
-TUT[4]={
-  ico:'💎',title:'Acciones cada ronda',
-  text:'Con el camino elegido quedan 3 acciones disponibles. Úsalas con estrategia:',
-  extra:{type:'grid',items:[
-    {ico:'💎',nm:'RECOLECTAR',desc:'Obtienes +1 Agua y +1 Energía. Ideal cuando tus recursos están bajos para poder jugar cartas.'},
-    {ico:'⚡',nm:'PODER',desc:'Activa el poder especial de tu Guardián. Cada uno tiene efecto único — ¡úsalo en el momento correcto!'},
-    {ico:'🃏',nm:'ROBAR CARTA',desc:'Añade una carta de tu mazo a la mano (máx 5). Más cartas = más opciones estratégicas.'},
-    {ico:'🌿',nm:'JUGAR CARTA',desc:'Toca una carta de tu mano para activar su efecto. Cuesta Agua y Energía. ¡El corazón del juego!'}
-  ]}
-};
+// Tutorial paso 4 definido en TUT array
 
 </script>
 
