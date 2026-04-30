@@ -362,18 +362,18 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="intro-orb">🌍</div>
   <div class="intro-logo">ECO-PODERES</div>
   <div class="intro-sub">El Consejo de Guardianes</div>
-  <div class="demo-badge">🧪 Demo v0.2 — En evolución</div>
+  <div class="demo-badge">🧪 Demo v0.3 — Rancagua</div>
   <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
     <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
     <button class="btn sec" onclick="goMenu()">▶ Jugar directamente</button>
-    <button onclick="goFBRanking()" style="width:100%;padding:11px;border-radius:50px;border:1px solid var(--gold2);background:transparent;color:var(--gold2);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">🏆 Ranking & Feedback</button>
-    <button onclick="goAccionReal()" style="width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">🌍 Comprometer Acción Eco Real</button>
+    <button onclick="goFBRanking()" style="width:100%;padding:11px;border-radius:50px;border:1px solid var(--gold2);background:transparent;color:var(--gold2);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Ranking y Feedback</button>
+    <button onclick="goAccionReal()" style="width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Comprometer Accion Eco Real</button>
     <div class="seeds-pill" style="justify-content:center;">
       <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="ver-tag">ECO-PODERES v0.2 · danygrafiko © 2025</div>
+  <div class="ver-tag">ECO-PODERES v0.3 · danygrafiko © 2025</div>
 </div>
 
 <!-- TUTORIAL -->
@@ -400,10 +400,9 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="comm-setup">
     <div style="font-size:.68rem;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Tu comunidad / población</div>
     <div style="position:relative;">
-  <input class="comm-inp" id="comm-inp" placeholder="Ej: Puente Alto..." maxlength="40" 
-    oninput="filtrarComunas(this.value)" onfocus="mostrarComunas()" autocomplete="off">
-  <div id="comunas-lista" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0d1a2e;border:1px solid var(--border2);border-radius:0 0 10px 10px;max-height:180px;overflow-y:auto;z-index:100;"></div>
-</div>
+      <input class="comm-inp" id="comm-inp" placeholder="Busca tu villa o población..." maxlength="50" autocomplete="off" oninput="filtrarVillas(this.value)" onfocus="mostrarVillas()">
+      <div id="villas-lista" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0d1a2e;border:1px solid var(--border2);border-radius:0 0 10px 10px;max-height:200px;overflow-y:auto;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);"></div>
+    </div>
     <div style="font-size:.62rem;color:var(--txts);margin-top:5px;">Aparecerá en el ranking de Guardianes</div>
   </div>
   <div style="display:flex;gap:8px;width:100%;">
@@ -489,12 +488,12 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     <div class="r-seeds"><div class="r-seeds-lbl">🌱 Semillas Guardianas ganadas</div><div class="r-seeds-val" id="r-seeds">+0</div></div>
     <div style="font-size:.65rem;color:var(--txts);text-align:center;">Puntaje final</div>
     <div class="score" id="r-score">0 pts</div>
-    <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
-      <button class="btn sec" onclick="goMenu()" style="flex:1;min-width:80px;padding:9px;font-size:.8rem;">🔄 Jugar</button>
-      <button class="btn prim" onclick="goSobres()" style="flex:1;min-width:80px;padding:9px;font-size:.8rem;">🌱 Sobres</button>
-      <button class="btn ghost" onclick="goFBRanking()" style="flex:1;min-width:80px;padding:9px;font-size:.78rem;">🏆 Ranking</button>
+    <div style="display:flex;gap:6px;margin-top:4px;">
+      <button class="btn sec" onclick="goMenu()" style="flex:1;padding:9px;font-size:.8rem;">Jugar</button>
+      <button class="btn prim" onclick="goSobres()" style="flex:1;padding:9px;font-size:.8rem;">Sobres</button>
+      <button class="btn ghost" onclick="goFBRanking()" style="flex:1;padding:9px;font-size:.78rem;">Ranking</button>
     </div>
-    <button onclick="goAccionReal()" style="width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);margin-top:4px;touch-action:manipulation;">🌍 Comprometer Acción Eco Real (+100 🌱)</button>
+    <button onclick="goAccionReal()" style="width:100%;padding:10px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);margin-top:4px;touch-action:manipulation;">Comprometer Accion Eco Real (+100)</button>
   </div>
   <div class="feedback-card">
     <div class="fb-title">¿Qué te pareció la demo?</div>
@@ -533,8 +532,8 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
       <span class="fb-sent-ico">🌱</span>
       <div class="fb-sent-title">¡Gracias, Guardián!</div>
       <div class="fb-sent-msg">Tu opinión construye un juego mejor.<br><br><strong style="color:var(--green);">+10 🌱 Semillas de Gratitud</strong></div>
-      <button class="btn sec" onclick="goFBRanking()" style="margin-top:12px;">🏆 Ver feedback de otros</button>
-      <button class="btn prim" onclick="goIntro()" style="margin-top:8px;">Jugar de nuevo</button>
+      <button class="btn prim" onclick="goMenu()" style="margin-top:12px;width:100%;">Jugar de nuevo</button>
+      <button class="btn ghost" onclick="goFBRanking()" style="margin-top:8px;width:100%;">Ver ranking y feedback</button>
     </div>
   </div>
 </div>
@@ -601,12 +600,12 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 <div class="screen z1" id="s-reveal">
   <div class="reveal-title" id="reveal-title">¡Cartas obtenidas!</div>
   <div class="reveal-cards" id="reveal-cards"></div>
-  <button class="btn prim" onclick="cerrarApertura()" style="max-width:300px;">✅ Añadir a colección</button>
+  <button class="btn prim" onclick="cerrarApertura()" style="max-width:300px;">Añadir a colección (van al mazo)</button>
   <div style="display:flex;gap:8px;max-width:300px;width:100%;">
-    <button class="btn sec" onclick="goSobres()" style="flex:1;padding:10px;font-size:.8rem;">🏪 Más sobres</button>
-    <button class="btn ghost" onclick="irAFeedback()" style="flex:1;padding:10px;font-size:.8rem;">💬 Feedback</button>
+    <button class="btn sec" onclick="goSobres()" style="flex:1;padding:10px;font-size:.8rem;">Mas sobres</button>
+    <button class="btn ghost" onclick="irAFeedback()" style="flex:1;padding:10px;font-size:.8rem;">Feedback</button>
   </div>
-  <button onclick="goAccionReal()" style="max-width:300px;width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">🌍 Acción Eco Real (+100 🌱)</button>
+  <button onclick="goAccionReal()" style="max-width:300px;width:100%;padding:10px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Accion Eco Real (+100)</button>
 </div>
 
 <!-- RANKING & FEEDBACK -->
@@ -884,9 +883,9 @@ const TUT=[
   {ico:'🎲',title:'El Dado de los Elementos',text:'Cada ronda lanzas un dado de 8 elementos. El resultado modifica el mundo automáticamente. Algunos te ayudan, otros te desafían.',extra:{type:'grid',items:[{ico:'💧',nm:'AGUA',desc:'+1 Eco +1 Agua'},{ico:'🌿',nm:'TIERRA',desc:'+2 Eco +1 Agua'},{ico:'🌀',nm:'AIRE',desc:'+1 Con +1 Energía'},{ico:'⭐',nm:'VACÍO',desc:'+2 Eco +1 Con'},{ico:'🔥',nm:'FUEGO',desc:'-2 Eco +2 Energía'},{ico:'⚡',nm:'CAOS',desc:'-2 Eco -1 Con +1 Karma'},{ico:'🌩️',nm:'TORMENTA',desc:'+2 Agua -1 Eco'},{ico:'🌅',nm:'AURORA',desc:'+1 a Todo'}]}},
   {ico:'⚔️',title:'EGO o CONSCIENCIA',text:'Tras el dado, eliges tu camino. EGO da más energía pero acumula karma. CONSCIENCIA mejora el ecosistema y la conciencia. Ambos tienen consecuencias.',extra:{type:'grid',items:[{ico:'⚔️',nm:'EGO',desc:'+2 Energía\n+1 Karma\nMás recursos, más riesgo'},{ico:'🌀',nm:'CONSCIENCIA',desc:'+1 Eco\n+1 Conciencia\nEquilibrio sostenible'}]}},
   {ico:'🎴',title:'Cartas de Proyecto',text:'Tienes cartas que representan emprendimientos ecológicos. Cuestan Agua y Energía, pero generan eco, sociedad y conciencia. ¡Combínalas bien!',extra:{type:'hl',txt:'Las cartas de costo 0 siempre son jugables — úsalas cada ronda para mantener el ritmo.'}},
-  {ico:'💎',title:'Acciones cada ronda',text:'Tras elegir tu camino tienes 3 acciones. Cada una con propósito estratégico.',extra:{type:'grid',items:[{ico:'💎',nm:'RECOLECTAR',desc:'+1 Agua y +1 Energía. Úsalo cuando necesitas recursos.'},{ico:'⚡',nm:'PODER',desc:'Activa el poder único de tu Guardián animal.'},{ico:'🃏',nm:'ROBAR',desc:'Añade carta a tu mano. Máximo 5 cartas.'},{ico:'🌿',nm:'JUGAR CARTA',desc:'Activa un proyecto ecológico. Cuesta Agua y Energía.'}]}},
+  {ico:'💎',title:'Tus 3 Acciones',text:'Tras elegir camino tienes 3 acciones por ronda. Úsalas con estrategia.',extra:{type:'grid',items:[{ico:'💎',nm:'RECOLECTAR',desc:'+1 Agua y +1 Energía. Úsalo cuando tus recursos están bajos.'},{ico:'⚡',nm:'PODER',desc:'Activa el poder único de tu Guardián. Cada animal tiene habilidad distinta.'},{ico:'🃏',nm:'ROBAR',desc:'Añade una carta a tu mano. Máximo 5 cartas.'},{ico:'🌿',nm:'JUGAR CARTA',desc:'Activa un proyecto. Cuesta Agua y Energía. Genera eco y sociedad.'}]}},
   {ico:'🏆',title:'Cómo Ganar',text:'Sobrevive las 8 rondas con el ecosistema por encima de 0. Tu puntaje final combina ecosistema, conciencia, sociedad y karma. La maestría está en el equilibrio.',extra:{type:'hl',txt:'Puntaje = Eco + Con×5 + Soc×7 - Karma×4. ¡La sociedad consciente vale más que acumular recursos!'}},
-  {ico:'🌱',title:'Semillas Guardianas',text:'Al jugar ganas Semillas — la moneda del Consejo. Con ellas abres Sobres de Cartas especiales que entran a tu mazo en futuras partidas. ¡Cada partida puede ser diferente!',extra:{type:'hl',txt:'Las cartas Legendarias que desbloquees hacen cada partida única. ¡Abre sobres y expande tu estrategia!'}},
+  {ico:'🌱',title:'Semillas y Colección',text:'Ganas Semillas jugando. Úsalas en la Tienda de Sobres para obtener cartas que entran a tu mazo.',extra:{type:'grid',items:[{ico:'📦',nm:'Sobre Bronce',desc:'30 semillas. Cartas raras para empezar.'},{ico:'🏆',nm:'Sobre Oro',desc:'150 semillas. Cartas legendarias de alto poder.'},{ico:'🎴',nm:'Al mazo',desc:'Las cartas desbloqueadas se añaden AUTOMÁTICAMENTE en tu próxima partida.'},{ico:'🌍',nm:'Acción Real',desc:'Compromete una acción eco real y gana +100 semillas extra.'}]}},
 ];
 let tutIdx=0;
 function startTutorial(){tutIdx=0;renderTut();sh('tutorial');}
@@ -937,7 +936,9 @@ function startGame(){
   const comm=document.getElementById('comm-inp').value.trim()||'Mi Comunidad';
   // Cartas desbloqueadas de colección entran al mazo
   const col=CARTAS_COL.filter(ct=>ST.coleccion[ct.id]>0);
-  const deck=shuffle([...CARDS,...CARDS.slice(0,5),...col]);
+  var colCards=CARTAS_COL.filter(function(ct){return ST.coleccion&&ST.coleccion[ct.id]&&ST.coleccion[ct.id]>0;});
+  var deckBase=shuffle([...CARDS,...CARDS.slice(0,5),...col,...colCards]);
+  const deck=deckBase;
   G={g:selG,maxR:MAX_RONDAS,ronda:1,
      eco:50,conciencia:3,karma:0,sociedad:2,acciones:3,maxAcc:3,
      agua:4,energia:3,deck,hand:[],disc:[],
@@ -1035,7 +1036,7 @@ function act(t){
   if(G.acciones<=0){setStatus('Sin acciones disponibles este turno.');return;}
   if(t==='col'){G.agua+=1;G.energia+=1;G.acciones--;setStatus('💎 Recolectaste: +1 Agua, +1 Energía.');}
   else if(t==='pow'){if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');}G.acciones--;}
-  else if(t==='drw'){if(G.hand.length>=5){setStatus('⚠️ Mano llena (5/5). Juega una carta primero.');return;}drawCard();G.acciones--;setStatus('🃏 Robaste una carta. Mano: '+G.hand.length+'/5');}
+  else if(t==='drw'){if(G.hand.length>=5){setStatus('Mano llena (5/5). Juega primero.');return;}drawCard();G.acciones--;setStatus('Carta robada. Mano:'+G.hand.length+'/5');}
   // Jaguar: +1 acción si eco subió
   if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5){G.acciones++;setStatus(s=>s+' 🐆 +1 Acción Jaguar!');}
   clamp();renderAll();
@@ -1184,18 +1185,8 @@ function renderAll(){
 const TL={emp:'🌿 EMP',proy:'📋 PROY',con:'🧠 CON',crea:'⚡ CREA',ali:'🤝 ALI',imp:'💥 IMP',
           rara:'⭐ RARA',epica:'💜 ÉPICA',legendaria:'🏆 LEGEND',guardiana:'✨ SUPREMA'};
 
-function cardCostA(card){
-  if(!card)return 0;
-  if(card.ca!==undefined)return card.ca;
-  if(card.c&&card.c.a!==undefined)return card.c.a;
-  return 0;
-}
-function cardCostE(card){
-  if(!card)return 0;
-  if(card.ce!==undefined)return card.ce;
-  if(card.c&&card.c.e!==undefined)return card.c.e;
-  return 0;
-}
+function cardCostA(card){if(!card)return 0;if(card.ca!==undefined)return card.ca;if(card.c&&card.c.a!==undefined)return card.c.a;return 0;}
+function cardCostE(card){if(!card)return 0;if(card.ce!==undefined)return card.ce;if(card.c&&card.c.e!==undefined)return card.c.e;return 0;}
 function renderHand(){
   const hs=document.getElementById('hscroll');
   document.getElementById('hcnt').textContent=G.hand.length+' carta'+(G.hand.length!==1?'s':'');
@@ -1291,38 +1282,41 @@ function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)
 function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
 function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
 function submitFB(){
-  var comment = document.getElementById('fb-comment');
-  FB.comment = comment ? comment.value : '';
-  var data = {
-    stars: FB.stars,
-    cats: FB.cats,
-    tags: FB.tags,
-    comment: FB.comment,
-    guardian: G ? G.g.nm : '?',
-    eco: G ? G.eco : 0,
-    ronda: G ? G.ronda : 0,
-    pts: document.getElementById('r-score') ? document.getElementById('r-score').textContent : '0',
-    ts: new Date().toISOString()
-  };
-  try{
-    var prev = JSON.parse(localStorage.getItem('ep_feedback')||'[]');
-    prev.push(data);
-    localStorage.setItem('ep_feedback', JSON.stringify(prev.slice(-50)));
-  }catch(e){}
-  earnSeeds(10);
-  updateSeedsUI();
-  // Ocultar formulario y mostrar enviado
-  var card = document.getElementById('feedback-card');
-  if(card){
-    var hideEls = card.querySelectorAll('.fb-title,.fb-sub,.stars-row,#star-lbl,.fb-cats,.fb-tags,.fb-textarea,#fb-comment');
-    hideEls.forEach(function(el){el.style.display='none';});
-    var submitBtn = card.querySelector('button[onclick="submitFB()"]');
-    if(submitBtn)submitBtn.style.display='none';
-    var skipBtn = card.querySelector('button[onclick="goIntro()"]');
-    if(skipBtn)skipBtn.style.display='none';
-  }
-  var sentEl = document.getElementById('fb-sent');
+  var commentEl=document.getElementById('fb-comment');
+  FB.comment=commentEl?commentEl.value:'';
+  var data={stars:FB.stars,cats:FB.cats,tags:FB.tags,comment:FB.comment,
+    guardian:G?G.g.nm:'?',eco:G?G.eco:0,
+    pts:document.getElementById('r-score')?document.getElementById('r-score').textContent:'?',
+    ts:new Date().toISOString()};
+  try{var prev=JSON.parse(localStorage.getItem('ep_feedback')||'[]');
+    prev.push(data);localStorage.setItem('ep_feedback',JSON.stringify(prev.slice(-50)));}catch(e){}
+  earnSeeds(10);updateSeedsUI();
+  var allEls=document.querySelectorAll('.feedback-card > *');
+  allEls.forEach(function(el){if(el.id!=='fb-sent')el.style.display='none';});
+  var sentEl=document.getElementById('fb-sent');
   if(sentEl)sentEl.style.display='block';
+}
+
+function resetFB(){
+  FB={stars:0,cats:{fun:0,clarity:0,theme:0,design:0},tags:[],comment:''};
+  document.getElementById('star-lbl').textContent='';
+  document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+  ['fun','clarity','theme','design'].forEach(k=>document.querySelectorAll('#cat-'+k+' .fbc-star').forEach(s=>s.classList.remove('on')));
+  document.querySelectorAll('.fb-tag').forEach(t=>t.classList.remove('on'));
+  document.getElementById('fb-comment').value='';
+  document.getElementById('fb-sent').style.display='none';
+  document.getElementById('feedback-card').querySelectorAll('.fb-title,.fb-sub,#stars-main,.fb-cats,.fb-tags,textarea,.btn,.ghost').forEach(el=>el.style.display='');
+}
+function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));document.getElementById('star-lbl').textContent=STAR_LBL[n];}
+function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
+function submitFB(){
+  FB.comment=document.getElementById('fb-comment').value;
+  const data={...FB,guardian:G.g.nm,eco:G.eco,ronda:G.ronda,score:document.getElementById('r-score').textContent,ts:new Date().toISOString()};
+  try{const prev=JSON.parse(localStorage.getItem('ep_feedback')||'[]');prev.push(data);localStorage.setItem('ep_feedback',JSON.stringify(prev.slice(-50)));}catch(e){}
+  earnSeeds(10);
+  document.getElementById('feedback-card').querySelectorAll(':not(.fb-sent)').forEach(el=>{if(el.id!=='fb-sent')el.style.opacity='0';el.style.pointerEvents='none';});
+  document.getElementById('fb-sent').style.display='block';
 }
 
 function fbTab(tab){
@@ -1499,154 +1493,133 @@ function _ponderado(items,pesos){
 // INIT
 updateSeedsUI();
 
-// ══ COMUNAS CHILE (Censo 2024) ══
-var COMUNAS_CHILE = [
-  "Puente Alto (568.086 hab.)","Maipú (503.635 hab.)","Santiago (404.495 hab.)",
-  "Antofagasta (361.873 hab.)","La Florida (328.881 hab.)","Quilicura (326.584 hab.)",
-  "Las Condes (289.788 hab.)","Valparaíso (284.938 hab.)","San Bernardo (279.252 hab.)",
-  "Concepción (242.664 hab.)","Viña del Mar (328.169 hab.)","Temuco (282.415 hab.)",
-  "Iquique (196.048 hab.)","Rancagua (236.363 hab.)","Talcahuano (168.256 hab.)",
-  "Arica (231.586 hab.)","Coquimbo (250.189 hab.)","La Serena (219.606 hab.)",
-  "Calama (165.421 hab.)","Osorno (157.592 hab.)","Puerto Montt (202.104 hab.)",
-  "Peñalolén (236.295 hab.)","La Pintana (192.682 hab.)","Pudahuel (217.438 hab.)",
-  "El Bosque (155.257 hab.)","Cerro Navia (126.853 hab.)","Recoleta (171.230 hab.)",
-  "Lo Barnechea (122.158 hab.)","Macul (122.025 hab.)","Providencia (153.520 hab.)",
-  "Ñuñoa (177.637 hab.)","San Joaquín (99.502 hab.)","La Granja (126.040 hab.)",
-  "Estación Central (147.757 hab.)","Quinta Normal (113.104 hab.)","Lampa (162.428 hab.)",
-  "Chillán (185.125 hab.)","Valdivia (166.080 hab.)","Coronel (117.562 hab.)",
-  "Los Ángeles (195.805 hab.)","Talca (222.765 hab.)","Curicó (149.136 hab.)"
+var VILLAS_RANCAGUA=[
+  "Pob. Centenario","Pob. Rancagua Norte","Pob. Rancagua Sur",
+  "Pob. El Manzanal","Pob. Isabel Riquelme","Pob. La Granja",
+  "Pob. Esperanza","Pob. La Cuadra","Pob. 5 de Octubre",
+  "Pob. Irene Frei","Pob. Vicuña Mackenna","Villa Lourdes",
+  "Villa El Sol","Villa Don Rodrigo","Villa Urmeneta",
+  "Villa Los Manzanos","Villa Bosques de San Francisco",
+  "Villa Los Andes","Villa Parque del Sol","Villa Plaza Galilea",
+  "Villa Nuevo Milenio","Villa O'Higgins","Villa San Lorenzo",
+  "Villa Santa Cruz","Villa Las Rosas","Villa Las Araucarias",
+  "Villa El Bosque","Villa Los Cerezos","Villa Los Copihues",
+  "Sector Centro Historico","Sector El Cerro","Sector La Canada",
+  "Barrio Estacion","Barrio El Transito","Residencial Los Olivos",
+  "Residencial Las Violetas","Loteo Los Lirios","Loteo San Pedro"
 ];
-
-function filtrarComunas(val){
-  var lista=document.getElementById('comunas-lista');
+function filtrarVillas(val){
+  var lista=document.getElementById("villas-lista");
   if(!lista)return;
-  if(!val||val.length<1){lista.style.display='none';return;}
-  var filtradas=COMUNAS_CHILE.filter(function(com){
-    return com.toLowerCase().indexOf(val.toLowerCase())>=0;
-  }).slice(0,6);
-  if(!filtradas.length){lista.style.display='none';return;}
-  lista.style.display='block';
-  lista.innerHTML=filtradas.map(function(com){
-    return '<div class="comuna-opt" data-comuna="'+com+'" style="padding:8px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);">'+com+'</div>';
-  }).join('');
+  if(!val){lista.style.display="none";return;}
+  var f=VILLAS_RANCAGUA.filter(function(v){return v.toLowerCase().indexOf(val.toLowerCase())>=0;}).slice(0,7);
+  if(!f.length){lista.style.display="none";return;}
+  lista.style.display="block";
+  lista.innerHTML="";
+  f.forEach(function(v){
+    var d=document.createElement("div");
+    d.textContent=v;
+    d.style.cssText="padding:9px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);";
+    d.onmouseenter=function(){this.style.background="#1a2f4a";};
+    d.onmouseleave=function(){this.style.background="";};
+    d.onclick=function(){
+      document.getElementById("comm-inp").value=v;
+      lista.style.display="none";
+    };
+    lista.appendChild(d);
+  });
 }
-
-function mostrarComunas(){
-  var inp=document.getElementById('comm-inp');
-  var lista=document.getElementById('comunas-lista');
+function mostrarVillas(){
+  var inp=document.getElementById("comm-inp");
+  var val=inp?inp.value:"";
+  if(val.length>0){filtrarVillas(val);return;}
+  var lista=document.getElementById("villas-lista");
   if(!lista)return;
-  var val=inp?inp.value:'';
-  if(val){filtrarComunas(val);return;}
-  lista.style.display='block';
-  lista.innerHTML=COMUNAS_CHILE.slice(0,8).map(function(com){
-    return '<div class="comuna-opt" data-comuna="'+com+'" style="padding:8px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);">'+com+'</div>';
-  }).join('');
+  lista.style.display="block";lista.innerHTML="";
+  VILLAS_RANCAGUA.slice(0,8).forEach(function(v){
+    var d=document.createElement("div");
+    d.textContent=v;
+    d.style.cssText="padding:9px 12px;cursor:pointer;font-size:.82rem;border-bottom:1px solid #1a2f4a;color:var(--txt);";
+    d.onmouseenter=function(){this.style.background="#1a2f4a";};
+    d.onmouseleave=function(){this.style.background="";};
+    d.onclick=function(){
+      document.getElementById("comm-inp").value=v;
+      lista.style.display="none";
+    };
+    lista.appendChild(d);
+  });
 }
-
-document.addEventListener('click',function(e){
-  // Cerrar lista de comunas
-  var inp=document.getElementById('comm-inp');
-  var lista=document.getElementById('comunas-lista');
-  if(lista){
-    if(e.target.classList.contains('comuna-opt')){
-      var nombre=e.target.getAttribute('data-comuna');
-      if(nombre&&inp){inp.value=nombre;}
-      lista.style.display='none';
-    } else if(!e.target.closest('#comm-inp')&&!e.target.closest('#comunas-lista')){
-      lista.style.display='none';
-    }
-  }
+document.addEventListener("click",function(e){
+  var lista=document.getElementById("villas-lista");
+  if(lista&&!e.target.closest("#comm-inp")&&!e.target.closest("#villas-lista"))lista.style.display="none";
 });
-
-// ══ ACCIONES REALES ══
 var ACCIONES_REALES=[
-  {ico:"🌱",titulo:"Planta un árbol o semilla",desc:"Esta semana planta un árbol, arbusto o semilla. Documenta con una foto y comparte.",impacto:"Un árbol absorbe ~22 kg de CO₂ al año"},
-  {ico:"♻️",titulo:"Separa tus residuos 7 días",desc:"Orgánicos, plásticos, papel y vidrio por separado durante una semana completa.",impacto:"Una familia reduce 30% su basura al separar"},
-  {ico:"🚲",titulo:"Transporte limpio esta semana",desc:"Camina, usa bicicleta o transporte público en lugar del auto por 5 días.",impacto:"Evitas ~2.4 kg de CO₂ por día sin auto"},
-  {ico:"💧",titulo:"Reduce tu consumo de agua",desc:"Ducha máximo 5 minutos y recoge el agua fría mientras esperas la caliente.",impacto:"Ahorras hasta 50 litros diarios"},
-  {ico:"🥗",titulo:"Come sin carne 3 días",desc:"Elige alimentación plant-based por al menos 3 días consecutivos esta semana.",impacto:"La dieta vegetal reduce 50% la huella alimentaria"},
-  {ico:"⚡",titulo:"Desconecta aparatos en desuso",desc:"Desenchufa cargadores y electrodomésticos que no estés usando. Por 7 días.",impacto:"El stand-by consume hasta 10% de tu electricidad"},
-  {ico:"🌊",titulo:"Limpia un espacio natural",desc:"Recoge basura en un parque, playa, río o calle de tu comunidad. Al menos 1 hora.",impacto:"Inspiras a otros — el efecto social multiplica"},
-  {ico:"📢",titulo:"Comparte ECO-PODERES",desc:"Invita a 3 personas a jugar y reflexionar sobre sus decisiones ecológicas.",impacto:"La conciencia colectiva es el mayor motor de cambio"}
+  {ico:"🌱",titulo:"Planta un árbol",desc:"Planta un árbol o semilla en tu barrio esta semana. Documenta con foto.",impacto:"1 árbol absorbe ~22 kg CO2/año"},
+  {ico:"♻️",titulo:"Separa residuos 7 días",desc:"Orgánicos, plásticos, papel y vidrio separados durante una semana.",impacto:"Reduce 30% tu basura doméstica"},
+  {ico:"🚲",titulo:"Transporte limpio",desc:"Camina, bicicleta o locomoción colectiva en vez del auto por 5 días.",impacto:"Evitas 2.4 kg CO2 diarios"},
+  {ico:"💧",titulo:"Ahorra agua",desc:"Ducha máx 5 min y recoge agua fría mientras esperas la caliente.",impacto:"Ahorras hasta 50 litros al día"},
+  {ico:"🥗",titulo:"Come sin carne 3 días",desc:"Dieta plant-based por 3 días consecutivos esta semana.",impacto:"Reduce 50% la huella alimentaria"},
+  {ico:"⚡",titulo:"Desconecta aparatos",desc:"Desenchufa cargadores y electrodomésticos sin usar. 7 días.",impacto:"El stand-by consume hasta 10% de tu luz"},
+  {ico:"🌊",titulo:"Limpia un espacio",desc:"Recoge basura en el Cachapoal, un parque o tu población. 1 hora.",impacto:"Inspiras a tu comunidad"},
+  {ico:"📢",titulo:"Comparte ECO-PODERES",desc:"Invita a 3 personas de tu villa a jugar y reflexionar.",impacto:"La conciencia colectiva cambia el mundo"}
 ];
-
 function goAccionReal(){
-  sh('accion');
-  document.getElementById('accion-completada').style.display='none';
-  document.getElementById('acciones-lista').style.display='flex';
-  renderAcciones();
+  sh("accion");
+  document.getElementById("accion-completada").style.display="none";
+  var nav=document.getElementById("accion-nav");if(nav)nav.style.display="flex";
+  var lista=document.getElementById("acciones-lista");
+  if(lista){lista.style.display="flex";renderAcciones();}
 }
-
 function renderAcciones(){
-  var lista=document.getElementById('acciones-lista');
-  if(!lista)return;
+  var lista=document.getElementById("acciones-lista");if(!lista)return;
+  lista.innerHTML="";
   var shuffled=ACCIONES_REALES.slice().sort(function(){return Math.random()-.5;}).slice(0,4);
-  lista.innerHTML='';
   shuffled.forEach(function(a){
     var idx=ACCIONES_REALES.indexOf(a);
-    var div=document.createElement('div');
-    div.style.cssText='background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;touch-action:manipulation;transition:border-color .15s;';
-    div.setAttribute('data-accion-idx',idx);
-    div.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">'
-      +'<span style="font-size:1.8rem;">'+a.ico+'</span>'
-      +'<div><div style="font-size:.84rem;font-weight:800;color:var(--txt);">'+a.titulo+'</div>'
-      +'<div style="font-size:.64rem;color:var(--green);">+100 🌱 Semillas Guardianas</div></div></div>'
-      +'<div style="font-size:.75rem;color:var(--txts);line-height:1.6;margin-bottom:6px;">'+a.desc+'</div>'
-      +'<div style="font-size:.68rem;background:#0a1a0a;border-radius:8px;padding:5px 9px;color:#5ccf9a;">🌍 '+a.impacto+'</div>';
-    div.addEventListener('click',function(){elegirAccion(idx);});
+    var div=document.createElement("div");
+    div.style.cssText="background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;touch-action:manipulation;margin-bottom:2px;";
+    div.innerHTML="<div style='display:flex;align-items:center;gap:10px;margin-bottom:6px;'><span style='font-size:1.8rem;'>"+a.ico+"</span><div><div style='font-size:.84rem;font-weight:800;color:var(--txt);'>"+a.titulo+"</div><div style='font-size:.64rem;color:var(--green);'>+100 semillas guardianas</div></div></div><div style='font-size:.75rem;color:var(--txts);line-height:1.6;margin-bottom:6px;'>"+a.desc+"</div><div style='font-size:.68rem;background:#0a1a0a;border-radius:8px;padding:5px 9px;color:#5ccf9a;'>"+a.impacto+"</div>";
+    div.onclick=function(){elegirAccion(idx);};
     lista.appendChild(div);
   });
 }
-
-
 function elegirAccion(idx){
   var a=ACCIONES_REALES[idx];if(!a)return;
   earnSeeds(100);
-  document.getElementById('acciones-lista').style.display='none';
-  document.getElementById('accion-msg').textContent='Comprometiste: '+a.titulo+'. '+a.desc;
-  document.getElementById('accion-completada').style.display='block';
-  spawnConfetti();
-  updateSeedsUI();
+  var lista=document.getElementById("acciones-lista");if(lista)lista.style.display="none";
+  var nav=document.getElementById("accion-nav");if(nav)nav.style.display="none";
+  var msgEl=document.getElementById("accion-msg");if(msgEl)msgEl.textContent=a.titulo+": "+a.desc;
+  var comp=document.getElementById("accion-completada");if(comp)comp.style.display="block";
+  spawnConfetti();updateSeedsUI();
 }
-
 function irAFeedback(){
-  var score=document.getElementById('r-score');
-  if(score&&score.textContent&&score.textContent!=='0 pts'){
-    sh('result');
-    setTimeout(function(){
-      var fb=document.querySelector('.feedback-card');
-      if(fb)fb.scrollIntoView({behavior:'smooth'});
-    },400);
-  } else {
-    goFBRanking();
-    setTimeout(function(){fbTab('fb');},300);
-  }
+  var scoreEl=document.getElementById("r-score");
+  if(scoreEl&&scoreEl.textContent&&scoreEl.textContent!=="0 pts"){
+    sh("result");
+    setTimeout(function(){var fb=document.querySelector(".feedback-card");if(fb)fb.scrollIntoView({behavior:"smooth"});},400);
+  } else {goFBRanking();setTimeout(function(){fbTab("fb");},300);}
 }
-
-// Tutorial paso 4 definido en TUT array
 
 </script>
 
 <!-- ACCION REAL ECO -->
 <div class="screen z1" id="s-accion" style="padding:14px;gap:12px;justify-content:flex-start;">
   <div style="text-align:center;width:100%;">
-    <div style="font-family:var(--ffd);font-size:1.15rem;font-weight:900;color:var(--green);">🌍 Del Juego al Mundo Real</div>
-    <div style="font-size:.78rem;color:var(--txts);margin-top:5px;line-height:1.7;">El juego refleja decisiones que puedes tomar HOY.<br>Compromete una acción y gana <strong style="color:var(--gold2);">+100 🌱 Semillas</strong></div>
+    <div style="font-family:var(--ffd);font-size:1.15rem;font-weight:900;color:var(--green);">Del Juego al Mundo Real</div>
+    <div style="font-size:.78rem;color:var(--txts);margin-top:5px;line-height:1.7;">Compromete una accion real y gana +100 Semillas</div>
   </div>
   <div id="acciones-lista" style="display:flex;flex-direction:column;gap:8px;width:100%;"></div>
   <div id="accion-completada" style="display:none;background:#0a1a0a;border:2px solid var(--green);border-radius:14px;padding:18px;text-align:center;width:100%;">
     <div style="font-size:2rem;margin-bottom:8px;">🌱</div>
-    <div style="font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--green);margin-bottom:6px;">¡Compromiso Guardián!</div>
+    <div style="font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--green);margin-bottom:6px;">Compromiso Guardián</div>
     <div style="font-size:.8rem;color:#aaddcc;line-height:1.65;margin-bottom:12px;" id="accion-msg"></div>
-    <div style="font-size:1.1rem;font-weight:900;color:var(--gold2);margin-bottom:12px;">+100 🌱 Semillas Guardianas</div>
-    <div style="font-size:.7rem;color:var(--txts);background:#0d1a2e;border-radius:8px;padding:10px;line-height:1.7;">
-      🎴 <strong style="color:var(--gold2);">Versión mesa física:</strong><br>
-      Cada acción eco real = 1 sobre de cartas físicas
-    </div>
+    <div style="font-size:1.1rem;font-weight:900;color:var(--gold2);margin-bottom:12px;">+100 Semillas Guardianas</div>
+    <button class="btn prim" onclick="goMenu()" style="width:100%;margin-bottom:8px;">Jugar una partida</button>
+    <button class="btn ghost" onclick="goIntro()" style="width:100%;">Volver al inicio</button>
   </div>
-  <div style="display:flex;gap:8px;width:100%;margin-top:4px;">
-    <button class="btn sec" onclick="goIntro()" style="flex:1;padding:10px;font-size:.82rem;">← Inicio</button>
-    <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;font-size:.82rem;">▶ Jugar</button>
+  <div id="accion-nav" style="display:flex;gap:8px;width:100%;margin-top:4px;">
+    <button class="btn sec" onclick="goIntro()" style="flex:1;padding:10px;">Inicio</button>
+    <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;">Jugar</button>
   </div>
 </div>
 </body>
