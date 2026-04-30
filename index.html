@@ -362,7 +362,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="intro-orb">🌍</div>
   <div class="intro-logo">ECO-PODERES</div>
   <div class="intro-sub">El Consejo de Guardianes</div>
-  <div class="demo-badge">🧪 Demo v0.3 — Rancagua</div>
+  <div class="demo-badge">🧪 Demo v0.4 — Rancagua</div>
   <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
     <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
@@ -373,7 +373,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
       <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="ver-tag">ECO-PODERES v0.3 · danygrafiko © 2025</div>
+  <div class="ver-tag">ECO-PODERES v0.4 · danygrafiko © 2025</div>
 </div>
 
 <!-- TUTORIAL -->
@@ -419,6 +419,15 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     <div class="tb-k" id="tb-k">☯ 0/3</div>
     <div class="seeds-pill"><span>🌱</span><span class="val" id="seeds-game">0</span></div>
   </div>
+  <!-- Amenaza activa -->
+  <div id="amenaza-bar" style="display:none;width:100%;background:linear-gradient(135deg,#1a0505,#2a0808);border:1.5px solid #cc2222;border-radius:10px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="am-ico" style="font-size:1.2rem;">⚠️</span>
+      <div><div style="font-size:.78rem;font-weight:800;color:#ff5a5a;" id="am-nm">Amenaza</div>
+      <div style="font-size:.65rem;color:#ff9a9a;" id="am-desc">Actua antes que sea tarde</div></div>
+    </div>
+    <div style="font-size:.72rem;font-weight:800;color:#ff5a5a;" id="am-turnos">2 rondas</div>
+  </div>
   <canvas id="world-canvas" height="155"></canvas>
   <div class="comm-banner">
     <div><div class="cb-nm" id="cb-nm">Mi Comunidad</div><div class="cb-rank" id="cb-rank">Guardián en formación</div></div>
@@ -461,7 +470,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     </button>
   </div>
   <div class="acts">
-    <button class="abtn" id="a-col" onclick="act('col')" disabled><span class="ai">💎</span>Recolectar</button>
+    <button class="abtn" id="a-col" onclick="act('col')" disabled title="+1 Agua +1 Energia"><span class="ai">💎</span>Recolectar<div style="font-size:.52rem;color:var(--txts);margin-top:1px;">+1💧+1⚡</div></button>
     <button class="abtn" id="a-pow" onclick="act('pow')" disabled><span class="ai" id="pow-ico">⚡</span>Poder</button>
     <button class="abtn" id="a-drw" onclick="act('drw')" disabled><span class="ai">🃏</span>Robar</button>
   </div>
@@ -533,6 +542,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
       <div class="fb-sent-title">¡Gracias, Guardián!</div>
       <div class="fb-sent-msg">Tu opinión construye un juego mejor.<br><br><strong style="color:var(--green);">+10 🌱 Semillas de Gratitud</strong></div>
       <button class="btn prim" onclick="goMenu()" style="margin-top:12px;width:100%;">Jugar de nuevo</button>
+      <button class="btn sec" onclick="reabrirFeedback()" style="margin-top:8px;width:100%;">Editar mi feedback</button>
       <button class="btn ghost" onclick="goFBRanking()" style="margin-top:8px;width:100%;">Ver ranking y feedback</button>
     </div>
   </div>
@@ -940,10 +950,11 @@ function startGame(){
   var deckBase=shuffle([...CARDS,...CARDS.slice(0,5),...col,...colCards]);
   const deck=deckBase;
   G={g:selG,maxR:MAX_RONDAS,ronda:1,
-     eco:50,conciencia:3,karma:0,sociedad:2,acciones:3,maxAcc:3,
-     agua:4,energia:3,deck,hand:[],disc:[],
+     eco:55,conciencia:3,karma:0,sociedad:2,acciones:3,maxAcc:3,
+     agua:5,energia:4,deck,hand:[],disc:[],
      gpu:false,phase:'dice',path:null,cpr:0,_bee:false,
-     comm,commPts:0,seedsEarned:0};
+     comm,commPts:0,seedsEarned:0,
+     amenaza:null,proximaAmenaza:3,quizPendiente:false};
   prevEco=50;
   // Águila empieza con 4 acciones
   if(G.g.id==='aguila')G.maxAcc=4;
@@ -965,6 +976,15 @@ function drawCard(){
 function setPhase(p){
   G.phase=p;
   const d=id=>document.getElementById(id);
+  // Mensaje de orientación al entrar a cada fase
+  if(p==='action'){
+    var msg='💎 FASE ACCIÓN: ';
+    var tienes=G.hand.filter(function(c){return G.agua>=cardCostA(c)&&G.energia>=cardCostE(c);});
+    if(tienes.length>0) msg+='Puedes jugar '+tienes.length+' carta(s). Tócalas para activarlas.';
+    else if(G.agua<1&&G.energia<1) msg+='Sin recursos. Usa RECOLECTAR para obtener Agua y Energía.';
+    else msg+='Sin cartas jugables. Usa RECOLECTAR, PODER o ROBAR.';
+    setStatus(msg);
+  }
   d('dbtn').disabled=p!=='dice';
   d('p-ego').disabled=p!=='path';d('p-con').disabled=p!=='path';
   d('a-col').disabled=p!=='action';
@@ -1021,12 +1041,32 @@ function choosePath(p){
   G.path=p;
   if(p==='ego'){
     G.energia+=2;G.karma+=1;
-    if(G.g.id==='pulpo')G.conciencia+=1;
-    setStatus('⚔️ EGO: +2 Energía, +1 Karma'+(G.g.id==='pulpo'?' · Pulpo +1 Con':'')+'.');
+    // EGO ahora también genera sociedad si tenemos proyectos activos
+    var socialBonus = G.cpr > 0 ? 1 : 0;
+    if(socialBonus) G.sociedad+=1;
+    if(G.g.id==='pulpo') G.conciencia+=1;
+    // EGO ayuda a resolver amenazas de tipo SOCIAL
+    if(G.amenaza && G.amenaza.tipo==='social'){
+      G.amenaza.turnos--;
+      if(G.amenaza.turnos<=0){ G.amenaza=null; setStatus('⚔️ EGO: Amenaza social neutralizada! +2 Sociedad'); G.sociedad+=2; }
+    }
+    setStatus('⚔️ EGO: +2 Energía, +1 Karma'+(socialBonus?' +1 Soc':'')+'.');
   } else {
     G.eco+=1;G.conciencia+=1;
-    if(G.g.id==='pulpo')G.conciencia+=1;
-    setStatus('🌀 CONSCIENCIA: +1 Eco, +1 Conciencia'+(G.g.id==='pulpo'?' · Pulpo +1 Con extra':'')+'.');
+    if(G.g.id==='pulpo') G.conciencia+=1;
+    // CON saturación: si ya tienes conciencia alta, el beneficio baja
+    // pero protege mejor contra amenazas ecológicas
+    if(G.conciencia>=8){
+      G.energia-=1; // La reflexión profunda consume energía
+      setStatus('🌀 CONSCIENCIA: +1 Eco, +1 Con · Saturación: -1 Energía');
+    } else {
+      setStatus('🌀 CONSCIENCIA: +1 Eco, +1 Con'+(G.g.id==='pulpo'?' · Pulpo +1 Con':'')+'.');
+    }
+    // CON ayuda a resolver amenazas de tipo ECO
+    if(G.amenaza && G.amenaza.tipo==='eco'){
+      G.amenaza.turnos--;
+      if(G.amenaza.turnos<=0){ G.amenaza=null; setStatus('🌀 Conciencia disuelve amenaza ecológica! +2 Eco'); G.eco+=2; }
+    }
   }
   clamp();renderAll();setPhase('action');fl('#112244');
 }
@@ -1062,13 +1102,36 @@ function playCard(i){
 // ══ SIGUIENTE RONDA ══
 function nextRound(){
   if(G.ronda>G.maxR||G.eco<=0)return;
+  // Verificar si hay amenaza activa sin resolver
+  if(G.amenaza){
+    G.amenaza.turnos--;
+    if(G.amenaza.turnos<=0){
+      // Amenaza se concreta — daño real
+      G.eco -= G.amenaza.dano;
+      showBanner(G.amenaza.ico+' Amenaza ejecutada!', G.amenaza.nombre+' causó -'+G.amenaza.dano+' Eco');
+      fl('#550000');
+      G.amenaza = null;
+      clamp();
+    } else {
+      showBanner(G.amenaza.ico+' Amenaza activa!', G.amenaza.nombre+' · '+G.amenaza.turnos+' ronda(s) para actuar');
+    }
+  }
+  // Activar nueva amenaza según turno
+  if(G.ronda === G.proximaAmenaza && !G.amenaza){
+    activarAmenaza();
+  }
+  // Quiz Eco en rondas 3, 6
+  if((G.ronda===3||G.ronda===6) && !G.quizPendiente){
+    G.quizPendiente = true;
+  }
   // MEJORA: Decay escalado por ronda para crear tensión creciente
   const decayBase=1;
   const decayExtra=Math.floor(G.ronda/4); // rondas 4-8 más difíciles
   G.eco-=(decayBase+decayExtra);
   // Bonus por conciencia alta
-  if(G.conciencia>=7)G.eco+=2; // MEJORA: conciencia 7+ compensa más
+  if(G.conciencia>=7)G.eco+=2;
   else if(G.conciencia>=5)G.eco+=1;
+  else if(G.conciencia>=3)G.eco+=0; // base
   // Abeja penaliza si no jugó
   if(G.g.id==='abeja'&&G.cpr===0)G.eco-=2;
   // Jaguar penaliza si no usó todas las acciones
@@ -1094,6 +1157,12 @@ function nextRound(){
 }
 
 function continueRound(){
+  // Mostrar quiz si está pendiente
+  if(G.quizPendiente){
+    G.quizPendiente = false;
+    setTimeout(function(){ triggerQuiz(); }, 500);
+    return;
+  }
   renderAll();setPhase('dice');
   const rn=ROUND_NARR[Math.min(G.ronda-1,G.maxR-1)];
   showBanner('Ronda '+G.ronda+' de '+G.maxR,rn.t);
@@ -1189,7 +1258,21 @@ function cardCostA(card){if(!card)return 0;if(card.ca!==undefined)return card.ca
 function cardCostE(card){if(!card)return 0;if(card.ce!==undefined)return card.ce;if(card.c&&card.c.e!==undefined)return card.c.e;return 0;}
 function renderHand(){
   const hs=document.getElementById('hscroll');
-  document.getElementById('hcnt').textContent=G.hand.length+' carta'+(G.hand.length!==1?'s':'');
+  var hMax=5;
+  var hEl=document.getElementById('hcnt');
+  if(hEl){
+    hEl.textContent=G.hand.length+'/'+hMax+' cartas';
+    hEl.style.color=G.hand.length>=5?'#ff5a5a':'var(--gold2)';
+  }
+  // Sugerencia contextual automática
+  if(G.phase==='action'){
+    var hayCartasJugables=G.hand.some(function(card){
+      return G.agua>=cardCostA(card)&&G.energia>=cardCostE(card);
+    });
+    if(!hayCartasJugables&&G.acciones>0&&G.agua<2){
+      setStatus('💡 Tip: Sin recursos para jugar cartas. Usa RECOLECTAR para obtener Agua y Energía.');
+    }
+  }
   if(!G.hand.length){hs.innerHTML='<div style="font-size:.73rem;color:var(--txts);padding:6px;">Sin cartas — roba una</div>';return;}
   hs.innerHTML=G.hand.map((card,i)=>{
     const can=G.agua>=cardCostA(card)&&G.energia>=cardCostE(card)&&G.phase==='action';
@@ -1281,21 +1364,20 @@ function resetFB(){
 function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));document.getElementById('star-lbl').textContent=STAR_LBL[n];}
 function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
 function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
-function submitFB(){
-  var commentEl=document.getElementById('fb-comment');
-  FB.comment=commentEl?commentEl.value:'';
-  var data={stars:FB.stars,cats:FB.cats,tags:FB.tags,comment:FB.comment,
-    guardian:G?G.g.nm:'?',eco:G?G.eco:0,
-    pts:document.getElementById('r-score')?document.getElementById('r-score').textContent:'?',
-    ts:new Date().toISOString()};
-  try{var prev=JSON.parse(localStorage.getItem('ep_feedback')||'[]');
-    prev.push(data);localStorage.setItem('ep_feedback',JSON.stringify(prev.slice(-50)));}catch(e){}
-  earnSeeds(10);updateSeedsUI();
-  var allEls=document.querySelectorAll('.feedback-card > *');
-  allEls.forEach(function(el){if(el.id!=='fb-sent')el.style.display='none';});
-  var sentEl=document.getElementById('fb-sent');
-  if(sentEl)sentEl.style.display='block';
+
+function resetFB(){
+  FB={stars:0,cats:{fun:0,clarity:0,theme:0,design:0},tags:[],comment:''};
+  document.getElementById('star-lbl').textContent='';
+  document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+  ['fun','clarity','theme','design'].forEach(k=>document.querySelectorAll('#cat-'+k+' .fbc-star').forEach(s=>s.classList.remove('on')));
+  document.querySelectorAll('.fb-tag').forEach(t=>t.classList.remove('on'));
+  document.getElementById('fb-comment').value='';
+  document.getElementById('fb-sent').style.display='none';
+  document.getElementById('feedback-card').querySelectorAll('.fb-title,.fb-sub,#stars-main,.fb-cats,.fb-tags,textarea,.btn,.ghost').forEach(el=>el.style.display='');
 }
+function rateStar(n){FB.stars=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));document.getElementById('star-lbl').textContent=STAR_LBL[n];}
+function rateCat(cat,n){FB.cats[cat]=n;document.querySelectorAll('#cat-'+cat+' .fbc-star').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function toggleTag(el,tag){el.classList.toggle('on');if(el.classList.contains('on')){if(!FB.tags.includes(tag))FB.tags.push(tag);}else FB.tags=FB.tags.filter(t=>t!==tag);}
 
 function resetFB(){
   FB={stars:0,cats:{fun:0,clarity:0,theme:0,design:0},tags:[],comment:''};
@@ -1600,6 +1682,217 @@ function irAFeedback(){
   } else {goFBRanking();setTimeout(function(){fbTab("fb");},300);}
 }
 
+
+// ══ SISTEMA DE AMENAZAS ══
+var AMENAZAS_POOL = [
+  {tipo:"eco",ico:"🌵",nombre:"Sequía Extrema",
+   desc:"Sin lluvia por semanas. El ecosistema colapsa sin acción.",
+   dano:8, turnos:2,
+   resolucion:"Elige CONSCIENCIA o juega una carta de Agua para detenerla."},
+  {tipo:"eco",ico:"🔥",nombre:"Incendio Incontrolado",
+   desc:"Las llamas se acercan. La flora y fauna están en riesgo.",
+   dano:10, turnos:2,
+   resolucion:"Juega carta de Agua o usa RECOLECTAR dos veces."},
+  {tipo:"social",ico:"💔",nombre:"Fractura Comunitaria",
+   desc:"Conflicto interno divide la comunidad. Productividad en caída.",
+   dano:6, turnos:2,
+   resolucion:"Elige EGO con proyectos activos o juega carta Social."},
+  {tipo:"social",ico:"📉",nombre:"Crisis Económica Verde",
+   desc:"Fondos agotados. Los proyectos ecológicos están en riesgo.",
+   dano:7, turnos:2,
+   resolucion:"Usa EGO para generar recursos o juega carta de Emprendimiento."},
+  {tipo:"eco",ico:"🦠",nombre:"Plaga de Cultivos",
+   desc:"Una plaga desconocida destruye los campos de la comunidad.",
+   dano:9, turnos:2,
+   resolucion:"Juega carta de Agroecología o elige CONSCIENCIA."}
+];
+
+function activarAmenaza(){
+  if(G.amenaza) return;
+  var pool = AMENAZAS_POOL.slice().sort(function(){return Math.random()-.5;});
+  G.amenaza = Object.assign({}, pool[0]);
+  G.proximaAmenaza = G.ronda + 3;
+  // Mostrar barra de amenaza
+  actualizarAmenazaUI();
+  showBanner(G.amenaza.ico+' AMENAZA ACTIVA', G.amenaza.nombre+' · '+G.amenaza.turnos+' rondas para actuar');
+  fl('#440000');
+  setStatus(G.amenaza.ico+' AMENAZA: '+G.amenaza.nombre+'. '+G.amenaza.resolucion);
+}
+
+function actualizarAmenazaUI(){
+  var bar = document.getElementById('amenaza-bar');
+  if(!bar) return;
+  if(!G.amenaza){
+    bar.style.display = 'none'; return;
+  }
+  bar.style.display = 'flex';
+  var ico = document.getElementById('am-ico');
+  var nm = document.getElementById('am-nm');
+  var desc = document.getElementById('am-desc');
+  var turn = document.getElementById('am-turnos');
+  if(ico) ico.textContent = G.amenaza.ico;
+  if(nm) nm.textContent = G.amenaza.nombre;
+  if(desc) desc.textContent = G.amenaza.resolucion;
+  if(turn){
+    turn.textContent = G.amenaza.turnos+' ronda'+(G.amenaza.turnos!==1?'s':'');
+    turn.style.color = G.amenaza.turnos <= 1 ? '#ff3333' : '#ff5a5a';
+  }
+}
+
+// ══ ECO QUIZ ══
+var ECO_PREGUNTAS = [
+  {cat:"Cambio Climático",
+   pregunta:"¿Cuánto ha subido la temperatura global promedio desde la era preindustrial?",
+   ops:["0.5°C","1.1°C","2.5°C","3°C"], correcta:1,
+   exp:"La temperatura global ha subido ~1.1°C desde la era preindustrial. Parece poco, pero basta para derretir glaciares y alterar el clima global."},
+  {cat:"Agua Dulce",
+   pregunta:"¿Qué porcentaje del agua de la Tierra es agua dulce accesible?",
+   ops:["25%","10%","3%","0.3%"], correcta:3,
+   exp:"Solo el 0.3% del agua de la Tierra es dulce y accesible. El 97% es salada y el resto está congelada en glaciares."},
+  {cat:"Biodiversidad",
+   pregunta:"¿Cuántas especies se extinguen estimativamente cada día en el mundo?",
+   ops:["1-2","10-20","50-150","500+"], correcta:2,
+   exp:"Se estima que se extinguen entre 50 y 150 especies diariamente. La mayoría antes de ser descubiertas por la ciencia."},
+  {cat:"Energía",
+   pregunta:"¿Qué energía renovable creció más rápido en el mundo en los últimos 5 años?",
+   ops:["Eólica","Hidroeléctrica","Solar fotovoltaica","Geotérmica"], correcta:2,
+   exp:"La energía solar fotovoltaica es la de mayor crecimiento. En 2023 representó el 75% de toda la nueva capacidad renovable instalada."},
+  {cat:"Residuos",
+   pregunta:"¿Cuántos años tarda en degradarse una botella de plástico en la naturaleza?",
+   ops:["10 años","100 años","400-500 años","5.000 años"], correcta:2,
+   exp:"Una botella de plástico tarda entre 400 y 500 años en degradarse. En ese tiempo, se fragmenta en microplásticos que contaminan suelos y océanos."},
+  {cat:"Alimentación",
+   pregunta:"¿Qué porcentaje de las emisiones globales de CO2 proviene de la ganadería?",
+   ops:["5%","14.5%","30%","45%"], correcta:1,
+   exp:"La ganadería produce el 14.5% de las emisiones globales. Comer menos carne roja es una de las acciones individuales de mayor impacto."},
+  {cat:"Bosques",
+   pregunta:"¿Cuántos árboles se talan en el mundo cada minuto?",
+   ops:["100","1.000","15.000+","50.000"], correcta:2,
+   exp:"Se talan más de 15.000 árboles por minuto. Los bosques absorben el 30% del CO2 que emitimos. Su pérdida acelera el cambio climático."},
+  {cat:"Océanos",
+   pregunta:"¿Cuánto plástico entra al océano cada año?",
+   ops:["100.000 ton","1 millón ton","8 millones ton","50 millones ton"], correcta:2,
+   exp:"8 millones de toneladas de plástico llegan al océano anualmente. Equivale a vaciar un camión de basura por minuto al mar."},
+  {cat:"Chile",
+   pregunta:"¿Qué porcentaje de la electricidad de Chile proviene de fuentes renovables hoy?",
+   ops:["15%","30%","55%","80%"], correcta:2,
+   exp:"Chile superó el 55% de generación eléctrica renovable. Con el desierto de Atacama, tiene el mayor potencial solar del planeta."},
+  {cat:"Rancagua",
+   pregunta:"¿Qué río pasa por Rancagua y es vital para la región de O'Higgins?",
+   ops:["Río Maule","Río Biobío","Río Cachapoal","Río Rapel"], correcta:2,
+   exp:"El Río Cachapoal es fundamental para Rancagua. Provee agua para consumo humano, agricultura y su cuenca alberga gran biodiversidad."}
+];
+
+var quizTimer = null;
+var quizTiempoRestante = 0;
+var quizPreguntaActual = null;
+
+function triggerQuiz(){
+  // Elegir pregunta no usada recientemente
+  var pregunta = ECO_PREGUNTAS[Math.floor(Math.random()*ECO_PREGUNTAS.length)];
+  quizPreguntaActual = pregunta;
+  sh('quiz');
+  renderQuiz(pregunta);
+}
+
+function renderQuiz(p){
+  var catEl = document.getElementById('quiz-categoria');
+  var pregEl = document.getElementById('quiz-pregunta');
+  var opsEl = document.getElementById('quiz-opciones');
+  var resEl = document.getElementById('quiz-resultado');
+  var cardEl = document.getElementById('quiz-card');
+  if(catEl) catEl.textContent = p.cat;
+  if(pregEl) pregEl.textContent = p.pregunta;
+  if(resEl) resEl.style.display = 'none';
+  if(cardEl) cardEl.style.display = 'block';
+  if(opsEl){
+    opsEl.innerHTML = '';
+    p.ops.forEach(function(op, i){
+      var btn = document.createElement('button');
+      btn.className = 'btn ghost';
+      btn.style.cssText = 'text-align:left;padding:10px 14px;font-size:.84rem;';
+      btn.textContent = op;
+      btn.addEventListener('click', function(){ responderQuiz(i); });
+      opsEl.appendChild(btn);
+    });
+  }
+  // Timer 15 segundos
+  quizTiempoRestante = 150; // 15 segundos * 10 ticks
+  if(quizTimer) clearInterval(quizTimer);
+  quizTimer = setInterval(function(){
+    quizTiempoRestante--;
+    var fill = document.getElementById('quiz-timer-fill');
+    if(fill) fill.style.width = (quizTiempoRestante/150*100)+'%';
+    if(fill) fill.style.background = quizTiempoRestante < 50 ? '#ff5a5a' : 'var(--green)';
+    if(quizTiempoRestante <= 0){
+      clearInterval(quizTimer);
+      responderQuiz(-1); // timeout
+    }
+  }, 100);
+}
+
+function responderQuiz(idx){
+  if(quizTimer) clearInterval(quizTimer);
+  var p = quizPreguntaActual;
+  if(!p) return;
+  var correcto = idx === p.correcta;
+  var cardEl = document.getElementById('quiz-card');
+  var resEl = document.getElementById('quiz-resultado');
+  var resIco = document.getElementById('quiz-res-ico');
+  var resTit = document.getElementById('quiz-res-titulo');
+  var resExp = document.getElementById('quiz-res-exp');
+  if(cardEl) cardEl.style.display = 'none';
+  if(resEl){
+    resEl.style.display = 'block';
+    resEl.style.background = correcto ? '#0a1f0a' : '#1a0a0a';
+    resEl.style.border = '1.5px solid '+(correcto?'var(--green)':'#cc2222');
+  }
+  if(resIco) resIco.textContent = idx===-1 ? '⏱️' : correcto ? '✅' : '❌';
+  if(resTit){
+    resTit.textContent = idx===-1 ? 'Se acabó el tiempo' : correcto ? '¡Correcto! +2 Eco +10 Semillas' : 'Incorrecto. -1 Eco';
+    resTit.style.color = correcto ? 'var(--green)' : '#ff5a5a';
+  }
+  if(resExp) resExp.textContent = p.exp;
+  // Aplicar consecuencias
+  if(correcto){
+    G.eco += 2; earnSeeds(10);
+    spawnConfetti();
+  } else {
+    G.eco -= 1;
+  }
+  clamp();
+}
+
+function cerrarQuiz(){
+  continueRound();
+}
+
+// ══ REABRIR FEEDBACK ══
+function reabrirFeedback(){
+  var sentEl = document.getElementById('fb-sent');
+  if(sentEl) sentEl.style.display = 'none';
+  // Mostrar todos los elementos del feedback
+  var card = document.querySelector('.feedback-card');
+  if(card){
+    var els = card.querySelectorAll('*');
+    els.forEach(function(el){
+      if(el.id !== 'fb-sent') el.style.display = '';
+    });
+  }
+  // Scroll al feedback
+  setTimeout(function(){
+    var fb = document.querySelector('.feedback-card');
+    if(fb) fb.scrollIntoView({behavior:'smooth'});
+  },200);
+}
+
+// Parchear renderAll para actualizar amenaza UI
+var _renderAllOrig = renderAll;
+renderAll = function(){
+  _renderAllOrig();
+  actualizarAmenazaUI();
+};
+
 </script>
 
 <!-- ACCION REAL ECO -->
@@ -1620,6 +1913,26 @@ function irAFeedback(){
   <div id="accion-nav" style="display:flex;gap:8px;width:100%;margin-top:4px;">
     <button class="btn sec" onclick="goIntro()" style="flex:1;padding:10px;">Inicio</button>
     <button class="btn prim" onclick="goMenu()" style="flex:1;padding:10px;">Jugar</button>
+  </div>
+</div>
+
+<!-- ECO QUIZ -->
+<div class="screen z1" id="s-quiz" style="padding:14px;gap:12px;justify-content:center;align-items:center;min-height:100vh;text-align:center;">
+  <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--gold2);">🌿 Eco Quiz</div>
+  <div style="font-size:.75rem;color:var(--txts);">Responde correctamente para ganar +2 Eco y +10 Semillas</div>
+  <div style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;" id="quiz-card">
+    <div style="font-size:.68rem;color:var(--gold2);font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;" id="quiz-categoria">Categoría</div>
+    <div id="quiz-timer-bar" style="height:4px;background:var(--border);border-radius:2px;margin-bottom:12px;overflow:hidden;">
+      <div id="quiz-timer-fill" style="height:100%;background:var(--green);width:100%;transition:width 0.1s linear;border-radius:2px;"></div>
+    </div>
+    <div style="font-size:.92rem;font-weight:800;color:var(--txt);line-height:1.6;margin-bottom:16px;" id="quiz-pregunta">¿Cuál es el gas principal responsable del efecto invernadero?</div>
+    <div style="display:flex;flex-direction:column;gap:8px;" id="quiz-opciones"></div>
+  </div>
+  <div id="quiz-resultado" style="display:none;width:100%;border-radius:14px;padding:16px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:8px;" id="quiz-res-ico">✅</div>
+    <div style="font-size:.92rem;font-weight:800;margin-bottom:6px;" id="quiz-res-titulo">¡Correcto!</div>
+    <div style="font-size:.8rem;color:var(--txts);line-height:1.65;margin-bottom:12px;" id="quiz-res-exp"></div>
+    <button class="btn prim" onclick="cerrarQuiz()" style="max-width:240px;">Continuar partida →</button>
   </div>
 </div>
 </body>
