@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>ECO-PODERES v5.3 — Eco Quiz O’Higgins</title>
+<title>ECO-PODERES — El Consejo de Guardianes</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -330,6 +330,11 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .ti-nm{font-size:.76rem;font-weight:800;margin-bottom:2px;}
 .ti-desc{font-size:.66rem;color:var(--txts);line-height:1.4;}
 .tut-footer{width:100%;padding:12px 14px;display:flex;gap:8px;background:var(--bg2);border-top:1px solid var(--border);}
+
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+}
 </style>
 <link rel="manifest" id="pwa-manifest">
 <meta name="mobile-web-app-capable" content="yes">
@@ -377,21 +382,23 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="intro-orb">🌍</div>
   <div class="intro-logo" style="font-size:2.8rem;letter-spacing:3px;line-height:1;">ECO-PODERES</div>
   <div class="intro-sub" style="letter-spacing:5px;font-size:.76rem;color:var(--teal);">EL CONSEJO DE GUARDIANES</div>
-  <div class="demo-badge">🧪 Demo v5.3 — Eco Quiz O’Higgins</div>
+  <div class="demo-badge">🧪 Demo v0.8 — Rancagua</div>
   <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
     <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
-    <button class="btn sec" onclick="goMenu()">▶ Jugar directamente</button>
+    <button class="btn sec" onclick="goModoJuego()">▶ Jugar directamente</button>
+    <button onclick="sh('guia')" style="width:100%;padding:9px;border-radius:50px;border:1px solid var(--border2);background:transparent;color:var(--txts);font-size:.78rem;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">📚 Guía para Educadores y Talleres</button>
     <button id="install-btn" onclick="installPWA()" style="display:none;width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--teal);background:rgba(45,212,191,.08);color:var(--teal);font-size:.85rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">
       📲 Instalar como App
     </button>
     <button onclick="goFBRanking()" style="width:100%;padding:11px;border-radius:50px;border:1px solid var(--gold2);background:transparent;color:var(--gold2);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Ranking y Feedback</button>
     <button onclick="goAccionReal()" style="width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Comprometer Accion Eco Real</button>
+    <button onclick="toggleAcceso()" id="btn-acceso" style="width:100%;padding:9px;border-radius:50px;border:1px solid var(--border2);background:transparent;color:var(--txts);font-size:.78rem;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">♿ Modo Accesible (texto grande)</button>
     <div class="seeds-pill" style="justify-content:center;">
       <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="ver-tag">ECO-PODERES v5.3 · Eco Quiz O’Higgins · danygrafiko © 2026</div>
+  <div class="ver-tag">ECO-PODERES v0.8 · danygrafiko © 2025</div>
 </div>
 
 <!-- TUTORIAL -->
@@ -408,6 +415,24 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 </div>
 
 <!-- MENU -->
+
+<!-- SELECTOR MODO DE JUEGO -->
+<div class="screen z1" id="s-modo" style="padding:16px;gap:14px;justify-content:center;align-items:center;text-align:center;">
+  <div style="font-family:var(--ffd);font-size:1.2rem;font-weight:900;color:var(--gold2);">¿Cómo quieres jugar?</div>
+  <div style="font-size:.78rem;color:var(--txts);">Elige el modo para esta sesión</div>
+  <button onclick="iniciarModo(1)" style="width:100%;max-width:320px;padding:18px;border-radius:18px;background:linear-gradient(135deg,var(--bg3),var(--bg4));border:2px solid var(--green);color:var(--txt);cursor:pointer;font-family:var(--ff);touch-action:manipulation;">
+    <div style="font-size:2rem;margin-bottom:6px;">🌿</div>
+    <div style="font-size:.96rem;font-weight:900;color:var(--green);">1 Jugador</div>
+    <div style="font-size:.75rem;color:var(--txts);margin-top:4px;">Partida individual · 8 rondas · Mini-juegos educativos</div>
+  </button>
+  <button onclick="iniciarModo(2)" style="width:100%;max-width:320px;padding:18px;border-radius:18px;background:linear-gradient(135deg,var(--bg3),var(--bg4));border:2px solid var(--blue);color:var(--txt);cursor:pointer;font-family:var(--ff);touch-action:manipulation;">
+    <div style="font-size:2rem;margin-bottom:6px;">🤝</div>
+    <div style="font-size:.96rem;font-weight:900;color:var(--blue);">2 Jugadores</div>
+    <div style="font-size:.75rem;color:var(--txts);margin-top:4px;">Turnos alternos · 4 rondas cada uno · Compiten por eco</div>
+  </button>
+  <button class="btn ghost" onclick="goIntro()" style="width:100%;max-width:320px;padding:10px;font-size:.82rem;">← Volver</button>
+</div>
+
 <div class="screen z1" id="s-menu" style="gap:.8rem;padding:1rem;">
   <div style="text-align:center;">
     <div style="font-family:var(--ffd);font-size:1.4rem;font-weight:900;">Elige tu Guardián</div>
@@ -515,11 +540,12 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     <div class="r-seeds"><div class="r-seeds-lbl">🌱 Semillas Guardianas ganadas</div><div class="r-seeds-val" id="r-seeds">+0</div></div>
     <div style="font-size:.65rem;color:var(--txts);text-align:center;">Puntaje final</div>
     <div class="score" id="r-score">0 pts</div>
-    <div style="display:flex;gap:6px;margin-top:4px;">
-      <button class="btn sec" onclick="goMenu()" style="flex:1;padding:9px;font-size:.8rem;">Jugar</button>
-      <button class="btn prim" onclick="goSobres()" style="flex:1;padding:9px;font-size:.8rem;">Sobres</button>
-      <button class="btn ghost" onclick="goFBRanking()" style="flex:1;padding:9px;font-size:.78rem;">Ranking</button>
+    <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+      <button class="btn sec" onclick="goMenu()" style="flex:1;min-width:70px;padding:9px;font-size:.78rem;">Jugar</button>
+      <button class="btn prim" onclick="goSobres()" style="flex:1;min-width:70px;padding:9px;font-size:.78rem;">Sobres</button>
+      <button class="btn ghost" onclick="goFBRanking()" style="flex:1;min-width:70px;padding:9px;font-size:.76rem;">Ranking</button>
     </div>
+    <button onclick="goShareResult()" style="width:100%;padding:9px;border-radius:50px;border:1px solid var(--purple);background:rgba(157,96,255,.08);color:var(--purple);font-size:.82rem;font-weight:800;cursor:pointer;font-family:var(--ff);margin-top:4px;touch-action:manipulation;">📤 Compartir resultado como imagen</button>
     <button onclick="goAccionReal()" style="width:100%;padding:10px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.84rem;font-weight:800;cursor:pointer;font-family:var(--ff);margin-top:4px;touch-action:manipulation;">Comprometer Accion Eco Real (+100)</button>
   </div>
   <div class="feedback-card">
@@ -1006,11 +1032,11 @@ function startGame(){
   var deckBase=shuffle([...CARDS,...CARDS.slice(0,5),...col,...colCards]);
   const deck=deckBase;
   G={g:selG,maxR:MAX_RONDAS,ronda:1,
-     eco:55,conciencia:3,karma:0,sociedad:2,acciones:3,maxAcc:3,
-     agua:5,energia:4,deck,hand:[],disc:[],
+     eco:45,conciencia:2,karma:0,sociedad:1,acciones:3,maxAcc:3,
+     agua:4,energia:3,deck,hand:[],disc:[],
      gpu:false,phase:'dice',path:null,cpr:0,_bee:false,
      comm,commPts:0,seedsEarned:0,
-     amenaza:null,proximaAmenaza:3,quizPendiente:false,mazoPrestado:false,cartasJugadasTurno:0};
+     amenaza:null,proximaAmenaza:2,quizPendiente:false,mazoPrestado:false,cartasJugadasTurno:0};
   prevEco=50;
   // Águila empieza con 4 acciones
   if(G.g.id==='aguila')G.maxAcc=4;
@@ -1195,7 +1221,7 @@ function nextRound(){
     G.amenaza.turnos--;
     if(G.amenaza.turnos<=0){
       // Amenaza se concreta — daño real
-      G.eco -= G.amenaza.dano;
+      G.eco -= Math.round(G.amenaza.dano * 1.3); // 30% más dañino
       showBanner(G.amenaza.ico+' Amenaza ejecutada!', G.amenaza.nombre+' causó -'+G.amenaza.dano+' Eco');
       fl('#550000');
       G.amenaza = null;
@@ -1213,8 +1239,8 @@ function nextRound(){
     G.quizPendiente = true;
   }
   // MEJORA: Decay escalado por ronda para crear tensión creciente
-  const decayBase=1;
-  const decayExtra=Math.floor(G.ronda/4); // rondas 4-8 más difíciles
+  const decayBase=2;
+  const decayExtra=Math.floor(G.ronda/3); // decay más agresivoes
   G.eco-=(decayBase+decayExtra);
   // Bonus por conciencia alta
   if(G.conciencia>=7)G.eco+=2;
@@ -1456,8 +1482,8 @@ function endGame(reason){
   if(reason==='colapso'){ico='💀';ttl='Colapso del Ecosistema';msg='Las decisiones acumuladas quebraron el equilibrio del mundo. El Consejo llora. Pero el aprendizaje nunca muere.';}
   else if(pts>=160){ico='🌟';ttl='Guardián Legendario';msg='Lograste el equilibrio perfecto. La sociedad consciente que construiste será estudiada por generaciones de Guardianes.';}
   else if(pts>=130){ico='🌿';ttl='Guardián Supremo';msg='El mundo florece gracias a tu guía. Conciencia y naturaleza caminan juntas hacia el futuro.';}
-  else if(pts>=95){ico='⚖️';ttl='Sociedad en Equilibrio';msg='Avanzaste con intención y sabiduría. La semilla del cambio está sembrada en terreno fértil.';}
-  else if(pts>=60){ico='🌱';ttl='Despertar Temprano';msg='Cada error fue una lección valiosa. El Consejo te invita a regresar con más sabiduría.';}
+  else if(pts>=120){ico='⚖️';ttl='Sociedad en Equilibrio';msg='Avanzaste con intención y sabiduría. La semilla del cambio está sembrada en terreno fértil.';}
+  else if(pts>=80){ico='🌱';ttl='Despertar Temprano';msg='Cada error fue una lección valiosa. El Consejo te invita a regresar con más sabiduría.';}
   else{ico='⚠️';ttl='El Mundo Resiste';msg='El caos superó tu guía esta vez. La historia no termina aquí — regresa más preparado.';}
   sh('result');
   if(reason!=='colapso'){
@@ -1547,7 +1573,7 @@ function submitFB(){
     ronda: G ? G.ronda : 0,
     score: scoreEl ? scoreEl.textContent : '?',
     villa: G ? G.comm : '',
-    version: 'v5.3-ohiggins',
+    version: 'v0.5',
     ts: new Date().toISOString()
   };
   // 1. Guardar localmente
@@ -1935,434 +1961,386 @@ function actualizarAmenazaUI(){
 
 // ══ ECO QUIZ ══
 var ECO_PREGUNTAS = [
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Qué árbol nativo produce saponinas, una sustancia que puede formar espuma como jabón natural?",
-    "ops": [
-      "Peumo",
-      "Quillay",
-      "Espino",
-      "Boldo"
-    ],
-    "correcta": 1,
-    "exp": "El quillay es propio del bosque esclerófilo chileno. Sus saponinas han sido usadas tradicionalmente como limpiador natural y hoy tienen usos en cosmética y biotecnología."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Qué árbol nativo tiene hojas aromáticas muy usadas en infusiones digestivas?",
-    "ops": [
-      "Boldo",
-      "Litre",
-      "Maitén",
-      "Molle"
-    ],
-    "correcta": 0,
-    "exp": "El boldo es una especie nativa de Chile central. Sus hojas son reconocidas por su aroma y uso tradicional en infusiones digestivas."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Qué especie puede causar irritación o alergia en la piel al contacto en algunas personas?",
-    "ops": [
-      "Peumo",
-      "Litre",
-      "Quillay",
-      "Matico"
-    ],
-    "correcta": 1,
-    "exp": "El litre puede provocar reacciones alérgicas en personas sensibles. En terreno se recomienda reconocerlo y evitar tocarlo directamente."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Qué árbol del valle central tiene flores amarillas muy perfumadas y espinas?",
-    "ops": [
-      "Espino",
-      "Peumo",
-      "Boldo",
-      "Maitén"
-    ],
-    "correcta": 0,
-    "exp": "El espino forma parte del paisaje típico del valle central. Resiste sequía y entrega refugio y alimento a fauna local."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Cuál de estas especies es especialmente valiosa para atraer aves por sus frutos rojizos?",
-    "ops": [
-      "Peumo",
-      "Eucalipto",
-      "Pino",
-      "Álamo"
-    ],
-    "correcta": 0,
-    "exp": "El peumo produce frutos que pueden alimentar aves y otros animales. Es una especie clave del bosque esclerófilo."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Qué significa que una planta sea nativa de O'Higgins o Chile central?",
-    "ops": [
-      "Que fue traída desde otro país",
-      "Que crece naturalmente en este territorio",
-      "Que solo sirve para jardines",
-      "Que necesita mucha agua"
-    ],
-    "correcta": 1,
-    "exp": "Una especie nativa pertenece naturalmente al territorio. Suele estar mejor adaptada al clima local y ayuda a sostener la biodiversidad."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Por qué conviene usar flora nativa en plazas y parques de la zona central?",
-    "ops": [
-      "Porque siempre crece más rápido",
-      "Porque requiere menos agua y apoya fauna local",
-      "Porque no necesita suelo",
-      "Porque no pierde hojas nunca"
-    ],
-    "correcta": 1,
-    "exp": "Las especies nativas suelen adaptarse mejor al clima mediterráneo de O'Higgins, reducen consumo de agua y entregan alimento o refugio a aves e insectos."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Qué planta nativa de uso medicinal tradicional tiene hojas rugosas y flores anaranjadas?",
-    "ops": [
-      "Matico",
-      "Quillay",
-      "Litre",
-      "Espino"
-    ],
-    "correcta": 0,
-    "exp": "El matico se reconoce por sus hojas rugosas y flores globosas. Se ha usado tradicionalmente para apoyar la cicatrización."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Qué ecosistema natural predomina en gran parte de Chile central y O'Higgins?",
-    "ops": [
-      "Bosque esclerófilo",
-      "Selva tropical",
-      "Tundra",
-      "Manglar"
-    ],
-    "correcta": 0,
-    "exp": "El bosque esclerófilo está formado por especies de hojas duras, adaptadas a veranos secos e inviernos lluviosos."
-  },
-  {
-    "cat": "Flora O'Higgins",
-    "pregunta": "¿Cuál de estas NO es una buena práctica con árboles nativos jóvenes?",
-    "ops": [
-      "Protegerlos del pisoteo",
-      "Regarlos en establecimiento",
-      "Cortar sus tutores sin revisar",
-      "Controlar malezas alrededor"
-    ],
-    "correcta": 2,
-    "exp": "Los árboles jóvenes necesitan protección, riego inicial y manejo. Retirar tutores o protecciones sin revisar puede afectar su desarrollo."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué zorro nativo ayuda a controlar roedores en cerros y campos de la región?",
-    "ops": [
-      "Zorro culpeo",
-      "Perro asilvestrado",
-      "Gato doméstico",
-      "Conejo"
-    ],
-    "correcta": 0,
-    "exp": "El zorro culpeo cumple un rol importante como controlador natural de roedores y otras presas pequeñas."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué roedor nativo chileno es social y vive en madrigueras, común en zonas de matorral?",
-    "ops": [
-      "Degú",
-      "Hámster",
-      "Castor",
-      "Ratón europeo"
-    ],
-    "correcta": 0,
-    "exp": "El degú es un roedor nativo de Chile central. Vive en grupos y participa en la dinámica del suelo y las semillas."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué animal subterráneo forma túneles y montículos de tierra?",
-    "ops": [
-      "Cururo",
-      "Coipo",
-      "Quique",
-      "Tiuque"
-    ],
-    "correcta": 0,
-    "exp": "El cururo es un roedor subterráneo. Sus túneles airean el suelo y forman parte de los ecosistemas de matorral y pradera."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué ave rapaz pequeña suele observarse posada en cables o planeando sobre campos?",
-    "ops": [
-      "Cernícalo",
-      "Tagua",
-      "Garza chica",
-      "Loica"
-    ],
-    "correcta": 0,
-    "exp": "El cernícalo es una rapaz pequeña que caza insectos, lagartijas y roedores. Puede verse en zonas rurales y bordes urbanos."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué ave acuática negra con escudo frontal claro vive en lagunas y embalses como Rapel?",
-    "ops": [
-      "Tagua",
-      "Cóndor",
-      "Tenca",
-      "Chincol"
-    ],
-    "correcta": 0,
-    "exp": "La tagua habita humedales, lagunas y embalses. Su presencia ayuda a hablar de conservación de cuerpos de agua."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué animal nativo semiacuático puede encontrarse en ríos, canales y humedales?",
-    "ops": [
-      "Coipo",
-      "Puma",
-      "Degú",
-      "Cernícalo"
-    ],
-    "correcta": 0,
-    "exp": "El coipo vive asociado al agua. Es herbívoro y depende de riberas y humedales con buena vegetación."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué ave de pecho rojo es muy reconocible en campos y jardines de Chile central?",
-    "ops": [
-      "Loica",
-      "Torcaza",
-      "Garza",
-      "Tiuque"
-    ],
-    "correcta": 0,
-    "exp": "La loica es fácil de reconocer por el rojo intenso de su pecho. Es parte del paisaje sonoro y visual de zonas abiertas."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué acción es correcta al encontrar fauna silvestre en un parque o cerro?",
-    "ops": [
-      "Capturarla para verla de cerca",
-      "No intervenir y observar a distancia",
-      "Alimentarla con pan",
-      "Perseguirla para fotografiarla"
-    ],
-    "correcta": 1,
-    "exp": "La fauna silvestre debe observarse a distancia. Capturar, alimentar o perseguir animales puede dañarlos y alterar su conducta."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Por qué los perros sin control son un problema para la fauna nativa?",
-    "ops": [
-      "Porque no causan impacto",
-      "Porque pueden perseguir, herir o matar fauna",
-      "Porque ayudan siempre al ecosistema",
-      "Porque plantan semillas"
-    ],
-    "correcta": 1,
-    "exp": "Los perros sueltos pueden atacar aves, zorros, reptiles y otros animales. La tenencia responsable también es conservación."
-  },
-  {
-    "cat": "Fauna O'Higgins",
-    "pregunta": "¿Qué rol cumplen muchas aves al comer frutos de árboles nativos?",
-    "ops": [
-      "Dispersan semillas",
-      "Producen plástico",
-      "Secan los ríos",
-      "Eliminan todos los insectos"
-    ],
-    "correcta": 0,
-    "exp": "Al consumir frutos, muchas aves ayudan a mover semillas y regenerar vegetación nativa en quebradas, cerros y áreas verdes."
-  },
-  {
-    "cat": "Agua y territorio",
-    "pregunta": "¿Qué río es clave para el valle de Rancagua y el riego de la cuenca local?",
-    "ops": [
-      "Cachapoal",
-      "Loa",
-      "Biobío",
-      "Baker"
-    ],
-    "correcta": 0,
-    "exp": "El río Cachapoal estructura gran parte del valle. Su cuidado conecta agua, agricultura, biodiversidad y vida urbana."
-  },
-  {
-    "cat": "Agua y territorio",
-    "pregunta": "¿Qué práctica ayuda más a ahorrar agua en áreas verdes durante verano?",
-    "ops": [
-      "Regar al mediodía",
-      "Regar de noche o temprano y revisar fugas",
-      "Regar veredas",
-      "Usar siempre manguera abierta"
-    ],
-    "correcta": 1,
-    "exp": "Regar temprano o al atardecer reduce evaporación. Revisar fugas y ajustar riego evita pérdidas innecesarias."
-  },
-  {
-    "cat": "Agua y territorio",
-    "pregunta": "¿Qué es una especie adaptada a sequía?",
-    "ops": [
-      "Una planta que vive con poca agua",
-      "Un animal marino",
-      "Una planta artificial",
-      "Una planta que requiere riego diario"
-    ],
-    "correcta": 0,
-    "exp": "Muchas especies del bosque esclerófilo tienen hojas duras, raíces profundas o estrategias para resistir veranos secos."
-  },
-  {
-    "cat": "Agua y territorio",
-    "pregunta": "¿Qué problema genera una fuga de riego no detectada?",
-    "ops": [
-      "Ahorro de agua",
-      "Pérdida de agua, erosión y sobreconsumo",
-      "Mejora inmediata del suelo",
-      "Más biodiversidad siempre"
-    ],
-    "correcta": 1,
-    "exp": "Una fuga puede aumentar el consumo, erosionar suelo, dañar senderos y afectar la mantención de áreas verdes."
-  },
-  {
-    "cat": "Reciclaje",
-    "pregunta": "¿Dónde debería ir una botella de vidrio limpia?",
-    "ops": [
-      "Vidrio",
-      "Orgánico",
-      "Papel",
-      "Punto especial"
-    ],
-    "correcta": 0,
-    "exp": "Las botellas y frascos de vidrio limpios pueden reciclarse muchas veces. Siempre es mejor enjuagarlos antes."
-  },
-  {
-    "cat": "Reciclaje",
-    "pregunta": "¿Qué residuo sirve para compostaje doméstico?",
-    "ops": [
-      "Cáscara de fruta",
-      "Pila usada",
-      "Ampolleta",
-      "Vidrio roto"
-    ],
-    "correcta": 0,
-    "exp": "Cáscaras, restos vegetales y poda pequeña pueden convertirse en compost, reduciendo basura y devolviendo nutrientes al suelo."
-  },
-  {
-    "cat": "Reciclaje",
-    "pregunta": "¿Dónde deben llevarse pilas o baterías usadas?",
-    "ops": [
-      "Orgánico",
-      "Punto especial",
-      "Papel",
-      "Vidrio"
-    ],
-    "correcta": 1,
-    "exp": "Pilas y baterías son residuos especiales. Deben llevarse a puntos autorizados, no mezclarse con basura común ni reciclaje domiciliario."
-  },
-  {
-    "cat": "Reciclaje",
-    "pregunta": "¿Qué debes hacer con una caja de cartón limpia antes de reciclarla?",
-    "ops": [
-      "Mojarla",
-      "Aplastarla",
-      "Quemarla",
-      "Enterrarla"
-    ],
-    "correcta": 1,
-    "exp": "Aplastar cartón ahorra espacio y facilita transporte y clasificación."
-  },
-  {
-    "cat": "Reciclaje",
-    "pregunta": "¿Qué residuo NO debe botarse por el desagüe?",
-    "ops": [
-      "Aceite de cocina usado",
-      "Agua limpia",
-      "Agua de lluvia",
-      "Hielo"
-    ],
-    "correcta": 0,
-    "exp": "El aceite usado puede contaminar grandes volúmenes de agua y tapar cañerías. Debe guardarse en botella y llevarse a reciclaje especializado."
-  },
-  {
-    "cat": "Ecocultura",
-    "pregunta": "¿Qué significa ecocultura en el juego?",
-    "ops": [
-      "Comprar más cosas",
-      "Vivir hábitos que cuidan el entorno",
-      "Ignorar la basura",
-      "Usar más agua"
-    ],
-    "correcta": 1,
-    "exp": "Ecocultura es transformar el cuidado ambiental en hábitos cotidianos: separar residuos, cuidar agua, respetar especies y participar en comunidad."
-  },
-  {
-    "cat": "Ecocultura",
-    "pregunta": "¿Qué acción fortalece más una comunidad ecológica?",
-    "ops": [
-      "Cuidar solo mi patio",
-      "Organizar limpieza, educación y participación vecinal",
-      "Tirar residuos lejos de casa",
-      "Romper señaléticas"
-    ],
-    "correcta": 1,
-    "exp": "La acción colectiva multiplica el impacto: vecinos informados y organizados protegen mejor plazas, riberas y áreas verdes."
-  },
-  {
-    "cat": "Ecocultura",
-    "pregunta": "¿Qué beneficio entregan árboles y áreas verdes en una ciudad calurosa?",
-    "ops": [
-      "Sombra, frescor y bienestar",
-      "Más ruido",
-      "Más cemento",
-      "Menos aves"
-    ],
-    "correcta": 0,
-    "exp": "La vegetación urbana baja temperatura, entrega sombra, mejora el paisaje y favorece encuentro comunitario."
-  },
-  {
-    "cat": "Ecocultura",
-    "pregunta": "¿Qué conducta es mejor al visitar un cerro o humedal?",
-    "ops": [
-      "Llevarse plantas o animales",
-      "No dejar basura y respetar senderos",
-      "Hacer fuego donde sea",
-      "Alimentar fauna"
-    ],
-    "correcta": 1,
-    "exp": "Respetar senderos, retirar residuos y no intervenir fauna o plantas protege ecosistemas frágiles."
-  },
-  {
-    "cat": "Ecocultura",
-    "pregunta": "¿Qué representa ganar Eco en Eco-Poderes?",
-    "ops": [
-      "Solo puntos",
-      "Mejor equilibrio entre naturaleza y decisiones humanas",
-      "Comprar más cartas sin pensar",
-      "Aumentar contaminación"
-    ],
-    "correcta": 1,
-    "exp": "El Eco representa la salud del sistema natural. Subirlo muestra decisiones más responsables y sostenibles."
-  },
-  {
-    "cat": "Ecocultura",
-    "pregunta": "¿Qué representa el Karma en Eco-Poderes?",
-    "ops": [
-      "Consecuencias negativas acumuladas",
-      "Una recompensa automática",
-      "Un tipo de árbol",
-      "Un contenedor de reciclaje"
-    ],
-    "correcta": 0,
-    "exp": "El Karma simboliza costos ocultos de malas decisiones. Si se acumula, el ecosistema recibe daño."
-  }
+
+  // ── RANCAGUA IDENTIDAD LOCAL ──────────────────────────
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿En qué año fue fundada la ciudad de Rancagua?",
+   ops:["1691","1743","1810","1872"], correcta:1,
+   exp:"Rancagua fue fundada el 5 de octubre de 1743 por el Gobernador José Antonio Manso de Velasco. Su nombre mapuche 'Rangkagua' significa 'lugar donde se junta el agua'."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Cómo se llama el río que atraviesa la ciudad de Rancagua?",
+   ops:["Río Maule","Río Tinguiririca","Río Cachapoal","Río Rapel"], correcta:2,
+   exp:"El Río Cachapoal nace en los Andes y pasa por el sector oriente de Rancagua. Es vital para el riego agrícola y el abastecimiento de agua de la región."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Qué mineral histórico hace famosa a la región de O'Higgins?",
+   ops:["Oro","Plata","Cobre","Litio"], correcta:2,
+   exp:"El Cobre de El Teniente, ubicado a 44 km de Rancagua, es la mina de cobre subterránea más grande del mundo. Fue nacionalizada en 1971 por Salvador Allende."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Qué batalla histórica ocurrió en Rancagua en 1814?",
+   ops:["Batalla de Chacabuco","Batalla de Maipú","Desastre de Rancagua","Batalla del Roble"], correcta:2,
+   exp:"El Desastre de Rancagua (1-2 octubre 1814) fue una derrota patriota liderada por O'Higgins. Marcó el fin de la Patria Vieja e inició la Reconquista española."},
+
+  {cat:"Rancagua — Identidad",
+   pregunta:"¿Cuántos habitantes tiene aproximadamente la ciudad de Rancagua según el Censo 2024?",
+   ops:["80.000","150.000","236.000","320.000"], correcta:2,
+   exp:"Rancagua tiene aproximadamente 236.363 habitantes según el Censo 2024, siendo la quinta ciudad más poblada de Chile y capital de la Región de O'Higgins."},
+
+  // ── ÁREAS VERDES Y ESPACIOS PÚBLICOS ─────────────────
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Cuál es el parque más histórico y central de Rancagua?",
+   ops:["Parque Los Álamos","Parque Centenario","Parque El Teniente","Parque Sur"], correcta:1,
+   exp:"El Parque Centenario está en el corazón de Rancagua. Tiene árboles centenarios, una laguna artificial y es punto de encuentro familiar desde hace generaciones."},
+
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Qué humedal de importancia para aves migratorias está cerca de Rancagua?",
+   ops:["Humedal El Yali","Humedal Los Lirios","Humedal Batuco","Laguna Aculeo"], correcta:1,
+   exp:"El Humedal Los Lirios está en Requínoa, a 30 km de Rancagua. Es un sitio Ramsar que alberga más de 100 especies de aves, incluyendo flamencos y taguas."},
+
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Cuántos metros cuadrados de área verde por habitante recomienda la OMS?",
+   ops:["3 m²","9 m²","15 m²","25 m²"], correcta:1,
+   exp:"La OMS recomienda 9 m² de área verde por habitante como mínimo. Rancagua trabaja para aumentar sus espacios verdes, especialmente en poblaciones periféricas."},
+
+  {cat:"Áreas Verdes Rancagua",
+   pregunta:"¿Qué beneficio comprobado tienen los árboles en las calles urbanas?",
+   ops:["Solo estética","Reducen temperatura hasta 8°C","Aumentan tráfico","Solo dan sombra"], correcta:1,
+   exp:"Los árboles urbanos pueden reducir la temperatura local hasta 8°C en comparación con calles sin vegetación. Este efecto se llama 'isla de frescor' y es clave ante el calor extremo."},
+
+  // ── FLORA NATIVA O'HIGGINS ────────────────────────────
+  {cat:"Flora Nativa",
+   pregunta:"¿Cuál árbol nativo de Chile produce saponina usada como jabón natural?",
+   ops:["Peumo","Boldo","Quillay","Maqui"], correcta:2,
+   exp:"El Quillay (Quillaja saponaria) produce saponinas en su corteza. Los mapuches lo usaban para lavar ropa y cabello. Hoy sus extractos se usan en cosmética y farmacia."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Qué árbol nativo tiene hojas aromáticas usadas en infusiones medicinales para el hígado?",
+   ops:["Espino","Boldo","Litre","Colliguay"], correcta:1,
+   exp:"El Boldo (Peumus boldus) es endémico de Chile. Sus hojas contienen boldina, con propiedades digestivas y hepáticas. Chile exporta extracto de boldo a Europa y Asia."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Cuál es el árbol nacional de Chile según el Ministerio de Agricultura?",
+   ops:["Araucaria","Peumo","Maqui","Quillay"], correcta:2,
+   exp:"El Maqui (Aristotelia chilensis) fue declarado árbol nacional de Chile. Sus bayas moradas tienen el mayor contenido de antocianinas de cualquier fruto conocido."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿En qué estación florecen los Espinos, árbol típico del Valle Central?",
+   ops:["Invierno","Primavera (agosto-septiembre)","Verano","Otoño"], correcta:1,
+   exp:"El Espino (Vachellia caven) florece en agosto-septiembre llenando el Valle Central de flores amarillas perfumadas. Es símbolo del paisaje de O'Higgins y resistente a la sequía."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Qué planta nativa de riberas tiene hojas rugosas usadas para curar heridas?",
+   ops:["Canelo","Matico","Muña","Cedrón"], correcta:1,
+   exp:"El Matico (Buddleja globosa) crece junto al Río Cachapoal. Es una planta medicinal tradicional usada para cicatrización. Sus hojas en polvo se aplican directamente en heridas."},
+
+  {cat:"Flora Nativa",
+   pregunta:"¿Por qué los árboles nativos son mejores que exóticos para plantar en Rancagua?",
+   ops:["No lo son, los exóticos crecen más rápido","Usan menos agua y apoyan fauna local","Son más decorativos","Son más económicos"], correcta:1,
+   exp:"Los árboles nativos están adaptados al clima local, necesitan hasta 80% menos agua y sirven de alimento y refugio a aves e insectos nativos que los exóticos no pueden sostener."},
+
+  // ── FAUNA NATIVA ─────────────────────────────────────
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Qué ave rapaz pequeña se puede ver cazando en parques y campos de Rancagua?",
+   ops:["Cóndor","Cernícalo","Halcón peregrino","Águila"], correcta:1,
+   exp:"El Cernícalo (Falco sparverius) es el rapaz más común en zonas urbanas de Rancagua. Lo verás volando estático sobre campos y parques, cazando insectos y ratones."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Qué animal nativo controla naturalmente la población de ratones en la región?",
+   ops:["Perro doméstico","Zorro culpeo","Puma","Coipo"], correcta:1,
+   exp:"El Zorro culpeo (Lycalopex culpaeus) habita los cerros alrededor de Rancagua y es un controlador natural de roedores. Su caza ilegal desregula el ecosistema del Valle Central."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Qué ave acuática negra con frente blanca es típica del Lago Rapel, cerca de Rancagua?",
+   ops:["Garza Boyera","Pato Jergón","Tagua","Huairavo"], correcta:2,
+   exp:"La Tagua (Fulica armata) es un ave territorial y agresiva que vive en el Lago Rapel a 60 km de Rancagua. Construye nidos flotantes y es indicador de la salud de los humedales."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Cuántas especies de aves se han registrado en el Humedal Los Lirios cerca de Rancagua?",
+   ops:["15 especies","40 especies","100+ especies","250 especies"], correcta:2,
+   exp:"El Humedal Los Lirios alberga más de 100 especies de aves, incluyendo flamencos, taguas, garzas y aves migratorias del hemisferio norte. Es uno de los humedales más importantes de Chile Central."},
+
+  {cat:"Fauna Nativa O'Higgins",
+   pregunta:"¿Por qué es importante no cortar los cerros con vegetación nativa alrededor de Rancagua?",
+   ops:["Solo por estética","Son hábitat de zorro, cernícalo y reptiles nativos","Para turismo","Para control del clima"], correcta:1,
+   exp:"Los cerros con quillayes, espinos y peumos alrededor de Rancagua son el último refugio de zorros, cernícalos, lagartijas y culebras nativas. Sin esa vegetación, estas especies desaparecen del paisaje."},
+
+  // ── AGUA Y AHORRO HÍDRICO ─────────────────────────────
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Cuántos litros de agua se ahorran al cerrar la llave mientras te cepillas los dientes?",
+   ops:["2 litros","10 litros","25 litros","50 litros"], correcta:1,
+   exp:"Dejar la llave abierta al cepillarse desperdicia aproximadamente 10 litros por minuto. Chile enfrenta estrés hídrico severo: la zona central ha perdido 30% de sus lluvias en 30 años."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Qué porcentaje del agua dulce de Chile se usa en agricultura?",
+   ops:["20%","45%","70%","90%"], correcta:2,
+   exp:"El 70% del agua dulce en Chile se destina a la agricultura. La Región de O'Higgins, con sus viñedos y frutales, es una de las zonas de mayor consumo hídrico agrícola del país."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Cuántos litros de agua se necesitan para producir 1 kg de carne de vacuno?",
+   ops:["500 litros","2.000 litros","8.000 litros","15.500 litros"], correcta:3,
+   exp:"Se necesitan 15.500 litros de agua para producir 1 kg de carne de vacuno. Reducir el consumo de carne roja es una de las acciones individuales de mayor impacto en el uso del agua."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Qué es la 'megasequía' que afecta a la zona central de Chile?",
+   ops:["Una sola temporada seca","15 años consecutivos con lluvias bajo el promedio","Falta de ríos","Solo afecta el desierto"], correcta:1,
+   exp:"La megasequía es un período de más de 15 años de lluvias bajo el promedio histórico en Chile Central (desde 2010). Rancagua y el Valle del Cachapoal son zonas críticas de este fenómeno."},
+
+  {cat:"Agua y Ahorro",
+   pregunta:"¿Cómo puedes reutilizar el agua fría mientras esperas la caliente en la ducha?",
+   ops:["No se puede reutilizar","Recogerla en un balde para regar plantas","Dejarla correr","Mezclarla con detergente"], correcta:1,
+   exp:"Recoger el agua fría inicial en un balde puede darte entre 5-10 litros por ducha. Úsala para regar plantas, limpiar o llenar el estanque del baño. En Rancagua se pierden millones de litros así al año."},
+
+  // ── RECICLAJE Y RESIDUOS ──────────────────────────────
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Cuántos años tarda en degradarse una colilla de cigarrillo en la naturaleza?",
+   ops:["6 meses","2 años","10 años","25 años"], correcta:2,
+   exp:"Una colilla tarda entre 10 y 15 años en degradarse y contamina hasta 50 litros de agua. Las riberas del Cachapoal y plazas de Rancagua son afectadas frecuentemente por este residuo."},
+
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Qué porcentaje de los residuos domésticos chilenos son reciclados actualmente?",
+   ops:["Menos del 1%","8%","25%","40%"], correcta:1,
+   exp:"Chile recicla solo alrededor del 8% de sus residuos. La Ley REP (Responsabilidad Extendida del Productor) busca llegar al 60% en 2030. Tú puedes marcar la diferencia en tu villa."},
+
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Cuántas veces puede reciclarse el vidrio sin perder calidad?",
+   ops:["Solo 1 vez","3-5 veces","10 veces","Infinitas veces"], correcta:3,
+   exp:"El vidrio es 100% reciclable de forma infinita sin perder calidad ni pureza. Reciclarlo ahorra 30% de energía comparado con fabricar vidrio nuevo. En Rancagua hay puntos limpios en varias municipalidades."},
+
+  {cat:"Reciclaje y Residuos",
+   pregunta:"¿Qué residuo NO va en el contenedor de papel/cartón?",
+   ops:["Cajas de cereal aplastadas","Revistas de papel brillante","Periódicos","Cajas de huevos"], correcta:1,
+   exp:"Las revistas con plastificado brillante y el papel parafinado NO son reciclables junto al papel. Su recubrimiento plástico contamina el lote de reciclaje. Solo papel mate y cartón limpio."},
+
+  // ── CAMBIO CLIMÁTICO Y ENERGÍA ────────────────────────
+  {cat:"Clima y Energía",
+   pregunta:"¿Cuánto ha aumentado la temperatura promedio en Chile en los últimos 50 años?",
+   ops:["0.2°C","0.8°C","1.5°C","3°C"], correcta:1,
+   exp:"Chile ha experimentado un aumento de aproximadamente 0.8°C en su temperatura promedio en 50 años. En la zona central, las olas de calor son cada vez más frecuentes e intensas."},
+
+  {cat:"Clima y Energía",
+   pregunta:"¿Qué porcentaje de la electricidad de Chile proviene de energías renovables hoy?",
+   ops:["15%","35%","55%","80%"], correcta:2,
+   exp:"Chile superó el 55% de generación eléctrica renovable gracias al solar en Atacama y la eólica. La meta es llegar al 80% en 2030, uno de los objetivos más ambiciosos de América Latina."},
+
+  {cat:"Clima y Energía",
+   pregunta:"¿Cuánto CO2 absorbe un árbol adulto al año en promedio?",
+   ops:["2 kg","22 kg","100 kg","500 kg"], correcta:1,
+   exp:"Un árbol adulto absorbe aproximadamente 22 kg de CO2 al año. Plantar árboles nativos en Rancagua no solo ayuda al clima global — también da sombra, reduce el ruido y mejora el bienestar."},
+
+  {cat:"Clima y Energía",
+   pregunta:"¿Cuál es la principal fuente de energía renovable con más crecimiento en Chile?",
+   ops:["Hidroeléctrica","Eólica","Solar fotovoltaica","Geotérmica"], correcta:2,
+   exp:"La energía solar fotovoltaica es la de mayor crecimiento en Chile. El Desierto de Atacama tiene la mayor radiación solar del planeta. En 2023, el solar fue el 75% de toda la nueva capacidad renovable instalada."},
+
+  // ── CONSEJOS ECOLÓGICOS PRÁCTICOS ────────────────────
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Qué significa el concepto 'km 0' en alimentación?",
+   ops:["Comida sin calorías","Alimentos producidos localmente sin transporte largo","Comida gratis","Dieta vegana"], correcta:1,
+   exp:"'Km 0' son alimentos producidos a menos de 100 km de donde se consumen. Comprar en ferias locales de Rancagua reduce la huella de carbono del transporte y apoya a agricultores de la región."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Cuánto CO2 se evita por cada km que recorres en bicicleta en vez de auto?",
+   ops:["0 — bici no emite nada de todas formas","150 gramos de CO2","250 gramos de CO2","500 gramos de CO2"], correcta:2,
+   exp:"Cada km en bicicleta en lugar de auto evita 250 gramos de CO2. En Rancagua hay ciclovías que conectan varios barrios. Si 1.000 personas usan bicicleta solo 5 km al día, se evitan 450 toneladas de CO2 al año."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Qué es el 'stand-by' de los electrodomésticos y por qué importa?",
+   ops:["Modo de máxima eficiencia","Consumo eléctrico en reposo que suma hasta 10% de la cuenta","Ahorro automático","Solo afecta televisores"], correcta:1,
+   exp:"El stand-by es el consumo eléctrico cuando un aparato está apagado pero enchufado. Puede representar hasta el 10% de tu cuenta de luz. Desenchufar cargadores y electrodomésticos ahorra dinero y CO2."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Cuál de estas acciones tiene el mayor impacto individual en reducir tu huella de carbono?",
+   ops:["Reciclar el papel","Apagar luces al salir","Reducir el consumo de carne roja","Usar bolsas reutilizables"], correcta:2,
+   exp:"Reducir el consumo de carne roja tiene el mayor impacto individual: la ganadería produce el 14.5% de las emisiones globales. Una persona que come sin carne 3 días a la semana puede reducir su huella hasta un 35%."},
+
+  {cat:"Consejos Eco Prácticos",
+   pregunta:"¿Qué es el compostaje y para qué sirve?",
+   ops:["Reciclar plásticos","Transformar residuos orgánicos en abono para plantas","Tratar aguas residuales","Clasificar metales"], correcta:1,
+   exp:"El compostaje convierte restos de frutas, verduras y jardín en abono natural en 2-3 meses. Una familia puede compostar hasta 1 kg de residuos orgánicos diarios, reduciendo su basura en un 30%."},
+
+  // ── SEGURIDAD CIUDADANA Y ENTORNO ─────────────────────
+  {cat:"Entorno y Convivencia",
+   pregunta:"¿Cómo contribuyen los espacios verdes a la seguridad ciudadana?",
+   ops:["No tienen relación","Estudios muestran que reducen el delito hasta un 9%","Solo generan más delito","Solo son útiles de día"], correcta:1,
+   exp:"Estudios en ciudades del mundo muestran que parques bien mantenidos reducen el delito hasta 9% en el entorno. La presencia de árboles y espacios verdes genera mayor apropiación del espacio por los vecinos."},
+
+  {cat:"Entorno y Convivencia",
+   pregunta:"¿Qué beneficio tiene conocer las especies de plantas y aves de tu barrio?",
+   ops:["Ninguno práctico","Genera identidad, pertenencia y motivación para cuidar el entorno","Solo sirve para turismo","Es solo conocimiento científico"], correcta:1,
+   exp:"Conocer la flora y fauna local crea un vínculo emocional con el territorio. Los vecinos que conocen y nombran los árboles de su calle los cuidan más y participan más en la limpieza y protección del espacio público."},
+
+  {cat:"Entorno y Convivencia",
+   pregunta:"¿Cuántos chilenos viven en zonas urbanas hoy?",
+   ops:["50%","70%","88%","99%"], correcta:2,
+   exp:"El 88% de los chilenos vive en ciudades. Por eso, las decisiones sobre áreas verdes, transporte y reciclaje en ciudades como Rancagua tienen un impacto enorme en el medioambiente del país."}
+,
+  // ── NUEVAS: CAMBIO CLIMÁTICO AVANZADO ─────────────
+  {cat:"Cambio Climático",
+   pregunta:"¿Cuántos grados Celsius de calentamiento busca evitar el Acuerdo de París?",
+   ops:["0.5°C","1.5°C","2.5°C","4°C"], correcta:1,
+   exp:"El Acuerdo de París (2015) busca limitar el calentamiento global a 1.5°C sobre niveles preindustriales. Actualmente vamos camino a 2.7°C si no cambian las políticas actuales."},
+
+  {cat:"Cambio Climático",
+   pregunta:"¿Qué fenómeno climático se intensifica por el calentamiento global en Chile Central?",
+   ops:["Más lluvias en verano","Sequías más largas y frecuentes","Inviernos más fríos","Más nieve en la costa"],
+   correcta:1,
+   exp:"La megasequía que afecta a Chile Central desde 2010 se intensifica por el cambio climático. La Región de O'Higgins ha perdido el 30% de sus precipitaciones en 30 años."},
+
+  {cat:"Cambio Climático",
+   pregunta:"¿Qué sector produce más emisiones de CO₂ en Chile?",
+   ops:["Agricultura","Residuos domésticos","Transporte","Pesca"],
+   correcta:2,
+   exp:"El transporte es el mayor emisor de CO₂ en Chile, representando el 36% de las emisiones totales. El parque automotriz creció 60% en la última década."},
+
+  {cat:"Cambio Climático",
+   pregunta:"¿Cuántos glaciares tiene Chile y qué está pasando con ellos?",
+   ops:["500 glaciares, sin cambios","2.000 glaciares, están creciendo","24.114 glaciares, el 80% retrocede","100 glaciares, estables"],
+   correcta:2,
+   exp:"Chile tiene 24.114 glaciares — el 80% del total de América del Sur. El 80% de ellos está retrocediendo por el calentamiento global. Son la reserva de agua dulce más importante del país."},
+
+  // ── NUEVAS: BIODIVERSIDAD ──────────────────────────
+  {cat:"Biodiversidad",
+   pregunta:"¿Qué porcentaje de las plantas de Chile Central son endémicas (no existen en ningún otro lugar)?",
+   ops:["5%","25%","50%","75%"],
+   correcta:1,
+   exp:"El 25% de las plantas de Chile Central son endémicas. Esto hace de la zona uno de los 36 'hotspots' de biodiversidad del mundo, junto con la cuenca mediterránea y California."},
+
+  {cat:"Biodiversidad",
+   pregunta:"¿Por qué el Bosque Esclerófilo de Chile Central está en peligro?",
+   ops:["Por el frío extremo","Por urbanización, agricultura y sequía","Por exceso de lluvia","Por invasión de fauna exótica"],
+   correcta:1,
+   exp:"El Bosque Esclerófilo (quillay, peumo, litre, boldo) cubre la zona de Rancagua y está amenazado por la expansión urbana, la agricultura intensiva y la sequía prolongada. Es un ecosistema único del planeta."},
+
+  {cat:"Biodiversidad",
+   pregunta:"¿Qué animal es el mayor polinizador de flores nativas en Chile Central?",
+   ops:["Abeja europea","Moscardón nativo","Colibrí picaflor","Mariposa del chagual"],
+   correcta:2,
+   exp:"El Colibrí picaflor (Sephanoides sephaniodes) es el principal polinizador de flores nativas en Chile Central. Sin él, plantas como el copihue y el alstroemeria no podrían reproducirse."},
+
+  {cat:"Biodiversidad",
+   pregunta:"¿Cuántas especies de aves han sido registradas en Chile?",
+   ops:["150","350","520","900"],
+   correcta:2,
+   exp:"Chile registra unas 520 especies de aves. La Región de O'Higgins alberga más de 200 de ellas gracias a sus ríos, humedales y cerros. El Cachapoal es un corredor de biodiversidad clave."},
+
+  // ── NUEVAS: AGUA Y CONSUMO ────────────────────────
+  {cat:"Agua y Consumo",
+   pregunta:"¿Cuánto tiempo tarda en purificarse el agua subterránea contaminada?",
+   ops:["1-2 años","10-20 años","Cientos a miles de años","No se puede purificar"],
+   correcta:2,
+   exp:"Los acuíferos subterráneos pueden tardar cientos o miles de años en purificarse. Una vez contaminados con pesticidas o nitratos agrícolas, prácticamente no hay forma de recuperarlos en escala humana."},
+
+  {cat:"Agua y Consumo",
+   pregunta:"¿Qué es una 'huella hídrica' de un producto?",
+   ops:["El agua que se ve en el producto","Todo el agua usada en su producción","El agua que se desperdicia","Solo el agua de riego"],
+   correcta:1,
+   exp:"La huella hídrica incluye toda el agua usada en la cadena de producción. Un jean de mezclilla requiere 10.000 litros. Un kilo de almendras, 12.000 litros. El Valle de O'Higgins es el mayor productor de frutas con alta huella hídrica."},
+
+  {cat:"Agua y Consumo",
+   pregunta:"¿Qué porcentaje de agua potable se pierde en las redes de distribución de Chile?",
+   ops:["5%","15%","30%","50%"],
+   correcta:2,
+   exp:"Chile pierde el 30% del agua potable en fugas de la red de distribución. En algunas ciudades rurales de O'Higgins, la pérdida supera el 40%. Modernizar las redes es tan importante como ahorrar en el hogar."},
+
+  // ── NUEVAS: ENERGÍA Y CONSUMO ─────────────────────
+  {cat:"Energía y Consumo",
+   pregunta:"¿Qué es la 'energía embebida' de un producto?",
+   ops:["La electricidad que usa al funcionar","La energía usada para fabricarlo y transportarlo","La batería interna","La energía solar que aprovecha"],
+   correcta:1,
+   exp:"La energía embebida es toda la energía consumida para fabricar, transportar y desechar un producto. Un smartphone lleva ~70 kWh de energía embebida. Por eso reparar es siempre mejor que comprar nuevo."},
+
+  {cat:"Energía y Consumo",
+   pregunta:"¿Cuánta energía se ahorra reciclando aluminio en vez de producirlo desde cero?",
+   ops:["10%","40%","75%","95%"],
+   correcta:3,
+   exp:"Reciclar aluminio ahorra el 95% de la energía necesaria para producirlo desde la bauxita. Es por eso que el aluminio es uno de los materiales más valiosos del reciclaje."},
+
+  {cat:"Energía y Consumo",
+   pregunta:"¿Qué consume más energía en un hogar chileno promedio?",
+   ops:["El televisor","La iluminación","El calefón/calentador de agua","El refrigerador"],
+   correcta:2,
+   exp:"El calefón o calentador de agua representa el 40-50% del consumo energético del hogar en Chile. Instalar un calefón solar puede reducir esa cuenta a casi cero y se amortiza en 3-5 años."},
+
+  // ── NUEVAS: CONSUMO RESPONSABLE ──────────────────
+  {cat:"Consumo Responsable",
+   pregunta:"¿Qué significa 'economía circular'?",
+   ops:["Comprar en círculo de amigos","Reutilizar materiales en lugar de desecharlos","Circular en bicicleta","Intercambiar monedas"],
+   correcta:1,
+   exp:"La economía circular busca mantener los materiales en uso el mayor tiempo posible: diseñar para reparar, reutilizar y reciclar. Es el opuesto al modelo lineal de 'producir-usar-tirar'."},
+
+  {cat:"Consumo Responsable",
+   pregunta:"¿Cuánta ropa desecha una persona en el mundo en promedio al año?",
+   ops:["1 kg","5 kg","11 kg","30 kg"],
+   correcta:2,
+   exp:"Una persona desecha en promedio 11 kg de ropa al año. La industria textil es la segunda más contaminante del mundo. Comprar menos y de segunda mano es una de las acciones más impactantes."},
+
+  {cat:"Consumo Responsable",
+   pregunta:"¿Qué es el 'greenwashing' o 'lavado verde'?",
+   ops:["Lavar ropa con detergente verde","Empresas que exageran sus acciones ecológicas por marketing","Un tipo de reciclaje de plástico","Pintar edificios de verde"],
+   correcta:1,
+   exp:"El greenwashing ocurre cuando empresas usan marketing 'verde' sin acciones reales. Es una forma de engaño al consumidor. Busca certificaciones verificables (FSC, Energy Star, Fairtrade) antes de creer en etiquetas eco."},
+
+  // ── NUEVAS: SUELO Y AGRICULTURA ──────────────────
+  {cat:"Suelo y Agricultura",
+   pregunta:"¿Cuántos años tarda en formarse 1 cm de suelo fértil?",
+   ops:["1 año","10 años","100-1000 años","Solo semanas"],
+   correcta:2,
+   exp:"Formar 1 cm de suelo fértil puede tomar entre 100 y 1.000 años. El Valle del Cachapoal tiene uno de los suelos más ricos de Chile gracias a miles de años de sedimentos volcánicos. Perderlo por erosión o urbanización es irreversible."},
+
+  {cat:"Suelo y Agricultura",
+   pregunta:"¿Qué es la agroecología y cómo beneficia a Rancagua?",
+   ops:["Agricultura en el espacio","Cultivo sin maquinaria","Agricultura que imita ecosistemas naturales usando menos químicos","Solo cultivo orgánico"],
+   correcta:2,
+   exp:"La agroecología diseña sistemas agrícolas inspirados en la naturaleza: diversidad de cultivos, control biológico de plagas, compostaje. En O'Higgins reduce el uso de pesticidas y el consumo de agua hasta 40%."},
+
+  {cat:"Suelo y Agricultura",
+   pregunta:"¿Por qué los monocultivos (un solo tipo de cultivo) son problemáticos?",
+   ops:["Son muy rentables siempre","Agotan nutrientes del suelo y son vulnerables a plagas","Producen demasiado alimento","No tienen ningún problema"],
+   correcta:1,
+   exp:"Los monocultivos agotan los nutrientes del suelo, requieren más fertilizantes y son vulnerables a plagas (si falla una especie, se pierde todo). El Valle de Colchagua y Cachapoal enfrentan estos desafíos con la vid y los frutales."},
+
+  // ── NUEVAS: CONTAMINACIÓN ─────────────────────────
+  {cat:"Contaminación",
+   pregunta:"¿Qué son los microplásticos y dónde se encuentran?",
+   ops:["Plásticos pequeños solo en el mar","Partículas plásticas menores a 5mm en agua, suelo, aire y cuerpo humano","Solo en productos de limpieza","Plásticos reciclados"],
+   correcta:1,
+   exp:"Los microplásticos son partículas menores a 5mm. Se han encontrado en el agua del grifo, la sal de mesa, peces del Cachapoal y hasta en la sangre humana. Son el resultado de la degradación de plásticos mayores."},
+
+  {cat:"Contaminación",
+   pregunta:"¿Cuántos plásticos de un solo uso prohíbe la ley chilena actualmente?",
+   ops:["Solo bolsas","3 productos","Más de 10 tipos de plásticos","Todos los plásticos"],
+   correcta:2,
+   exp:"La Ley de Plásticos de Un Solo Uso (2021) prohíbe más de 10 tipos en Chile: bolsas, sorbetes, botellas de hasta 3 litros, vajilla desechable, agitadores y más. Es una de las leyes más avanzadas de América Latina."},
+
+  {cat:"Contaminación",
+   pregunta:"¿Qué causa la 'lluvia ácida' y cómo afecta a los bosques?",
+   ops:["Exceso de humedad","SO₂ y NOₓ de industrias que se mezclan con el agua de lluvia","Polvo volcánico","Luz solar intensa"],
+   correcta:1,
+   exp:"La lluvia ácida se forma cuando el dióxido de azufre y los óxidos de nitrógeno industriales se mezclan con el vapor de agua. Acidifica suelos y ríos, matando flora y fauna. Las fundiciones de cobre cercanas a Rancagua han generado este problema históricamente."},
+
+  // ── NUEVAS: CIUDADES SOSTENIBLES ──────────────────
+  {cat:"Ciudad Sostenible",
+   pregunta:"¿Qué es una 'ciudad esponja' y por qué es relevante para Rancagua?",
+   ops:["Una ciudad de poco peso","Ciudad diseñada para absorber y reutilizar el agua de lluvia","Ciudad con muchos parques","Ciudad liviana en carbono"],
+   correcta:1,
+   exp:"Las ciudades esponja absorben el agua de lluvia con pavimentos permeables, humedales urbanos y jardines de lluvia en vez de drenarla al alcantarillado. En Rancagua, con la megasequía, capturar cada gota de lluvia es esencial."},
+
+  {cat:"Ciudad Sostenible",
+   pregunta:"¿Cuánto reduce el ruido una fila de árboles en una calle de alta circulación?",
+   ops:["No tiene efecto","3-5 decibeles","10-15 decibeles","30 decibeles"],
+   correcta:2,
+   exp:"Una barrera de árboles puede reducir el ruido entre 10 y 15 decibeles, equivalente a bajar el volumen a la mitad. Las avenidas arboladas de Rancagua no solo dan sombra — también protegen la salud auditiva de los vecinos."}
+
 ];
 var quizTimer = null;
 var quizTiempoRestante = 0;
 var quizPreguntaActual = null;
 
 function triggerQuiz(){
-  // Elegir pregunta no usada recientemente
-  var pregunta = ECO_PREGUNTAS[Math.floor(Math.random()*ECO_PREGUNTAS.length)];
+  var pregunta = elegirPreguntaAleatoria(ECO_PREGUNTAS, 'quiz');
+  pregunta = barajarOpciones(pregunta);
   quizPreguntaActual = pregunta;
   sh('quiz');
   renderQuiz(pregunta);
@@ -2466,311 +2444,178 @@ function reabrirFeedback(){
 // ══ ESPECIES NATIVAS DE RANCAGUA / O'HIGGINS ══
 var ESPECIES_RANCAGUA = [
   {
-    "cat": "Árbol nativo",
-    "ico": "🌳",
-    "nombre": "Quillay",
-    "pistas": "Árbol de hojas pequeñas y duras. Su corteza contiene saponinas, por eso se le asocia al 'jabón natural'. Resiste bien la sequía y es valioso para restauración.",
-    "ops": [
-      "Quillay",
-      "Peumo",
-      "Boldo",
-      "Maitén"
-    ],
-    "correcta": 0,
-    "info": "El quillay es una especie clave del bosque esclerófilo de Chile central. Aporta sombra, flores para polinizadores y bajo consumo hídrico relativo.",
-    "bonus_eco": 3,
-    "bonus_seeds": 18
+    cat:"Árbol Nativo",
+    ico:"🌳", nombre:"Peumo",
+    pistas:"Árbol siempreverde de hasta 15m. Sus frutos rojos son alimento para peucos y zorros. Muy común en quebradas y cerros de la región de O'Higgins. Sus hojas tienen un olor aromático característico.",
+    ops:["Peumo","Quillay","Boldo","Litre"], correcta:0,
+    info:"El Peumo (Cryptocarya alba) es uno de los árboles más emblemáticos del bosque esclerófilo chileno. En Rancagua se puede ver en los cerros y quebradas del sector oriente.",
+    bonus_eco:2, bonus_seeds:15
   },
   {
-    "cat": "Árbol nativo",
-    "ico": "🍃",
-    "nombre": "Boldo",
-    "pistas": "Hojas aromáticas, siempreverdes, usadas tradicionalmente en infusiones digestivas. Crece en cerros y quebradas de Chile central.",
-    "ops": [
-      "Litre",
-      "Boldo",
-      "Espino",
-      "Molle"
-    ],
-    "correcta": 1,
-    "info": "El boldo es parte de la flora nativa de la zona central. Su valor educativo está en reconocer usos tradicionales sin dañar poblaciones naturales.",
-    "bonus_eco": 2,
-    "bonus_seeds": 12
+    cat:"Árbol Nativo",
+    ico:"🌿", nombre:"Boldo",
+    pistas:"Sus hojas se usan en infusión para el hígado. Arbusto o árbol pequeño de hoja perenne y aromática. Los mapuches lo usaban medicinalmente. Muy valorado en la medicina tradicional chilena.",
+    ops:["Maqui","Boldo","Peumo","Espino"], correcta:1,
+    info:"El Boldo (Peumus boldus) es endémico de Chile. Sus hojas contienen boldina, sustancia con propiedades medicinales. En O'Higgins crece naturalmente en los cerros.",
+    bonus_eco:2, bonus_seeds:12
   },
   {
-    "cat": "Árbol nativo",
-    "ico": "🍒",
-    "nombre": "Peumo",
-    "pistas": "Árbol siempreverde de copa densa. Produce frutos rojizos que pueden alimentar aves. Frecuente en quebradas y laderas más húmedas.",
-    "ops": [
-      "Peumo",
-      "Quillay",
-      "Espino",
-      "Matico"
-    ],
-    "correcta": 0,
-    "info": "El peumo ayuda a sostener fauna local y entrega sombra. Es una excelente especie para educación ambiental territorial.",
-    "bonus_eco": 3,
-    "bonus_seeds": 16
+    cat:"Árbol Nativo",
+    ico:"🌾", nombre:"Quillay",
+    pistas:"Su corteza produce saponina, usada como champú natural. Árbol resistente a la sequía. Hojas pequeñas y duras. Los mapuches lo llamaban 'árbol del jabón'. Muy frecuente en zonas semiáridas.",
+    ops:["Quillay","Espino","Litre","Colliguay"], correcta:0,
+    info:"El Quillay (Quillaja saponaria) es endémico de Chile. Su corteza contiene saponinas usadas en cosmética y medicina. Resiste bien la sequía del valle central.",
+    bonus_eco:3, bonus_seeds:18
   },
   {
-    "cat": "Árbol/arbusto nativo",
-    "ico": "🌼",
-    "nombre": "Espino",
-    "pistas": "Tiene espinas, flores amarillas perfumadas y alta resistencia a la sequía. Es típico del paisaje rural del valle central.",
-    "ops": [
-      "Maitén",
-      "Espino",
-      "Boldo",
-      "Peumo"
-    ],
-    "correcta": 1,
-    "info": "El espino entrega refugio y alimento a fauna. También ayuda a comprender cómo las plantas se adaptan a suelos secos.",
-    "bonus_eco": 2,
-    "bonus_seeds": 13
+    cat:"Arbusto Nativo",
+    ico:"🫐", nombre:"Maqui",
+    pistas:"Sus bayas moradas son antioxidantes y se hacen chicha. Arbusto de hasta 4m. Crece en bordes de caminos y quebradas. Los mapuches lo usaban para teñir telas y en rituales. Frutos en verano.",
+    ops:["Zarzamora","Maqui","Murta","Arrayán"], correcta:1,
+    info:"El Maqui (Aristotelia chilensis) es el árbol nacional de Chile. Sus frutos son ricos en antocianinas. En Rancagua crece en las quebradas del sector oriente de la ciudad.",
+    bonus_eco:2, bonus_seeds:14
   },
   {
-    "cat": "Planta de cuidado",
-    "ico": "⚠️",
-    "nombre": "Litre",
-    "pistas": "Árbol o arbusto nativo que algunas personas deben evitar tocar porque puede causar irritación o alergia en la piel.",
-    "ops": [
-      "Matico",
-      "Litre",
-      "Quillay",
-      "Maqui"
-    ],
-    "correcta": 1,
-    "info": "El litre cumple funciones ecológicas, pero debe reconocerse para prevenir contacto directo en personas sensibles.",
-    "bonus_eco": 2,
-    "bonus_seeds": 14
+    cat:"Ave Nativa",
+    ico:"🦆", nombre:"Tagua",
+    pistas:"Ave acuática negra con escudo frontal blanco. Vive en lagos y ríos lentos. Construye nidos flotantes. Símbolo del lago Rapel, que está muy cerca de Rancagua. Agresiva en época de cría.",
+    ops:["Garza","Tagua","Pato jergón","Huairavo"], correcta:1,
+    info:"La Tagua (Fulica armata) es muy común en el lago Rapel, a solo 60 km de Rancagua. Es un ave típica del ecosistema acuático de la Región de O'Higgins.",
+    bonus_eco:2, bonus_seeds:12
   },
   {
-    "cat": "Planta medicinal",
-    "ico": "🌱",
-    "nombre": "Matico",
-    "pistas": "Hojas rugosas y flores anaranjadas. Se asocia a riberas, quebradas y uso tradicional para cicatrización.",
-    "ops": [
-      "Matico",
-      "Boldo",
-      "Espino",
-      "Molle"
-    ],
-    "correcta": 0,
-    "info": "El matico permite enseñar sobre plantas medicinales, riberas y cuidado de especies nativas sin extracción indiscriminada.",
-    "bonus_eco": 2,
-    "bonus_seeds": 11
+    cat:"Ave Nativa",
+    ico:"🦅", nombre:"Cernícalo",
+    pistas:"Pequeño rapaz que caza en vuelo estático. Cola rojiza con banda negra. Vive en bordes de ciudades y campos. Se adapta bien a zonas urbanas. Muy visible en postes y cables eléctricos.",
+    ops:["Tiuque","Cernícalo","Halcón peregrino","Quiltrín"], correcta:1,
+    info:"El Cernícalo (Falco sparverius) es el rapaz más común en Rancagua. Lo puedes ver cazando insectos y roedores en parques, orillas de canales y terrenos baldíos de la ciudad.",
+    bonus_eco:2, bonus_seeds:13
   },
   {
-    "cat": "Ave nativa",
-    "ico": "🦅",
-    "nombre": "Cernícalo",
-    "pistas": "Rapaz pequeña. Puede quedarse suspendida en el aire antes de caer sobre insectos o roedores. Frecuente en campos y bordes urbanos.",
-    "ops": [
-      "Cernícalo",
-      "Tagua",
-      "Loica",
-      "Garza"
-    ],
-    "correcta": 0,
-    "info": "El cernícalo ayuda a controlar insectos y pequeños vertebrados. Observarlo enseña sobre cadenas tróficas locales.",
-    "bonus_eco": 2,
-    "bonus_seeds": 13
+    cat:"Planta Medicinal",
+    ico:"🌱", nombre:"Matico",
+    pistas:"Planta de hojas rugosas y aromáticas. Usada para curar heridas y problemas digestivos. Crece en bordes de ríos y quebradas húmedas. Sus hojas tienen nervios muy marcados. Nombre mapuche.",
+    ops:["Matico","Romero","Muña","Canelo"], correcta:0,
+    info:"El Matico (Buddleja globosa) crece naturalmente cerca del río Cachapoal. Es una planta medicinal tradicional chilena usada para cicatrización y digestión.",
+    bonus_eco:2, bonus_seeds:11
   },
   {
-    "cat": "Ave nativa",
-    "ico": "❤️",
-    "nombre": "Loica",
-    "pistas": "Ave de espacios abiertos. El macho destaca por su pecho rojo intenso, visible en praderas, campos y jardines.",
-    "ops": [
-      "Tiuque",
-      "Loica",
-      "Chincol",
-      "Tagua"
-    ],
-    "correcta": 1,
-    "info": "La loica es un ave emblemática de paisajes abiertos. Su presencia aporta identidad al territorio rural y periurbano.",
-    "bonus_eco": 2,
-    "bonus_seeds": 12
+    cat:"Animal Nativo",
+    ico:"🦊", nombre:"Zorro culpeo",
+    pistas:"El mayor zorro de Chile. Pelaje gris-rojizo con patas canelas. Activo de noche y madrugada. Come roedores, conejos y frutos. Vive en cerros y quebradas alrededor de Rancagua.",
+    ops:["Zorro chilla","Zorro culpeo","Chingue","Quique"], correcta:1,
+    info:"El Zorro culpeo (Lycalopex culpaeus) habita los cerros que rodean Rancagua. Es fundamental para controlar poblaciones de roedores. Está amenazado por la caza ilegal.",
+    bonus_eco:3, bonus_seeds:16
+  }
+
+  ,{
+    cat:"Reptil Nativo",
+    ico:"🦎", nombre:"Lagartija lemniscata",
+    pistas:"Pequeño reptil de unos 15 cm, cola larga y azulada. Muy común en muros de piedra y jardines soleados de Rancagua. Come insectos y arañas. Se llama así por las líneas en su lomo.",
+    ops:["Iguanita del norte","Lagartija lemniscata","Gecko doméstico","Culebra de cola larga"], correcta:1,
+    info:"La Lagartija lemniscata (Liolaemus lemniscatus) es la lagartija más común en los jardines y muros de Rancagua. Es un aliado del huerto porque come plagas de insectos.",
+    bonus_eco:2, bonus_seeds:12
   },
   {
-    "cat": "Mamífero nativo",
-    "ico": "🦊",
-    "nombre": "Zorro culpeo",
-    "pistas": "Zorro grande de pelaje gris y rojizo. Vive en cerros, campos y quebradas. Ayuda a controlar roedores.",
-    "ops": [
-      "Zorro culpeo",
-      "Coipo",
-      "Quique",
-      "Cururo"
-    ],
-    "correcta": 0,
-    "info": "El zorro culpeo es un depredador importante. Proteger su hábitat ayuda a mantener equilibrio ecológico.",
-    "bonus_eco": 3,
-    "bonus_seeds": 16
+    cat:"Árbol Nativo",
+    ico:"🌵", nombre:"Espino",
+    pistas:"Árbol de hasta 6m con espinas blancas y flores amarillas perfumadas en primavera. Resistente a la sequía. Símbolo del Valle Central. Los mapuches usaban su madera para herramientas y su fruto para chicha.",
+    ops:["Acacia australiana","Espino","Tamarisco","Algarrobo"], correcta:1,
+    info:"El Espino (Vachellia caven) es el árbol más característico del Valle del Cachapoal. Florece en agosto llenando los campos de flores amarillas. Es clave para la apicultura regional.",
+    bonus_eco:2, bonus_seeds:13
   },
   {
-    "cat": "Roedor nativo",
-    "ico": "🐭",
-    "nombre": "Degú",
-    "pistas": "Roedor social, diurno, de zonas de matorral. Vive en grupos y construye madrigueras.",
-    "ops": [
-      "Degú",
-      "Cururo",
-      "Coipo",
-      "Ratón europeo"
-    ],
-    "correcta": 0,
-    "info": "El degú forma parte de los ecosistemas de Chile central. Su conducta social lo hace atractivo para educación ambiental.",
-    "bonus_eco": 2,
-    "bonus_seeds": 12
+    cat:"Ave Nativa",
+    ico:"🐦", nombre:"Tenca",
+    pistas:"Ave canora que imita el canto de otras aves y sonidos del entorno. Pardo con cola larga. Se la llama el 'mockingbird chileno'. Muy territorial y visible en jardines y campos. Su canto es inconfundible.",
+    ops:["Mirlo europeo","Tenca","Tordo","Chincol"], correcta:1,
+    info:"La Tenca (Mimus thenca) es el ave nacional de Chile. Puede imitar hasta 30 sonidos distintos. En Rancagua es muy común en parques y jardines donde construye nidos en arbustos.",
+    bonus_eco:2, bonus_seeds:15
   },
   {
-    "cat": "Roedor subterráneo",
-    "ico": "🕳️",
-    "nombre": "Cururo",
-    "pistas": "Vive bajo tierra y construye túneles. Sus montículos se observan en suelos abiertos y praderas.",
-    "ops": [
-      "Coipo",
-      "Cururo",
-      "Zorro chilla",
-      "Tiuque"
-    ],
-    "correcta": 1,
-    "info": "El cururo airea el suelo y forma parte de la biodiversidad menos visible del territorio.",
-    "bonus_eco": 2,
-    "bonus_seeds": 13
+    cat:"Planta Nativa",
+    ico:"🌺", nombre:"Copihue",
+    pistas:"Flor nacional de Chile. Trepadora de flores rojas o blancas en forma de campana. Crece en bosques húmedos. En O'Higgins aparece en los sectores de mayor precipitación hacia la cordillera.",
+    ops:["Begonia","Copihue","Amapola","Lirio del campo"], correcta:1,
+    info:"El Copihue (Lapageria rosea) es la flor nacional de Chile. Crece en el sotobosque húmedo. En la Región de O'Higgins se puede encontrar en los sectores precordilleranos más lluviosos.",
+    bonus_eco:3, bonus_seeds:18
   },
   {
-    "cat": "Fauna de humedal",
-    "ico": "🦆",
-    "nombre": "Tagua",
-    "pistas": "Ave acuática negra, de frente clara, que vive en lagunas, humedales y embalses.",
-    "ops": [
-      "Tagua",
-      "Cernícalo",
-      "Loica",
-      "Peuco"
-    ],
-    "correcta": 0,
-    "info": "La tagua permite conectar el juego con humedales, lagunas y cuerpos de agua de la región.",
-    "bonus_eco": 2,
-    "bonus_seeds": 12
-  },
-  {
-    "cat": "Mamífero acuático",
-    "ico": "🦫",
-    "nombre": "Coipo",
-    "pistas": "Mamífero herbívoro asociado a ríos, canales y humedales. Nada bien y usa vegetación de ribera.",
-    "ops": [
-      "Coipo",
-      "Degú",
-      "Zorro culpeo",
-      "Quique"
-    ],
-    "correcta": 0,
-    "info": "El coipo depende de riberas sanas. Es ideal para enseñar sobre agua, vegetación y hábitat.",
-    "bonus_eco": 2,
-    "bonus_seeds": 14
+    cat:"Animal Nativo",
+    ico:"🦦", nombre:"Coipo",
+    pistas:"Roedor semiacuático de hasta 9 kg. Pelaje marrón denso y cola redonda. Vive en canales, ríos y lagunas. Se parece a un castor pequeño. Nativo de América del Sur, en peligro en algunas zonas.",
+    ops:["Nutria de río","Coipo","Rata almizclera","Castor americano"], correcta:1,
+    info:"El Coipo (Myocastor coypus) habita los canales de riego y bordes del Río Cachapoal. Es un indicador de la salud de los ecosistemas acuáticos. Está amenazado por la caza y la contaminación del agua.",
+    bonus_eco:3, bonus_seeds:16
   }
 ];
 
 var AREAS_VERDES_RANCAGUA = [
   {
-    "tipo": "Río y ribera",
-    "ico": "🌊",
-    "nombre": "Río Cachapoal",
-    "desc": "Curso de agua clave para Rancagua y el valle agrícola. Sus riberas conectan biodiversidad, riego, paisaje y educación ambiental.",
-    "ops": [
-      "Rancagua y valle del Cachapoal",
-      "Costa de Pichilemu",
-      "Desierto de Atacama",
-      "Isla de Chiloé"
-    ],
-    "correcta": 0,
-    "info": "El Cachapoal permite trabajar contenidos de agua, riberas, vegetación nativa, erosión, limpieza y uso responsable del recurso hídrico.",
-    "bonus_eco": 3,
-    "bonus_seeds": 15
+    tipo:"Parque Urbano",
+    ico:"🌳",
+    nombre:"Parque Centenario",
+    desc:"El parque más histórico de Rancagua, con árboles centenarios y juegos infantiles. Lugar de encuentro familiar por generaciones. Tiene una laguna artificial y arboles nativos.",
+    ops:["Centro histórico","Sector sur","Sector norte","Sector oriente"], correcta:0,
+    info:"El Parque Centenario está en el centro de Rancagua, entre las calles Cuevas y Millán. Es el pulmón verde del centro histórico y tiene árboles de más de 100 años.",
+    bonus_eco:2, bonus_seeds:12
   },
   {
-    "tipo": "Embalse y paisaje",
-    "ico": "🚣",
-    "nombre": "Lago Rapel",
-    "desc": "Embalse muy conocido de la Región de O'Higgins, asociado a recreación, aves acuáticas, turismo y cuidado de bordes lacustres.",
-    "ops": [
-      "Provincia de Cachapoal/Cardenal Caro",
-      "Región de Aysén",
-      "Santiago Centro",
-      "Altiplano"
-    ],
-    "correcta": 0,
-    "info": "Rapel ayuda a conversar sobre agua, turismo responsable, residuos y fauna acuática como taguas y garzas.",
-    "bonus_eco": 3,
-    "bonus_seeds": 16
+    tipo:"Río y Área Natural",
+    ico:"🌊",
+    nombre:"Río Cachapoal",
+    desc:"El río que da vida a Rancagua. Sus riberas son hábitat de aves acuáticas, anfibios y vegetación nativa. La limpieza de sus orillas es una acción de seguridad ciudadana y ambiental.",
+    ops:["Sector oriente","Sector norte","Sector sur","Centro"], correcta:0,
+    info:"El Cachapoal nace en los Andes y pasa por el sector oriente de Rancagua. La municipalidad tiene programas de revegetación de sus orillas con especies nativas.",
+    bonus_eco:3, bonus_seeds:15
   },
   {
-    "tipo": "Costa y conservación",
-    "ico": "🌊",
-    "nombre": "Pichilemu y borde costero",
-    "desc": "Zona costera de O'Higgins reconocida por playas, humedales cercanos, aves marinas y cultura de surf.",
-    "ops": [
-      "Cardenal Caro",
-      "Colchagua interior",
-      "Rancagua centro",
-      "Cordillera de Los Andes"
-    ],
-    "correcta": 0,
-    "info": "La costa regional conecta residuos, cuidado de playas, aves, humedales y turismo responsable.",
-    "bonus_eco": 3,
-    "bonus_seeds": 16
+    tipo:"Plaza",
+    ico:"🏛️",
+    nombre:"Plaza de Los Héroes",
+    desc:"El corazón de Rancagua. Plaza histórica donde se dió el Grito de la Independencia. Tiene árboles de gran porte y es punto de encuentro cívico. Fue declarada Monumento Nacional.",
+    ops:["Centro","Norte","Sur","Oriente"], correcta:0,
+    info:"La Plaza de Los Héroes es el centro geográfico y simbólico de Rancagua. Tiene palmeras y árboles que superan los 80 años. Es punto de referencia de identidad local.",
+    bonus_eco:2, bonus_seeds:10
   },
   {
-    "tipo": "Cordillera y montaña",
-    "ico": "⛰️",
-    "nombre": "Reserva Nacional Río de los Cipreses",
-    "desc": "Área natural cordillerana cercana a la cuenca del Cachapoal, con flora, fauna y paisajes de montaña.",
-    "ops": [
-      "Cordillera de la Región de O'Higgins",
-      "Costa de Navidad",
-      "Valle de Colchagua",
-      "Centro de Rancagua"
-    ],
-    "correcta": 0,
-    "info": "Es un excelente referente para enseñar conservación, senderos, fauna silvestre y protección de ecosistemas de montaña.",
-    "bonus_eco": 4,
-    "bonus_seeds": 20
+    tipo:"Área Verde",
+    ico:"🌿",
+    nombre:"Parque Los Álamos",
+    desc:"Gran espacio verde con áreas de ejercicio, canchas y ciclovías. Muy frecuentado por familias de varios sectores de la ciudad. Tiene especies arbóreas variadas.",
+    ops:["Sector norte","Centro","Sector sur","Sector oriente"], correcta:0,
+    info:"Los Álamos es uno de los parques más grandes de Rancagua, ubicado en el sector norte. Es un espacio clave para la actividad física y el encuentro comunitario.",
+    bonus_eco:2, bonus_seeds:12
   },
   {
-    "tipo": "Bosque esclerófilo",
-    "ico": "🌳",
-    "nombre": "Cerros y quebradas de Chile central",
-    "desc": "Paisaje natural con quillay, boldo, peumo, litre, espino y matorrales adaptados a veranos secos.",
-    "ops": [
-      "Zona central de O'Higgins",
-      "Zona austral de turberas",
-      "Selva tropical",
-      "Altiplano"
-    ],
-    "correcta": 0,
-    "info": "Este paisaje es la base territorial del Eco Quiz: enseña adaptación a sequía, biodiversidad y restauración con especies nativas.",
-    "bonus_eco": 3,
-    "bonus_seeds": 15
+    tipo:"Humedal",
+    ico:"🦢",
+    nombre:"Humedal Los Lirios",
+    desc:"Ecosistema acuático protegido con aves migratorias y vegetación palustre. Fácil de visitar desde Rancagua. Es un sitio Ramsar de importancia para aves del cono sur.",
+    ops:["Requínoa (30 km)","Machalí","Graneros","San Fernando"], correcta:0,
+    info:"Los Lirios está en Requínoa, a 30 km de Rancagua. Es un humedal de importancia hemisférica que protege más de 100 especies de aves, incluyendo flamencos.",
+    bonus_eco:4, bonus_seeds:20
+  }
+
+  ,{
+    tipo:"Corredor Verde",
+    ico:"🌊",
+    nombre:"Ribera del Cachapoal",
+    desc:"El corredor ecológico más importante de Rancagua. Sus riberas albergan aves acuáticas, reptiles y vegetación riparia nativa. La municipalidad tiene programas de revegetación activos.",
+    ops:["Sector oriente, límite de Rancagua","Sector norte junto a la Ruta 5","Centro histórico","Sector sur industrial"],
+    correcta:0,
+    info:"La Ribera del Cachapoal en el sector oriente de Rancagua es el eje natural de la ciudad. Conecta ecosistemas desde los Andes hasta el lago Rapel y es hábitat de más de 60 especies de aves.",
+    bonus_eco:3, bonus_seeds:16
   },
   {
-    "tipo": "Plaza y ciudad",
-    "ico": "🏛️",
-    "nombre": "Plazas y parques urbanos de Rancagua",
-    "desc": "Espacios públicos donde árboles, sombra, suelo y agua se transforman en bienestar para barrios y comunidades.",
-    "ops": [
-      "Rancagua urbano",
-      "Pampa del Tamarugal",
-      "Patagonia austral",
-      "Isla de Pascua"
-    ],
-    "correcta": 0,
-    "info": "Las áreas verdes urbanas permiten aprender cuidando espacios reales: riego eficiente, limpieza, sombra, identidad y convivencia.",
-    "bonus_eco": 2,
-    "bonus_seeds": 12
+    tipo:"Área Recreativa",
+    ico:"🏋️",
+    nombre:"Estadio El Teniente",
+    desc:"Complejo deportivo y de esparcimiento con áreas verdes extensas. Importante pulmón verde del sector norte de Rancagua. Punto de encuentro para el deporte y la vida comunitaria.",
+    ops:["Sector norte de Rancagua","Centro histórico","Sector sur","Sector oriente"],
+    correcta:0,
+    info:"El Estadio El Teniente y sus áreas aledañas forman uno de los espacios verdes más grandes del sector norte. Las áreas verdes deportivas son esenciales para la salud física y mental de la comunidad.",
+    bonus_eco:2, bonus_seeds:11
   }
 ];
 
@@ -2780,14 +2625,16 @@ var especieCallback = null;
 
 function triggerEspecie(cb){
   especieCallback = cb || null;
-  especiePreguntaActual = ESPECIES_RANCAGUA[Math.floor(Math.random()*ESPECIES_RANCAGUA.length)];
+  especiePreguntaActual = elegirPreguntaAleatoria(ESPECIES_RANCAGUA, 'especie');
+  especiePreguntaActual = barajarOpciones(especiePreguntaActual);
   sh('especie');
   renderEspecie(especiePreguntaActual);
 }
 
 function triggerAreaVerde(cb){
   especieCallback = cb || null;
-  var av = AREAS_VERDES_RANCAGUA[Math.floor(Math.random()*AREAS_VERDES_RANCAGUA.length)];
+  var av = elegirPreguntaAleatoria(AREAS_VERDES_RANCAGUA, 'areav');
+  av = barajarOpciones(av);
   especiePreguntaActual = av;
   sh('areav');
   // Poblar pantalla
@@ -2904,7 +2751,7 @@ function cerrarAreaV(){
 // Ronda 4: Especie nativa (biodiversidad)
 // Ronda 6: Quiz eco (cambio climático)
 // Ronda 7: Especie o área verde (refuerzo)
-var MINIJUEGO_RONDAS = {2:'areav', 4:'especie', 5:'reciclaje', 7:'especie'};
+var MINIJUEGO_RONDAS = {2:'areav', 4:'especie', 7:'especie'};
 
 // continueRound manejado directamente
 
@@ -2944,27 +2791,27 @@ var RESIDUOS = [
    dato:"Los envases de higiene van en plástico. Enjuágalos antes de reciclar. Aplastarlos ahorra espacio y facilita la clasificación."},
   {ico:"🍵",nm:"Bolsa de té usada",bin:"organico",nivel:2,
    dato:"Las bolsas de té se pueden compostar directamente. Los posos de café también son excelente abono para plantas de interior."},
-  {ico:"📮",nm:"Revista con portada brillante",bin:"especial",nivel:2,
+  {ico:"📮",nm:"Revista con portada brillante",bin:"organico",nivel:2,
    dato:"¡Trampa! Las revistas con plastificado brillante NO son reciclables en papel. Su recubrimiento plástico contamina el lote. Van a basura general."},
 
   // ── NIVEL 3: Difícil — casos especiales ───────────
-  {ico:"🔋",nm:"Pila alcalina usada",bin:"especial",nivel:3,
+  {ico:"🔋",nm:"Pila alcalina usada",bin:"organico",nivel:3,
    dato:"¡Peligro! Las pilas contienen mercurio, cadmio y plomo. NUNCA van en basura normal. Lleva las pilas a puntos de reciclaje especiales en supermercados y municipalidades."},
-  {ico:"💡",nm:"Ampolleta LED",bin:"especial",nivel:3,
+  {ico:"💡",nm:"Ampolleta LED",bin:"organico",nivel:3,
    dato:"Las ampolletas LED son RAEE (Residuos de Aparatos Eléctricos). Van en puntos especiales. Duran 25 veces más que las incandescentes."},
-  {ico:"📱",nm:"Celular viejo",bin:"especial",nivel:3,
+  {ico:"📱",nm:"Celular viejo",bin:"organico",nivel:3,
    dato:"Los celulares son RAEE con metales valiosos (oro, plata, cobre). En Chile la Ley REP obliga a fabricantes a recibir equipos usados para reciclaje."},
-  {ico:"🪟",nm:"Vidrio de ventana roto",bin:"especial",nivel:3,
+  {ico:"🪟",nm:"Vidrio de ventana roto",bin:"organico",nivel:3,
    dato:"¡Trampa! El vidrio de ventanas, espejos y cristales templados NO va en el contenedor de vidrio — tienen composición distinta y rompen el proceso de reciclaje."},
   {ico:"🍼",nm:"Botella de vidrio tintada (verde)",bin:"vidrio",nivel:3,
    dato:"El vidrio de color SÍ es reciclable, pero idealmente separado por color (verde, marrón, transparente). Si no hay separación, igual va en vidrio."},
   {ico:"🧻",nm:"Rollo de papel higiénico",bin:"papel",nivel:3,
    dato:"El tubo de cartón del papel higiénico SÍ es reciclable en papel. Acumúlalos y llévalos al punto de reciclaje mensualmente."},
-  {ico:"☕",nm:"Cápsula de café de aluminio",bin:"especial",nivel:3,
+  {ico:"☕",nm:"Cápsula de café de aluminio",bin:"plastico",nivel:3,
    dato:"Las cápsulas de aluminio (tipo Nespresso) tienen programa de reciclaje especial. Muchas tiendas las reciben. El aluminio se recicla infinitas veces."},
-  {ico:"🩺",nm:"Mascarilla quirúrgica",bin:"especial",nivel:3,
+  {ico:"🩺",nm:"Mascarilla quirúrgica",bin:"organico",nivel:3,
    dato:"Las mascarillas quirúrgicas son residuos especiales — plástico no reciclable. Van en bolsa sellada a basura general. Nunca al orgánico ni a la calle."},
-  {ico:"🪣",nm:"Envase de pintura vacío y seco",bin:"especial",nivel:3,
+  {ico:"🪣",nm:"Envase de pintura vacío y seco",bin:"plastico",nivel:3,
    dato:"Los tarros de pintura VACÍOS y SECOS pueden ir en metales/plásticos. Con pintura dentro son residuo peligroso y deben llevarse a punto especial."},
   {ico:"🌿",nm:"Ramas y poda de jardín",bin:"organico",nivel:3,
    dato:"Los restos de poda van en orgánico o en el servicio especial de retiro de la municipalidad. No los quemes — el humo contamina el aire de tu barrio."},
@@ -2972,11 +2819,11 @@ var RESIDUOS = [
    dato:"Las hueveras de cartón SÍ son reciclables aunque estén sucias. El papel marrón resistente se recicla bien. También sirven como maceteros para semillas."},
   {ico:"🧼",nm:"Jabón de barra usado",bin:"organico",nivel:3,
    dato:"Los restos de jabón son biodegradables y van en orgánico. En compostera pueden funcionar como repelente de insectos si se trituran."},
-  {ico:"🎁",nm:"Papel de regalo con brillo",bin:"especial",nivel:3,
+  {ico:"🎁",nm:"Papel de regalo con brillo",bin:"organico",nivel:3,
    dato:"El papel de regalo con brillo metálico o plástico NO es reciclable. El papel mate simple sí. Cuando compres papel de regalo, elige el mate para poder reciclarlo."},
-  {ico:"🧺",nm:"Ropa en mal estado",bin:"especial",nivel:3,
+  {ico:"🧺",nm:"Ropa en mal estado",bin:"organico",nivel:3,
    dato:"La ropa muy deteriorada no sirve para donar pero tiene reciclaje textil. Muchas tiendas tienen contenedores de ropa. Nunca la tires a la basura normal."},
-  {ico:"🍳",nm:"Aceite de cocina usado",bin:"especial",nivel:3,
+  {ico:"🍳",nm:"Aceite de cocina usado",bin:"organico",nivel:3,
    dato:"El aceite usado NUNCA va por el desagüe — contamina hasta 1.000 litros de agua. Guárdalo en botella cerrada y llévalo a puntos de reciclaje de aceite."}
 ];
 
@@ -3085,7 +2932,7 @@ function clasificar(bin) {
     if (nivel3 === 3) recAciertos++; // doble punto en nivel difícil
     if (typeof spawnConfetti === 'function' && nivel3 >= 2) spawnConfetti();
   } else {
-    var nombres = {organico:'Orgánico 🟢', plastico:'Plástico 🔵', papel:'Papel/Cartón 🟡', vidrio:'Vidrio 🟤', especial:'Punto especial ⚠️'};
+    var nombres = {organico:'Orgánico 🟢', plastico:'Plástico 🔵', papel:'Papel/Cartón 🟡', vidrio:'Vidrio 🟤'};
     var penalMsg = nivel3 === 3 ? ' (nivel difícil: -1 eco)' : '';
     if (fb) { fb.textContent = '❌ Era: ' + nombres[item.bin] + penalMsg; fb.style.color = '#ff5a5a'; }
     if (nivel3 === 3 && typeof G !== 'undefined' && G){ G.eco -= 1; }
@@ -3311,6 +3158,734 @@ function doPost(e) {
 // 3. Implementar → Nueva implementación → App web → Cualquiera
 // 4. Copiar la URL y pegarla en el campo de configuración del juego
 
+
+// ════════════════════════════════════════════════════
+// MEJORAS — Bloque unificado v0.7
+// ════════════════════════════════════════════════════
+
+// ── #4/#5: ACCESIBILIDAD ──
+var _modoAcceso = false;
+function toggleAcceso(){
+  _modoAcceso = !_modoAcceso;
+  var root = document.documentElement;
+  if(_modoAcceso){
+    root.style.fontSize = '18px';
+    root.style.setProperty('--ff',"'Space Grotesk','Nunito',sans-serif");
+    var btn = document.getElementById('btn-acceso');
+    if(btn){ btn.textContent='✅ Modo Accesible (activo)'; btn.style.color='var(--green)'; }
+  } else {
+    root.style.fontSize = '';
+    var btn2 = document.getElementById('btn-acceso');
+    if(btn2){ btn2.textContent='♿ Modo Accesible (texto grande)'; btn2.style.color='var(--txts)'; }
+  }
+  try{ localStorage.setItem('ep_acceso', _modoAcceso?'1':'0'); }catch(e){}
+}
+// Cargar preferencia guardada
+try{
+  if(localStorage.getItem('ep_acceso')==='1'){ setTimeout(toggleAcceso,500); }
+}catch(e){}
+
+// ── #6: HISTORIAL DE PARTIDAS ──
+function guardarPartidaHistorial(pts, eco, con, soc, karma, guardian, villa, rondas){
+  var entry = {
+    pts:pts, eco:eco, con:con, soc:soc, karma:karma,
+    guardian:guardian, villa:villa, rondas:rondas,
+    fecha:new Date().toLocaleDateString('es-CL'),
+    hora:new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})
+  };
+  try{
+    var hist = JSON.parse(localStorage.getItem('ep_historial')||'[]');
+    hist.unshift(entry);
+    localStorage.setItem('ep_historial', JSON.stringify(hist.slice(0,10)));
+  }catch(e){}
+}
+
+function goHistorial(){
+  sh('historial');
+  var lista = document.getElementById('hist-lista');
+  if(!lista) return;
+  var hist = [];
+  try{ hist = JSON.parse(localStorage.getItem('ep_historial')||'[]'); }catch(e){}
+  if(!hist.length){
+    lista.innerHTML='<div style="text-align:center;color:var(--txts);padding:24px;font-size:.82rem;">Aún no hay partidas guardadas.<br>¡Juega tu primera partida!</div>';
+    return;
+  }
+  lista.innerHTML = hist.map(function(h,i){
+    var medal = h.pts>=130?'🌟':h.pts>=95?'🌿':h.pts>=60?'🌱':'⚠️';
+    return '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+      +'<div style="font-size:.84rem;font-weight:800;">'+medal+' '+(h.guardian||'?')+'</div>'
+      +'<div style="font-size:.72rem;color:var(--txts);">'+h.fecha+' '+h.hora+'</div>'
+      +'</div>'
+      +'<div style="font-size:.75rem;color:var(--txts);margin-bottom:4px;">'+(h.villa||'Sin villa')+'</div>'
+      +'<div style="display:flex;gap:10px;font-size:.76rem;">'
+      +'<span style="color:var(--gold2);">'+h.pts+' pts</span>'
+      +'<span>🌍 '+h.eco+'</span>'
+      +'<span>🧠 '+h.con+'</span>'
+      +'<span>🤝 '+h.soc+'</span>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// Guardar historial al terminar partida
+var _origEndGame = endGame;
+endGame = function(reason){
+  _origEndGame(reason);
+  if(G && reason !== 'colapso'){
+    var pts = G.eco + G.conciencia*5 + G.sociedad*7 - G.karma*4;
+    guardarPartidaHistorial(pts, G.eco, G.conciencia, G.sociedad, G.karma, G.g.nm, G.comm, G.ronda);
+  }
+};
+
+// ── #10: SEGURIDAD CIUDADANA ──
+var SEG_PREGUNTAS = [
+  {cat:"Espacios Públicos",
+   pregunta:"¿Qué medida reduce más el delito en una plaza de barrio?",
+   ops:["Rejas y cercos altos","Iluminación LED eficiente y árboles podados","Cámaras de seguridad","Guardias privados"],
+   correcta:1,
+   exp:"Estudios en ciudades latinoamericanas muestran que la iluminación adecuada + vegetación controlada reduce el delito hasta un 21%. La gente se apropia de los espacios bien iluminados y cuidados.",
+   bonus_eco:2, bonus_seeds:15},
+  {cat:"Convivencia Vecinal",
+   pregunta:"¿Cuál es la primera acción para mejorar la convivencia en tu población?",
+   ops:["Instalar cámaras","Conocer a tus vecinos por nombre","Construir murallas","Contratar seguridad privada"],
+   correcta:1,
+   exp:"El capital social — conocer y confiar en los vecinos — es el mejor predictor de seguridad ciudadana. Las comunidades donde los vecinos se conocen tienen hasta 40% menos delitos.",
+   bonus_eco:1, bonus_seeds:12},
+  {cat:"Áreas Verdes y Seguridad",
+   pregunta:"¿Por qué los sitios baldíos sin vegetación generan más delito?",
+   ops:["Porque son fríos","Porque generan sensación de abandono y descuido","Porque atraen roedores","Porque son oscuros"],
+   correcta:1,
+   exp:"La 'teoría de las ventanas rotas' explica que espacios descuidados señalan abandono social, lo que facilita el delito. Un sitio baldío cuidado con árboles y pasto reduce los incidentes.",
+   bonus_eco:2, bonus_seeds:14},
+  {cat:"Movilidad Segura",
+   pregunta:"¿Qué hace que una ciclovía sea segura en Rancagua?",
+   ops:["Que sea larga","Separación física del tráfico + iluminación + conectividad","Que tenga señales","Que sea solo para niños"],
+   correcta:1,
+   exp:"Una ciclovía segura necesita separación física (no solo pintura), iluminación nocturna y conexión entre puntos importantes. En Rancagua la ciclovía del Cachapoal es un buen ejemplo.",
+   bonus_eco:2, bonus_seeds:13},
+  {cat:"Participación Ciudadana",
+   pregunta:"¿Qué es el Presupuesto Participativo municipal?",
+   ops:["El sueldo del alcalde","Fondos donde los vecinos votan en qué gastar recursos del municipio","El presupuesto de carabineros","Fondos para empresas locales"],
+   correcta:1,
+   exp:"El Presupuesto Participativo permite a los vecinos decidir en qué se gastan fondos municipales. En Rancagua se ha usado para iluminación, plazas y ciclovías en poblaciones.",
+   bonus_eco:1, bonus_seeds:10},
+  {cat:"Identidad y Pertenencia",
+   pregunta:"¿Cómo los murales artísticos comunitarios mejoran la seguridad?",
+   ops:["No tienen efecto","Generan identidad, reducen vandalismo y activan el espacio","Solo son decorativos","Depende del barrio"],
+   correcta:1,
+   exp:"Los murales realizados con participación vecinal generan apropiación del espacio. Los vecinos cuidan lo que sienten suyo. En varias poblaciones de Rancagua los murales han reducido el rayado.",
+   bonus_eco:2, bonus_seeds:14},
+  {cat:"Emergencias",
+   pregunta:"¿Cuál es el número de emergencias unificado en Chile?",
+   ops:["133","131","132","149"],
+   correcta:1,
+   exp:"El 132 es Bomberos, 133 Carabineros, 131 SAMU. En Chile el sistema de emergencias aún no está unificado en un solo número como el 911. Propuestas legislativas buscan crear ese número único.",
+   bonus_eco:0, bonus_seeds:8},
+  {cat:"Reciclaje y Limpieza",
+   pregunta:"¿Cómo afecta la basura en la calle a la seguridad ciudadana?",
+   ops:["No tiene relación","Señala abandono y aumenta el delito según estudios","Solo afecta la imagen","Solo molesta a los turistas"],
+   correcta:1,
+   exp:"Calles limpias = espacios apropiados = menos delito. En estudios en ciudades chilenas, las cuadras con limpieza regular mostraron 15% menos incidentes que las descuidadas.",
+   bonus_eco:2, bonus_seeds:12}
+
+  ,{cat:"Infraestructura Verde",
+   pregunta:"¿Por qué las ciclovías bien diseñadas mejoran la seguridad en barrios?",
+   ops:["No tienen relación con seguridad","Reducen tráfico, aumentan visibilidad y generan más personas en la calle","Solo sirven para ciclistas","Solo son decorativas"],
+   correcta:1,
+   exp:"Las ciclovías generan 'ojos en la calle': más personas circulando = más vigilancia natural. En barrios de Rancagua con ciclovías activas se ha observado reducción de robos en el entorno.",
+   bonus_eco:2, bonus_seeds:13},
+  {cat:"Gestión de Residuos",
+   pregunta:"¿Por qué la acumulación de basura en sitios baldíos es un problema de seguridad?",
+   ops:["No lo es, solo es estético","Crea espacios de abandono que facilitan el delito y atrae vectores de enfermedad","Solo afecta el turismo","Solo genera malos olores"],
+   correcta:1,
+   exp:"Los sitios con basura acumulada señalan abandono y falta de control social. Estudios en ciudades chilenas muestran correlación directa entre basura en espacios públicos y tasas de delito en el entorno.",
+   bonus_eco:2, bonus_seeds:12},
+  {cat:"Comunidad y Naturaleza",
+   pregunta:"¿Cómo un huerto comunitario mejora la seguridad de un barrio?",
+   ops:["No tiene relación","Genera encuentro entre vecinos, apropiación del espacio y reducción del abandono","Solo produce alimentos","Solo sirve para niños"],
+   correcta:1,
+   exp:"Los huertos comunitarios transforman sitios abandonados en espacios activos. En Rancagua, varios huertos comunitarios han reducido el vandalismo en su entorno al generar encuentro y cuidado colectivo del espacio.",
+   bonus_eco:3, bonus_seeds:15}
+];
+
+var segPreguntaActual = null;
+var segCallback = null;
+
+function triggerSeguridad(cb){
+  segCallback = cb || null;
+  segPreguntaActual = elegirPreguntaAleatoria(SEG_PREGUNTAS, 'seguridad');
+  segPreguntaActual = barajarOpciones(segPreguntaActual);
+  sh('seguridad');
+  var p = segPreguntaActual;
+  var catEl=document.getElementById('seg-categoria');
+  var pregEl=document.getElementById('seg-pregunta');
+  var opsEl=document.getElementById('seg-opciones');
+  var resEl=document.getElementById('seg-resultado');
+  var cardEl=document.getElementById('seg-card');
+  if(catEl) catEl.textContent=p.cat;
+  if(pregEl) pregEl.textContent=p.pregunta;
+  if(resEl) resEl.style.display='none';
+  if(cardEl) cardEl.style.display='block';
+  if(opsEl){
+    opsEl.innerHTML='';
+    p.ops.forEach(function(op,i){
+      var btn=document.createElement('button');
+      btn.className='btn ghost';
+      btn.style.cssText='text-align:left;padding:10px 14px;font-size:.84rem;';
+      btn.textContent=op;
+      btn.addEventListener('click',function(){responderSeguridad(i);});
+      opsEl.appendChild(btn);
+    });
+  }
+}
+
+function responderSeguridad(idx){
+  var p=segPreguntaActual;if(!p)return;
+  var correcto=idx===p.correcta;
+  document.getElementById('seg-card').style.display='none';
+  var resEl=document.getElementById('seg-resultado');
+  var resIco=document.getElementById('seg-res-ico');
+  var resTit=document.getElementById('seg-res-titulo');
+  var resExp=document.getElementById('seg-res-exp');
+  if(resEl){resEl.style.display='block';resEl.style.background=correcto?'#0a1f0a':'#1a0a0a';resEl.style.border='1.5px solid '+(correcto?'var(--green)':'#cc2222');}
+  if(resIco) resIco.textContent=correcto?'✅':'❌';
+  if(resTit){resTit.textContent=correcto?'¡Correcto! +'+p.bonus_eco+' Eco':'Incorrecto. '+p.ops[p.correcta];resTit.style.color=correcto?'var(--green)':'#ff5a5a';}
+  if(resExp) resExp.textContent=p.exp;
+  if(correcto&&typeof G!=='undefined'&&G){G.eco+=p.bonus_eco;if(typeof earnSeeds==='function')earnSeeds(p.bonus_seeds);if(typeof clamp==='function')clamp();}
+  else if(!correcto&&typeof G!=='undefined'&&G){G.eco-=1;if(typeof clamp==='function')clamp();}
+  if(correcto&&typeof spawnConfetti==='function') spawnConfetti();
+}
+
+function cerrarSeguridad(){
+  sh('game');
+  setTimeout(function(){
+    if(segCallback){var cb=segCallback;segCallback=null;cb();}
+    else if(typeof continueRound==='function') continueRound();
+  },300);
+}
+
+// Integrar seguridad en ronda 8
+var _origContinue = continueRound;
+continueRound = function(){
+  if(!G||G.ronda>G.maxR) return;
+  if(G.quizPendiente){G.quizPendiente=false;setTimeout(function(){triggerQuiz();},600);return;}
+  var mjMap={2:'areav',4:'especie',5:'reciclaje',7:'especie',8:'seguridad'};
+  var mj=mjMap[G.ronda];
+  if(mj&&!G['mj_'+G.ronda]){
+    G['mj_'+G.ronda]=true;
+    sh('game');renderAll();
+    setTimeout(function(){
+      if(mj==='especie') triggerEspecie(null);
+      else if(mj==='reciclaje') triggerReciclaje(null);
+      else if(mj==='areav') triggerAreaVerde(null);
+      else if(mj==='seguridad') triggerSeguridad(null);
+    },600);
+    return;
+  }
+  sh('game');renderAll();setPhase('dice');
+  var rn=ROUND_NARR[Math.min(G.ronda-1,G.maxR-1)];
+  if(rn){showBanner('Ronda '+G.ronda+' de '+G.maxR,rn.t);showNarr(rn.t,rn.n);setStatus('Ronda '+G.ronda+'. '+rn.t+'. Lanza el dado.');}
+};
+
+// ── #13: CARTAS DE TEMPORADA ──
+var MES = new Date().getMonth(); // 0=ene, 11=dic
+var CARTA_TEMPORADA = null;
+if(MES>=2&&MES<=4){ // mar-may: Vendimia
+  CARTA_TEMPORADA={id:'temp_vendimia',ico:'🍇',nm:'Vendimia O\u2019Higgins',tp:'rara',color:'#9b59b6',ca:0,ce:1,txt:'+3 soc +1 con — Temporada de vendimia',ef:function(g){g.sociedad+=3;g.conciencia+=1;},_temp:true};
+} else if(MES>=8&&MES<=10){ // sep-nov: Primavera
+  CARTA_TEMPORADA={id:'temp_primavera',ico:'🌸',nm:'Floración del Valle',tp:'rara',color:'#ff85a1',ca:0,ce:0,txt:'+2 eco +2 con — Primavera en O’Higgins',ef:function(g){g.eco+=2;g.conciencia+=2;},_temp:true};
+} else if(MES>=5&&MES<=7){ // jun-ago: Invierno
+  CARTA_TEMPORADA={id:'temp_invierno',ico:'🌧️',nm:'Lluvia del Cachapoal',tp:'rara',color:'#5a9aff',ca:0,ce:0,txt:'+3 agua +1 eco — Invierno en Rancagua',ef:function(g){g.agua+=3;g.eco+=1;},_temp:true};
+} else { // dic-feb: Verano/Rodeo
+  CARTA_TEMPORADA={id:'temp_rodeo',ico:'🏆',nm:'Rodeo O\u2019Higgins',tp:'rara',color:'#e67e22',ca:0,ce:0,txt:'+2 soc +1 eco — Fiesta del rodeo',ef:function(g){g.sociedad+=2;g.eco+=1;},_temp:true};
+}
+
+// Agregar carta de temporada al inicio de startGame si no está en el mazo
+var _origStartGame = startGame;
+startGame = function(){
+  _origStartGame();
+  if(CARTA_TEMPORADA&&G&&G.deck){
+    var yaEsta=G.deck.some(function(c){return c.id===CARTA_TEMPORADA.id;});
+    if(!yaEsta){
+      G.deck.splice(Math.floor(Math.random()*G.deck.length),0,Object.assign({},CARTA_TEMPORADA));
+      setStatus('🗓️ Carta de temporada añadida al mazo: '+CARTA_TEMPORADA.nm);
+    }
+  }
+};
+
+// ── #20/#26: ESCALABILIDAD POR COMUNA ──
+var COMUNAS_DATA = {
+  rancagua:{
+    nm:'Rancagua',
+    villas:['Pob. Centenario','Pob. Rancagua Norte','Pob. Rancagua Sur','Pob. El Manzanal','Villa Lourdes','Villa El Sol','Villa Urmeneta','Barrio Estación'],
+    especieLoca:'Quillay y Peumo en cerros del oriente',
+    areaVerde:'Parque Centenario y Río Cachapoal',
+    problemasEco:['megasequía','contaminación del Cachapoal','pérdida de áreas verdes'],
+    color:'#4ecb8d'
+  },
+  machalí:{
+    nm:'Machalí',
+    villas:['Pob. El Teniente','Villa Machalí','Sector Las Nieves','Los Libertadores'],
+    especieLoca:'Bosque nativo del Cajón del Río Coya',
+    areaVerde:'Parque Río Coya y Torres del Cobre',
+    problemasEco:['polución minera','deforestación','deslizamientos'],
+    color:'#f59e0b'
+  },
+  graneros:{
+    nm:'Graneros',
+    villas:['Pob. El Progreso','Villa Los Boldos','Sector Industrial'],
+    especieLoca:'Espino y Quillay en campos del secano',
+    areaVerde:'Laguna Los Pozos y campos agrícolas',
+    problemasEco:['residuos industriales','falta de áreas verdes urbanas'],
+    color:'#10b981'
+  },
+  sanfernando:{
+    nm:'San Fernando',
+    villas:['Pob. Santa Teresa','Villa El Bosque','Barrio Centro'],
+    especieLoca:'Flora del Humedal Tinguiririca',
+    areaVerde:'Río Tinguiririca y Reserva Torca',
+    problemasEco:['contaminación agrícola','sequía del Tinguiririca'],
+    color:'#3b82f6'
+  },
+  rengo:{
+    nm:'Rengo',
+    villas:['Pob. Las Américas','Villa Rengo Norte','Sector El Olivar'],
+    especieLoca:'Olivares y viñedos del Valle',
+    areaVerde:'Parque Ribera del Claro',
+    problemasEco:['uso excesivo de agua agrícola','falta de ciclovías'],
+    color:'#8b5cf6'
+  }
+};
+
+// Leer parámetro de URL ?comuna=xxx
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var comunaParam = params.get('comuna');
+  if(comunaParam && COMUNAS_DATA[comunaParam]){
+    var data = COMUNAS_DATA[comunaParam];
+    window._COMUNA_ACTIVA = data;
+    // Actualizar villas del selector
+    if(typeof VILLAS_RANCAGUA !== 'undefined'){
+      window.VILLAS_RANCAGUA = data.villas;
+    }
+    // Actualizar badge
+    setTimeout(function(){
+      var badge = document.querySelector('.demo-badge');
+      if(badge) badge.textContent='Demo v0.7 — '+data.nm;
+    },500);
+  }
+})();
+
+// ── #25: ANALYTICS ANÓNIMOS ──
+var _analytics = {
+  partidas:0, abandonos:{}, tiemposRonda:[], 
+  minijuegosCompletados:{quiz:0,especie:0,reciclaje:0,areav:0,seguridad:0}
+};
+try{
+  var savedAnalytics = localStorage.getItem('ep_analytics');
+  if(savedAnalytics) _analytics = JSON.parse(savedAnalytics);
+}catch(e){}
+
+function trackEvent(evento, data){
+  try{
+    if(evento==='partida_inicio') _analytics.partidas++;
+    if(evento==='ronda_abandono'){
+      var r=data.ronda||0;
+      _analytics.abandonos[r]=(_analytics.abandonos[r]||0)+1;
+    }
+    if(evento==='minijuego'){
+      _analytics.minijuegosCompletados[data.tipo]=(_analytics.minijuegosCompletados[data.tipo]||0)+1;
+    }
+    localStorage.setItem('ep_analytics',JSON.stringify(_analytics));
+  }catch(e){}
+}
+
+// ── #28: COMPARTIR RESULTADO COMO IMAGEN ──
+function generarImagenResultado(){
+  var canvas=document.getElementById('share-canvas');
+  if(!canvas) return;
+  var ctx=canvas.getContext('2d');
+  var w=600,h=800;
+  ctx.clearRect(0,0,w,h);
+
+  // Fondo degradado oscuro
+  var grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'#060d18');
+  grad.addColorStop(1,'#0b1628');
+  ctx.fillStyle=grad;
+  ctx.beginPath();
+  ctx.roundRect(0,0,w,h,30);
+  ctx.fill();
+
+  // Borde verde
+  ctx.strokeStyle='#4ecb8d';
+  ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.roundRect(8,8,w-16,h-16,26);
+  ctx.stroke();
+
+  // Logo
+  ctx.fillStyle='#4ecb8d';
+  ctx.font='bold 28px serif';
+  ctx.textAlign='center';
+  ctx.fillText('ECO-PODERES', w/2, 70);
+  ctx.fillStyle='#6b8ab0';
+  ctx.font='14px sans-serif';
+  ctx.fillText('El Consejo de Guardianes', w/2, 96);
+
+  // Guardián
+  var ico = G&&G.g ? G.g.ico : '🌍';
+  var nm = G&&G.g ? G.g.nm : 'Guardián';
+  ctx.font='80px serif';
+  ctx.fillText(ico, w/2, 200);
+  ctx.fillStyle='#ffe7a8';
+  ctx.font='bold 32px serif';
+  ctx.fillText(nm, w/2, 250);
+
+  // Villa
+  var villa = G&&G.comm ? G.comm : '';
+  if(villa){
+    ctx.fillStyle='#6b8ab0';
+    ctx.font='16px sans-serif';
+    ctx.fillText(villa, w/2, 282);
+  }
+
+  // Puntaje
+  var score = document.getElementById('r-score');
+  var pts = score ? score.textContent : '0 pts';
+  var titulo = document.getElementById('r-title');
+  var ttl = titulo ? titulo.textContent : '';
+
+  ctx.fillStyle='#ffc542';
+  ctx.font='bold 56px sans-serif';
+  ctx.fillText(pts, w/2, 370);
+  ctx.fillStyle='#edf2ff';
+  ctx.font='bold 22px serif';
+  ctx.fillText(ttl, w/2, 410);
+
+  // Stats
+  var stats=[
+    {lbl:'🌍 Ecosistema', val: G?G.eco+'/100':'?'},
+    {lbl:'🧠 Conciencia', val: G?G.conciencia+'/10':'?'},
+    {lbl:'🤝 Sociedad', val: G?G.sociedad+'/10':'?'},
+    {lbl:'☯ Karma', val: G?G.karma:'?'}
+  ];
+  ctx.fillStyle='#0f1e35';
+  ctx.fillRect(60,440,480,160);
+  stats.forEach(function(s,i){
+    var x=60+(i%2)*240+20;
+    var y=440+Math.floor(i/2)*80+40;
+    ctx.fillStyle='#6b8ab0';
+    ctx.font='14px sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText(s.lbl,x,y);
+    ctx.fillStyle='#edf2ff';
+    ctx.font='bold 24px sans-serif';
+    ctx.fillText(s.val,x,y+28);
+  });
+  ctx.textAlign='center';
+
+  // Footer
+  ctx.fillStyle='#4ecb8d';
+  ctx.font='16px sans-serif';
+  ctx.fillText('danygrafiko.github.io/eco-poderes', w/2, 700);
+  ctx.fillStyle='#2a4a6f';
+  ctx.font='13px sans-serif';
+  ctx.fillText('Juega gratis • Impacto real en Rancagua', w/2, 730);
+
+  // Semillas
+  var seeds = document.getElementById('r-seeds');
+  if(seeds){
+    ctx.fillStyle='#ffc542';
+    ctx.font='bold 18px sans-serif';
+    ctx.fillText(seeds.textContent+' Semillas Guardianas', w/2, 770);
+  }
+}
+
+function goShareResult(){
+  sh('share');
+  setTimeout(generarImagenResultado, 400);
+}
+
+function descargarResultado(){
+  var canvas=document.getElementById('share-canvas');
+  if(!canvas) return;
+  var link=document.createElement('a');
+  link.download='eco-poderes-resultado.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ── Botón compartir en resultado ──
+// Se añade dinámicamente al mostrar el resultado
+var _origEndGameUI = null;
+document.addEventListener('DOMContentLoaded',function(){
+  var shareBtn = document.createElement('button');
+  shareBtn.className='btn ghost';
+  shareBtn.style.cssText='width:100%;padding:9px;font-size:.82rem;margin-top:4px;';
+  shareBtn.textContent='📤 Compartir resultado';
+  shareBtn.onclick=goShareResult;
+  var rcard=document.querySelector('.rcard');
+  if(rcard) rcard.appendChild(shareBtn);
+});
+
+// ── Botón historial en intro ──
+document.addEventListener('DOMContentLoaded',function(){
+  var histBtn=document.createElement('button');
+  histBtn.style.cssText='width:100%;padding:9px;border-radius:50px;border:1px solid var(--border2);background:transparent;color:var(--txts);font-size:.78rem;cursor:pointer;font-family:var(--ff);touch-action:manipulation;';
+  histBtn.textContent='📊 Mis partidas';
+  histBtn.onclick=goHistorial;
+  var accBtn=document.getElementById('btn-acceso');
+  if(accBtn&&accBtn.parentNode) accBtn.parentNode.insertBefore(histBtn,accBtn);
+});
+
+// ── Versión y créditos ──
+console.log('%c ECO-PODERES v0.7 ', 'background:#060d18;color:#4ecb8d;font-weight:bold;font-size:14px;padding:4px 8px;border-radius:4px;');
+
+
+// ══ SISTEMA ANTI-REPETICIÓN DE PREGUNTAS ══
+var _preguntasUsadas = {quiz:[], especie:[], areav:[], seguridad:[], reciclaje:[]};
+
+function resetPreguntasUsadas(){
+  _preguntasUsadas = {quiz:[], especie:[], areav:[], seguridad:[], reciclaje:[]};
+}
+
+function elegirPreguntaAleatoria(pool, tipo){
+  // Filtrar las ya usadas
+  var disponibles = pool.filter(function(p, i){
+    return _preguntasUsadas[tipo].indexOf(i) === -1;
+  });
+  // Si ya se usaron todas, resetear ese tipo
+  if(disponibles.length === 0){
+    _preguntasUsadas[tipo] = [];
+    disponibles = pool.slice();
+  }
+  // Elegir aleatoriamente entre las disponibles
+  var elegida = disponibles[Math.floor(Math.random() * disponibles.length)];
+  // Marcar como usada
+  var idxOriginal = pool.indexOf(elegida);
+  _preguntasUsadas[tipo].push(idxOriginal);
+  return elegida;
+}
+
+// También barajar las opciones para mayor variedad
+function barajarOpciones(pregunta){
+  // Clonar para no mutar el original
+  var p = Object.assign({}, pregunta);
+  var ops = p.ops.slice();
+  var correctaText = ops[p.correcta];
+  // Barajar
+  for(var i=ops.length-1; i>0; i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var tmp = ops[i]; ops[i] = ops[j]; ops[j] = tmp;
+  }
+  // Encontrar nueva posición de la correcta
+  var nuevaCorrecta = ops.indexOf(correctaText);
+  return Object.assign({}, p, {ops: ops, correcta: nuevaCorrecta});
+}
+
+
+// ══ MODO 2 JUGADORES ══
+var _modo2P = false;
+var _jugadorActivo = 1; // 1 o 2
+var _estadoJ = [null, null]; // estado guardado de cada jugador
+
+function iniciarModo(n){
+  _modo2P = (n === 2);
+  _jugadorActivo = 1;
+  _estadoJ = [null, null];
+  sh('menu'); // ir directo al selector de guardián
+}
+
+function goModoJuego(){
+  sh('modo');
+}
+
+function goModo(){
+  sh('modo');
+}
+
+// goMenu sin override — s-modo se llama desde botón de inicio
+
+// startGame crea G para el jugador activo
+var _startGameOrig = startGame;
+startGame = function(){
+  _startGameOrig();
+  if(_modo2P){
+    showBanner('Jugador '+_jugadorActivo, G.g.nm+' inicia su turno — 4 rondas');
+    G.maxR = 4; // cada jugador juega 4 rondas
+  }
+};
+
+// Al terminar partida en modo 2P, alternar jugador
+var _endGameOrig = endGame;
+endGame = function(reason){
+  if(_modo2P && _jugadorActivo === 1 && reason !== 'colapso'){
+    // Guardar estado jugador 1
+    var pts1 = G.eco + G.conciencia*5 + G.sociedad*7 - G.karma*4;
+    _estadoJ[0] = {guardian:G.g.nm, eco:G.eco, pts:pts1, villa:G.comm};
+    // Cambio de turno
+    _jugadorActivo = 2;
+    setTimeout(function(){
+      showBanner('¡Turno del Jugador 2!',
+        'J1 ('+_estadoJ[0].guardian+'): '+pts1+' pts · Eco:'+_estadoJ[0].eco);
+      setTimeout(function(){ sh('modo'); }, 1500);
+    }, 800);
+    return;
+  }
+  if(_modo2P && _jugadorActivo === 2){
+    var pts2 = G.eco + G.conciencia*5 + G.sociedad*7 - G.karma*4;
+    _estadoJ[1] = {guardian:G.g.nm, eco:G.eco, pts:pts2, villa:G.comm};
+    // Mostrar resultado final 2P
+    _endGameOrig(reason);
+    setTimeout(function(){ mostrarResultado2P(); }, 800);
+    return;
+  }
+  _endGameOrig(reason);
+};
+
+function mostrarResultado2P(){
+  if(!_estadoJ[0] || !_estadoJ[1]) return;
+  var j1 = _estadoJ[0], j2 = _estadoJ[1];
+  var ganador = j1.pts >= j2.pts ? 1 : 2;
+  var g = ganador === 1 ? j1 : j2;
+  var perdedor = ganador === 1 ? j2 : j1;
+  showBanner(
+    '🏆 Ganador: Jugador '+ganador+' — '+g.guardian,
+    'J1: '+j1.pts+' pts | J2: '+j2.pts+' pts'
+  );
+  // Añadir resumen al resultado
+  var rcard = document.querySelector('.rcard');
+  if(rcard){
+    var div2p = document.createElement('div');
+    div2p.style.cssText='background:var(--bg4);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-top:12px;';
+    div2p.innerHTML='<div style="font-size:.72rem;font-weight:800;color:var(--gold2);margin-bottom:8px;">⚔️ Resultado 2 Jugadores</div>'
+      +'<div style="display:flex;gap:12px;">'
+      +'<div style="flex:1;text-align:center;padding:10px;background:'+(ganador===1?'#0a1f0a':'var(--bg3)')+';border-radius:10px;border:1px solid '+(ganador===1?'var(--green)':'var(--border)')+';">'
+      +'<div style="font-size:1.4rem;">'+j1.guardian[0]+'</div>'
+      +'<div style="font-size:.78rem;font-weight:800;">J1: '+j1.guardian+'</div>'
+      +'<div style="font-size:.9rem;color:var(--gold2);font-weight:900;">'+j1.pts+' pts</div>'
+      +(ganador===1?'<div style="font-size:.68rem;color:var(--green);">🏆 GANADOR</div>':'')
+      +'</div>'
+      +'<div style="flex:1;text-align:center;padding:10px;background:'+(ganador===2?'#0a1f0a':'var(--bg3)')+';border-radius:10px;border:1px solid '+(ganador===2?'var(--green)':'var(--border)')+';">'
+      +'<div style="font-size:1.4rem;">'+j2.guardian[0]+'</div>'
+      +'<div style="font-size:.78rem;font-weight:800;">J2: '+j2.guardian+'</div>'
+      +'<div style="font-size:.9rem;color:var(--gold2);font-weight:900;">'+j2.pts+' pts</div>'
+      +(ganador===2?'<div style="font-size:.68rem;color:var(--green);">🏆 GANADOR</div>':'')
+      +'</div>'
+      +'</div>';
+    rcard.appendChild(div2p);
+  }
+  _modo2P = false; // resetear para próxima partida
+}
+
+// ══ MEJORAS DE UX ══
+
+// Sonido de éxito en mini-juegos (Web Audio API)
+function playSuccessSound(){
+  try{
+    var ac=new(window.AudioContext||window.webkitAudioContext)();
+    [[523,0],[659,0.15],[784,0.3],[1047,0.45]].forEach(function(note){
+      var o=ac.createOscillator(),g=ac.createGain();
+      o.connect(g);g.connect(ac.destination);
+      o.frequency.value=note[0];
+      o.type='sine';
+      g.gain.setValueAtTime(0.12,ac.currentTime+note[1]);
+      g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+note[1]+0.2);
+      o.start(ac.currentTime+note[1]);
+      o.stop(ac.currentTime+note[1]+0.25);
+    });
+  }catch(e){}
+}
+
+function playErrorSound(){
+  try{
+    var ac=new(window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator(),g=ac.createGain();
+    o.connect(g);g.connect(ac.destination);
+    o.frequency.setValueAtTime(300,ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(150,ac.currentTime+0.3);
+    o.type='sawtooth';
+    g.gain.setValueAtTime(0.08,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.4);
+    o.start();o.stop(ac.currentTime+0.4);
+  }catch(e){}
+}
+
+// Parchear responderQuiz para añadir sonido
+var _origRQ = responderQuiz;
+responderQuiz = function(idx){
+  var correcto = quizPreguntaActual && idx === quizPreguntaActual.correcta;
+  if(correcto) playSuccessSound(); else playErrorSound();
+  _origRQ(idx);
+};
+
+// Exportar preguntas como JSON (#29)
+function exportarPreguntas(){
+  var data = {
+    version: 'v0.7',
+    fecha: new Date().toISOString().substring(0,10),
+    eco_preguntas: typeof ECO_PREGUNTAS !== 'undefined' ? ECO_PREGUNTAS.length : 0,
+    seguridad_preguntas: typeof SEG_PREGUNTAS !== 'undefined' ? SEG_PREGUNTAS.length : 0,
+    especies: typeof ESPECIES_RANCAGUA !== 'undefined' ? ESPECIES_RANCAGUA.length : 0,
+    areas_verdes: typeof AREAS_VERDES_RANCAGUA !== 'undefined' ? AREAS_VERDES_RANCAGUA.length : 0,
+    residuos: typeof RESIDUOS !== 'undefined' ? RESIDUOS.length : 0,
+    nota: 'Para agregar preguntas, editar el archivo HTML directamente o contactar a danygrafiko'
+  };
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'eco-poderes-preguntas-info.json';
+  a.click();
+}
+
+// Estadísticas de uso en la pantalla de ranking
+var _origGoFBRanking = typeof goFBRanking === 'function' ? goFBRanking : function(){};
+goFBRanking = function(){
+  _origGoFBRanking();
+  setTimeout(function(){
+    var analytics = {};
+    try{ analytics = JSON.parse(localStorage.getItem('ep_analytics')||'{}'); }catch(e){}
+    var hist = [];
+    try{ hist = JSON.parse(localStorage.getItem('ep_historial')||'[]'); }catch(e){}
+    var statsEl = document.getElementById('stats-personales');
+    if(statsEl && hist.length > 0){
+      var mejorPts = Math.max.apply(null, hist.map(function(h){return h.pts||0;}));
+      var avgEco = Math.round(hist.reduce(function(a,h){return a+(h.eco||0);},0)/hist.length);
+      statsEl.innerHTML = '<div style="font-size:.72rem;font-weight:800;color:var(--gold2);margin-bottom:6px;">📊 Tus estadísticas</div>'
+        +'<div style="display:flex;gap:10px;font-size:.74rem;">'
+        +'<div style="flex:1;text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--gold2);">'+hist.length+'</div><div style="color:var(--txts);">Partidas</div></div>'
+        +'<div style="flex:1;text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--gold2);">'+mejorPts+'</div><div style="color:var(--txts);">Mejor puntaje</div></div>'
+        +'<div style="flex:1;text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--green);">'+avgEco+'</div><div style="color:var(--txts);">Eco promedio</div></div>'
+        +'</div>';
+      statsEl.style.display = 'block';
+    }
+  }, 300);
+};
+
+// Versión y créditos en consola
+console.log('%cECO-PODERES v0.7 | Rancagua | danygrafiko 2025', 
+  'background:#060d18;color:#4ecb8d;font-weight:bold;padding:4px 10px;border-radius:4px');
+
+
+function spawnConfetti(){
+  try{
+    var colors=['#4ecb8d','#ffc542','#5a82ff','#ff4d4d','#c084fc','#22d3ee'];
+    var container=document.getElementById('celebrate')||document.body;
+    for(var i=0;i<18;i++){
+      var el=document.createElement('div');
+      el.style.cssText='position:fixed;top:0;pointer-events:none;z-index:9999;'
+        +'width:8px;height:8px;border-radius:50%;'
+        +'background:'+colors[Math.floor(Math.random()*colors.length)]+';'
+        +'left:'+Math.random()*100+'vw;'
+        +'animation:confettiFall '+(1.5+Math.random())+'s ease-in forwards;';
+      document.body.appendChild(el);
+      setTimeout(function(e){ document.body.removeChild(e); }, 3000, el);
+    }
+  }catch(e){}
+}
+
 </script>
 
 <!-- ACCION REAL ECO -->
@@ -3358,7 +3933,7 @@ function doPost(e) {
 <div class="screen z1" id="s-especie" style="padding:14px;gap:10px;justify-content:flex-start;">
   <div style="text-align:center;width:100%;">
     <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--green);">🌿 Reconoce la Especie</div>
-    <div style="font-size:.72rem;color:var(--txts);margin-top:4px;">Flora y fauna de la Región de O'Higgins</div>
+    <div style="font-size:.72rem;color:var(--txts);margin-top:4px;">Flora y fauna de Rancagua y la Región de O'Higgins</div>
   </div>
   <div id="especie-timer-bar" style="height:4px;background:var(--border);border-radius:2px;width:100%;overflow:hidden;">
     <div id="especie-timer-fill" style="height:100%;background:var(--green);width:100%;transition:width 0.1s linear;border-radius:2px;"></div>
@@ -3385,14 +3960,14 @@ function doPost(e) {
 <div class="screen z1" id="s-areav" style="padding:14px;gap:10px;justify-content:flex-start;">
   <div style="text-align:center;width:100%;">
     <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--blue);">🗺️ Conoce tu Ciudad</div>
-    <div style="font-size:.72rem;color:var(--txts);margin-top:4px;">Paisajes, riberas y áreas verdes de O’Higgins</div>
+    <div style="font-size:.72rem;color:var(--txts);margin-top:4px;">Parques, plazas y áreas verdes de Rancagua</div>
   </div>
   <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;width:100%;" id="areav-card">
     <div style="font-size:.65rem;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;" id="av-tipo">Área Verde</div>
     <div style="font-size:3rem;text-align:center;margin-bottom:8px;padding:14px;background:var(--bg4);border-radius:10px;" id="av-icono">🌳</div>
     <div style="font-size:.88rem;font-weight:900;color:var(--txt);margin-bottom:6px;" id="av-nombre">Parque de Rancagua</div>
     <div style="font-size:.78rem;color:var(--txts);line-height:1.7;margin-bottom:14px;" id="av-desc">Descripción del lugar</div>
-    <div style="font-size:.72rem;font-weight:800;color:var(--txt);margin-bottom:8px;">¿A qué territorio o ambiente corresponde?</div>
+    <div style="font-size:.72rem;font-weight:800;color:var(--txt);margin-bottom:8px;">¿En qué sector de Rancagua está?</div>
     <div style="display:flex;flex-direction:column;gap:7px;" id="av-opciones"></div>
   </div>
   <div id="areav-resultado" style="display:none;width:100%;border-radius:14px;padding:16px;text-align:center;">
@@ -3451,11 +4026,6 @@ function doPost(e) {
       <div style="font-size:.8rem;font-weight:800;color:#4abba0;">Vidrio</div>
       <div style="font-size:.62rem;color:#2a8a7a;margin-top:2px;">botellas · frascos</div>
     </button>
-    <button onclick="clasificar('especial')" style="grid-column:1 / -1;background:linear-gradient(135deg,#1f1305,#130808);border:2px solid #ff8c42;border-radius:14px;padding:14px 8px;cursor:pointer;touch-action:manipulation;transition:all .15s;">
-      <div style="font-size:1.8rem;margin-bottom:4px;">⚠️</div>
-      <div style="font-size:.8rem;font-weight:800;color:#ffb06a;">Punto especial / seguro</div>
-      <div style="font-size:.62rem;color:#ff9a6a;margin-top:2px;">pilas · electrónicos · aceites · peligrosos</div>
-    </button>
   </div>
 
   <!-- Feedback inmediato -->
@@ -3469,6 +4039,102 @@ function doPost(e) {
     <div style="font-size:.72rem;color:var(--txts);background:var(--bg4);border-radius:10px;padding:10px;line-height:1.7;margin-bottom:14px;" id="rec-res-dato"></div>
     <button class="btn prim" onclick="cerrarReciclaje()" style="max-width:240px;">Continuar partida →</button>
   </div>
+</div>
+
+<!-- HISTORIAL -->
+<div class="screen z1" id="s-historial" style="padding:14px;gap:10px;justify-content:flex-start;">
+  <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--gold2);text-align:center;width:100%;">📊 Mis Partidas</div>
+  <div id="hist-lista" style="width:100%;display:flex;flex-direction:column;gap:8px;"></div>
+  <button class="btn ghost" onclick="goIntro()" style="width:100%;padding:10px;margin-top:8px;">← Volver</button>
+</div>
+
+<!-- MINI-JUEGO: SEGURIDAD CIUDADANA -->
+<div class="screen z1" id="s-seguridad" style="padding:14px;gap:10px;justify-content:flex-start;overflow-y:auto;">
+  <div style="text-align:center;width:100%;">
+    <div style="font-family:var(--ffd);font-size:1.05rem;font-weight:900;color:var(--blue);">🏘️ Diseña tu Barrio Seguro</div>
+    <div style="font-size:.72rem;color:var(--txts);margin-top:3px;">Cada decisión afecta la seguridad y el bienestar de tu comunidad</div>
+  </div>
+  <div id="seg-card" style="background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;width:100%;">
+    <div style="font-size:.65rem;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;" id="seg-categoria">Espacio público</div>
+    <div style="font-size:.92rem;font-weight:800;color:var(--txt);line-height:1.6;margin-bottom:14px;" id="seg-pregunta">¿Qué mejora más la seguridad de una plaza?</div>
+    <div style="display:flex;flex-direction:column;gap:8px;" id="seg-opciones"></div>
+  </div>
+  <div id="seg-resultado" style="display:none;width:100%;border-radius:14px;padding:16px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:6px;" id="seg-res-ico">✅</div>
+    <div style="font-size:.92rem;font-weight:900;margin-bottom:6px;" id="seg-res-titulo"></div>
+    <div style="font-size:.76rem;color:var(--txts);line-height:1.7;margin-bottom:14px;" id="seg-res-exp"></div>
+    <button class="btn prim" onclick="cerrarSeguridad()" style="max-width:240px;">Continuar partida →</button>
+  </div>
+</div>
+
+<!-- COMPARTIR RESULTADO -->
+<div class="screen z1" id="s-share" style="padding:14px;gap:12px;justify-content:center;align-items:center;">
+  <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:900;color:var(--gold2);text-align:center;">📤 Comparte tu Resultado</div>
+  <canvas id="share-canvas" width="600" height="800" style="width:100%;max-width:300px;border-radius:16px;border:1px solid var(--border2);"></canvas>
+  <div style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;">
+    <button class="btn prim" onclick="descargarResultado()" style="width:100%;">💾 Guardar imagen</button>
+    <button class="btn sec" onclick="goIntro()" style="width:100%;">← Volver al inicio</button>
+  </div>
+</div>
+
+<!-- GUÍA PEDAGÓGICA -->
+<div class="screen z1" id="s-guia" style="padding:14px;gap:10px;justify-content:flex-start;overflow-y:auto;">
+  <div style="font-family:var(--ffd);font-size:1.05rem;font-weight:900;color:var(--gold2);text-align:center;width:100%;">📚 Guía para Educadores</div>
+  <div style="width:100%;display:flex;flex-direction:column;gap:10px;">
+
+    <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--teal);margin-bottom:6px;">¿Para qué sirve ECO-PODERES?</div>
+      <div style="font-size:.75rem;color:var(--txts);line-height:1.7;">Herramienta de educación ambiental gamificada para todas las edades. Conecta decisiones ecológicas con la identidad local de Rancagua y la Región de O'Higgins. Ideal para talleres comunitarios, aulas escolares y actividades familiares.</div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--teal);margin-bottom:8px;">🎯 Objetivos de Aprendizaje</div>
+      <div style="font-size:.74rem;color:var(--txts);line-height:1.85;">
+        • Reconocer flora y fauna nativa de O'Higgins<br>
+        • Identificar áreas verdes y espacios públicos de Rancagua<br>
+        • Comprender el impacto del reciclaje y el ahorro de agua<br>
+        • Vincular decisiones individuales con el bienestar comunitario<br>
+        • Reflexionar sobre seguridad ciudadana y entorno urbano<br>
+        • Desarrollar sentido de pertenencia e identidad territorial
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--teal);margin-bottom:8px;">📋 Cómo usar en un taller</div>
+      <div style="font-size:.74rem;color:var(--txts);line-height:1.85;">
+        <strong style="color:var(--txt);">Antes:</strong> Preguntar qué conocen de su barrio, qué animales nativos conocen.<br>
+        <strong style="color:var(--txt);">Durante:</strong> Jugar en grupos de 2-4, discutir las decisiones en voz alta.<br>
+        <strong style="color:var(--txt);">Después:</strong> Reflexión: ¿Qué decidirían diferente? ¿Qué pueden hacer hoy?<br>
+        <strong style="color:var(--txt);">Tiempo sugerido:</strong> 45-60 minutos incluyendo reflexión.
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--teal);margin-bottom:8px;">🏫 Niveles educativos</div>
+      <div style="font-size:.74rem;color:var(--txts);line-height:1.85;">
+        <strong style="color:var(--txt);">Primaria (8-12 años):</strong> Enfocarse en especies y reciclaje. Modo 2 jugadores cooperativo.<br>
+        <strong style="color:var(--txt);">Secundaria (13-17):</strong> Todas las mecánicas. Debatir EGO vs CONSCIENCIA.<br>
+        <strong style="color:var(--txt);">Adultos y comunidad:</strong> Énfasis en seguridad ciudadana y acción real.<br>
+        <strong style="color:var(--txt);">Adultos mayores:</strong> Activar Modo Accesible desde el botón en inicio.
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--teal);margin-bottom:8px;">🌱 Conexión con acción real</div>
+      <div style="font-size:.74rem;color:var(--txts);line-height:1.85;">
+        Después de cada taller, invitar a los participantes a comprometer una acción eco real desde la pantalla "Acción Eco Real". Documentar las acciones con fotos y compartirlas en la comunidad para multiplicar el impacto.
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--teal);margin-bottom:6px;">📞 Contacto y colaboración</div>
+      <div style="font-size:.74rem;color:var(--txts);line-height:1.7;">Desarrollado por <strong style="color:var(--txt);">danygrafiko · Servicios Marsan · Rancagua, Chile</strong><br>
+      Para talleres, adaptaciones a tu comuna o alianzas institucionales:<br>
+      <strong style="color:var(--green);">danygrafiko.github.io/eco-poderes</strong></div>
+    </div>
+
+  </div>
+  <button class="btn ghost" onclick="goIntro()" style="width:100%;padding:10px;margin-top:4px;">← Volver al inicio</button>
 </div>
 </body>
 </html>
