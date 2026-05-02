@@ -382,11 +382,12 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="intro-orb">🌍</div>
   <div class="intro-logo" style="font-size:2.8rem;letter-spacing:3px;line-height:1;">ECO-PODERES</div>
   <div class="intro-sub" style="letter-spacing:5px;font-size:.76rem;color:var(--teal);">EL CONSEJO DE GUARDIANES</div>
-  <div class="demo-badge">🧪 Demo v0.8 — Rancagua</div>
+  <div class="demo-badge">🧪 Demo v0.9 — Rancagua</div>
   <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
     <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
     <button class="btn sec" onclick="goModoJuego()">▶ Jugar directamente</button>
+    <button onclick="goMazo()" style="width:100%;padding:9px;border-radius:50px;border:1px solid var(--gold2);background:rgba(255,197,66,.06);color:var(--gold2);font-size:.78rem;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">🎴 Armar mi Mazo de Colección</button>
     <button onclick="sh('guia')" style="width:100%;padding:9px;border-radius:50px;border:1px solid var(--border2);background:transparent;color:var(--txts);font-size:.78rem;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">📚 Guía para Educadores y Talleres</button>
     <button id="install-btn" onclick="installPWA()" style="display:none;width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--teal);background:rgba(45,212,191,.08);color:var(--teal);font-size:.85rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">
       📲 Instalar como App
@@ -398,7 +399,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
       <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="ver-tag">ECO-PODERES v0.8 · danygrafiko © 2025</div>
+  <div class="ver-tag">ECO-PODERES v0.9 · danygrafiko © 2025</div>
 </div>
 
 <!-- TUTORIAL -->
@@ -806,60 +807,136 @@ const DICE=[
 ];
 
 const GUARDIANES=[
-  {id:'lobo',ico:'🐺',nm:'Lobo',color:'#5ccf9a',rol:'Equilibrio',
-   poder:'Poder: +1 Eco y +1 Conciencia. El guardián más balanceado.',
-   sombra:'Sin penalización especial. Ideal para principiantes.',
-   tip:'Usa el poder en rondas de FUEGO o CAOS para compensar.',
-   apply:g=>{g.eco+=1;g.conciencia+=1;}},
-  {id:'aguila',ico:'🦅',nm:'Águila',color:'#6d8cff',rol:'Visión',
-   poder:'Convierte FUEGO/CAOS en AIRE (1×/ronda). Gana +1 acción al lanzar dado.',
-   sombra:'Transformación usable una sola vez por ronda.',
-   tip:'Aprovecha la acción extra para robar cartas y tener más opciones.',
-   applyRoll:(g,f)=>(f==='FUEGO'||f==='CAOS'||f==='TORMENTA')&&!g.gpu?(g.gpu=true,'AIRE'):f,
-   apply:g=>{g.acciones=Math.min(g.acciones+1,5);}},
-  {id:'pulpo',ico:'🐙',nm:'Pulpo',color:'#a66cff',rol:'Adaptación',
-   poder:'Pasivo: +1 Conciencia extra al elegir cualquier camino.',
-   sombra:'No puede usar la acción "Poder" manual.',
-   tip:'Siempre elige CONSCIENCIA — con Pulpo vale el doble.',
-   apply:null},
-  {id:'tortuga',ico:'🐢',nm:'Tortuga',color:'#59b870',rol:'Resistencia',
-   poder:'Al jugar carta: +2 Eco extra (una vez por ronda).',
-   sombra:'Solo puede beneficiarse de 1 carta extra por turno.',
-   tip:'Juega tu carta más poderosa primero para maximizar el bonus.',
-   apply:g=>{if(!g.gpu){g.eco+=2;g.gpu=true;}}},
-  {id:'elefante',ico:'🐘',nm:'Elefante',color:'#c4a87a',rol:'Memoria',
-   poder:'Poder: +2 Sociedad y +2 Conciencia. Rey de la sociedad.',
-   sombra:'No puede usar cartas de Impulso (muy directo para él).',
-   tip:'Combina con cartas de Emprendimiento para máximo impacto social.',
-   apply:g=>{g.sociedad+=2;g.conciencia+=2;}},
-  {id:'abeja',ico:'🐝',nm:'Abeja',color:'#ffc542',rol:'Cooperación',
-   poder:'Buff: siguiente carta jugada da +2 Sociedad extra.',
-   sombra:'-1 Eco si no jugaste ninguna carta esta ronda.',
-   tip:'Activa el buff ANTES de jugar tu carta más cara.',
-   apply:g=>{g._bee=true;}},
-  // NUEVO GUARDIÁN v0.2
-  {id:'jaguar',ico:'🐆',nm:'Jaguar',color:'#ff8844',rol:'Velocidad',
-   poder:'Gana +1 acción cada vez que el ecosistema sube. Máx. 5 acciones.',
-   sombra:'Pierde 2 eco si termina ronda sin usar todas sus acciones.',
-   tip:'Maximiza cada acción — el Jaguar no puede desperdiciar nada.',
-   apply:g=>{/* se aplica en renderAll cuando eco sube */}},
-  {id:'condor',ico:'🦅',nm:'Cóndor',color:'#c084fc',rol:'Sabiduría',
-   poder:'Poder: Revela las 2 próximas cartas del mazo para decidir si robar.',
-   sombra:'Si el mazo tiene menos de 2 cartas el poder no funciona.',
-   tip:'Úsalo antes de robar para evitar cartas costosas con pocos recursos.',
+  {id:'condor',ico:'🦅',nm:'Cóndor de los Andes',color:'#c084fc',rol:'Sabiduría',
+   habitat:'Altas cumbres de la cordillera de O’Higgins',
+   estado:'Vulnerable — monitoreo activo CONAF Cipreses',
+   poder:'Visión Andina: revela las 2 próximas cartas del mazo antes de decidir si robas.',
+   sombra:'Si el mazo tiene menos de 2 cartas, la visión no funciona.',
+   tip:'Úsalo antes de robar para evitar cartas costosas cuando tienes pocos recursos.',
    apply:function(g){
      if(g.deck.length>=2){
        var a=g.deck[g.deck.length-1];var b=g.deck[g.deck.length-2];
-       setStatus('🦅 Visión del Cóndor: '+a.nm+' (💧'+cardCostA(a)+') · '+b.nm+' (💧'+cardCostA(b)+')');
-     }else{setStatus('🦅 Mazo insuficiente para usar visión.');}
+       setStatus('🦅 Visión del Cóndor: próx. cartas → '+a.nm+' · '+b.nm);
+     }else{setStatus('🦅 Mazo con menos de 2 cartas — visión imposible.');}
    }},
-  {id:'delfin',ico:'🐬',nm:'Delfín',color:'#22d3ee',rol:'Armonía',
-   poder:'Poder: +2 Sociedad y elimina 1 Karma gracias a la empatía comunitaria.',
-   sombra:'Si Karma es 0, el poder da solo +1 Sociedad.',
-   tip:'Úsalo cuando se acumula karma o después de decisiones EGO.',
+
+  {id:'tricahue',ico:'🦜',nm:'Loro Tricahue',color:'#22c55e',rol:'Resiliencia',
+   habitat:'Barrancos del Río Cachapoal — Reserva Nacional Río de Los Cipreses',
+   estado:'En Peligro de Extinción — especie emblemática de O’Higgins',
+   poder:'Llamada Comunitaria: +3 Sociedad. Si Sociedad ya es 8+, además +1 Eco.',
+   sombra:'El loro es ruidoso — en crisis de karma alto (3+) el efecto baja a +1 Soc.',
+   tip:'Ideal combinado con camino CONSCIENCIA — el Tricahue amplifica el efecto social.',
    apply:function(g){
-     if(g.karma>0){g.karma=Math.max(0,g.karma-1);g.sociedad+=2;setStatus('🐬 Armonía: +2 Soc -1 Karma');}
-     else{g.sociedad+=1;setStatus('🐬 Armonía: +1 Soc (Karma ya era 0)');}
+     if(g.karma>=3){g.sociedad+=1;setStatus('🦜 Llamada ahogada por karma alto: solo +1 Soc');}
+     else if(g.sociedad>=8){g.sociedad+=3;g.eco+=1;setStatus('🦜 Llamada Tricahue: +3 Soc +1 Eco');}
+     else{g.sociedad+=3;setStatus('🦜 Llamada Tricahue: +3 Sociedad — la colonia se une');}
+   }},
+
+  {id:'puma',ico:'🐆',nm:'Puma Andino',color:'#f59e0b',rol:'Fuerza',
+   habitat:'Farellones y quebradas de la cordillera de O’Higgins',
+   estado:'Vulnerable — amenazado por caza ilegal y pérdida de hábitat andino',
+   poder:'Cacería Precisa: descarta hasta 2 cartas de mano y roba 2 nuevas al instante.',
+   sombra:'Cada uso del poder añade +1 Karma — el puma deja marca en el territorio.',
+   tip:'Úsalo cuando tienes cartas de alto costo que no puedes jugar. Renueva la mano.',
+   apply:function(g){
+     if(g.hand.length>0){
+       var n=Math.min(2,g.hand.length);
+       for(var i=0;i<n;i++){g.disc.push(g.hand.shift());}
+       for(var j=0;j<n;j++){if(g.deck.length>0)g.hand.push(g.deck.pop());}
+       g.karma++;
+       setStatus('🐆 Cacería del Puma: descartó '+n+' carta(s), robó '+n+' nueva(s). +1 Karma.');
+     }else{setStatus('🐆 Sin cartas en mano para renovar.');}
+   }},
+
+  {id:'guanaco',ico:'🦙',nm:'Guanaco Cordillerano',color:'#d97706',rol:'Resistencia',
+   habitat:'Sectores altos del Río Cipreses — sobre los 1.500 msnm en O’Higgins',
+   estado:'Casi Amenazado — poblaciones pequeñas y vulnerables en la cordillera',
+   poder:'Resistencia Andina: +2 Agua +2 Energía. Si hay amenaza activa, además +2 Eco.',
+   sombra:'Solo funciona sin amenaza para el bono completo — con amenaza activa el bono eco requiere tener con mayor a 5.',
+   tip:'El más eficiente en recursos. Úsalo en rondas 5-8 cuando el decay se acelera.',
+   apply:function(g){
+     g.agua+=2;g.energia+=2;
+     if(g.amenaza&&g.conciencia>5){g.eco+=2;setStatus('🦙 Resistencia Andina: +2 Agua +2 Energía +2 Eco (amenaza enfrenta)');}
+     else{setStatus('🦙 Resistencia Andina: +2 Agua +2 Energía');}
+   }},
+
+  {id:'zorro',ico:'🦊',nm:'Zorro Culpeo',color:'#ea580c',rol:'Astucia',
+   habitat:'Cerros y quebradas alrededor de Rancagua y Valle del Cachapoal',
+   estado:'Preocupación Menor — pero amenazado por caza ilegal y venenos',
+   poder:'Olfato Territorial: roba 1 carta extra sin usar acción y ve las 3 primeras del mazo.',
+   sombra:'Si el Karma es 2 o más, el poder roba solo 1 carta sin ver el mazo.',
+   tip:'Úsalo al inicio del turno para obtener información del mazo. La visión vale tanto como la carta.',
+   apply:function(g){
+     if(g.deck.length>0){
+       g.hand.push(g.deck.pop());
+       if(g.karma<2&&g.deck.length>=3){
+         var top3=g.deck.slice(-3).map(function(cc){return cc.nm;}).reverse();
+         setStatus('🦊 Olfato del Zorro: +1 carta. Próximas 3: '+top3.join(' · '));
+       }else{setStatus('🦊 Olfato del Zorro: +1 carta (karma alto, sin visión)');}
+     }else{setStatus('🦊 Mazo vacío — el zorro no encuentra rastro.');}
+   }},
+
+  {id:'vizcacha',ico:'🐇',nm:'Vizcacha Andina',color:'#6b7280',rol:'Comunidad',
+   habitat:'Sectores rocosos del Río Cipreses y precordillera de Machalí',
+   estado:'Preocupación Menor — indicador de salud del ecosistema rocoso andino',
+   poder:'Red de Colonias: +1 a TODOS los recursos si Sociedad es 5 o más.',
+   sombra:'Si Sociedad es menor a 5, el poder solo da +1 Conciencia.',
+   tip:'El poder más completo con alta sociedad. Prioriza cartas sociales en rondas 1-4.',
+   apply:function(g){
+     if(g.sociedad>=5){
+       g.eco+=1;g.conciencia+=1;g.sociedad+=1;g.agua+=1;g.energia+=1;
+       setStatus('🐇 Red de la Vizcacha: +1 Eco +1 Con +1 Soc +1 Agua +1 Energía');
+     }else{g.conciencia+=1;setStatus('🐇 Colonia pequeña: +1 Con (necesitas 5+ Sociedad para el poder completo)');}
+   }},
+
+  {id:'coipo',ico:'🦦',nm:'Coipo del Cachapoal',color:'#22d3ee',rol:'Armonía',
+   habitat:'Riberas del Río Cachapoal y canales de riego de O’Higgins',
+   estado:'Preocupación Menor — indicador de salud del ecosistema fluvial',
+   poder:'Empatía Fluvial: +2 Sociedad -1 Karma. Si karma es 0, da +2 Agua.',
+   sombra:'Si Agua < 2 (río bajo), el poder solo da +1 Sociedad.',
+   tip:'Equilibra karma acumulado. Combinalo con EGO en rondas alternas.',
+   apply:function(g){
+     if(g.agua<2){g.sociedad+=1;setStatus('🦦 Río bajo: +1 Soc (necesitas más Agua)');}
+     else if(g.karma>0){g.karma=Math.max(0,g.karma-1);g.sociedad+=2;setStatus('🦦 Empatía Fluvial: +2 Soc -1 Karma');}
+     else{g.agua+=2;setStatus('🦦 Empatía Fluvial: +2 Agua (karma ya era 0)');}
+   }},
+
+  {id:'cururo',ico:'🐭',nm:'Cururo',color:'#7c3aed',rol:'Transformación',
+   habitat:'Suelos del Valle Central de O’Higgins — endémico de Chile central',
+   estado:'Vulnerable — endémico de Chile, amenazado por urbanización y pesticidas',
+   poder:'Túneles de Vida: convierte 2 Energía en 3 Eco (transforma recursos en naturaleza viva).',
+   sombra:'Requiere exactamente 2 Energía. Si tienes menos, el poder falla.',
+   tip:'La mejor conversión del juego. Úsalo cuando tienes energía sobrante y el eco cae.',
+   apply:function(g){
+     if(g.energia>=2){g.energia-=2;g.eco+=3;setStatus('🐭 Túneles del Cururo: -2 Energía → +3 Eco');}
+     else{setStatus('🐭 Sin energía suficiente. El Cururo necesita 2 Energía para excavar.');}
+   }},
+
+  {id:'aguila',ico:'🦅',nm:'Águila Escudra',color:'#0ea5e9',rol:'Visión',
+   habitat:'Cumbres y barrancos de la Reserva Río Los Cipreses',
+   estado:'Casi Amenazada — sensible a pérdida de bosque nativo esclerófilo',
+   poder:'Perspectiva Aérea: +2 Eco +1 Con. Si hay amenaza activa, revela su contador exacto.',
+   sombra:'Si ecosistema Eco está bajo 25, la perspectiva se nubla: solo da +1 Eco.',
+   tip:'Úsala en rondas con amenaza activa para estrategia completa.',
+   apply:function(g){
+     var bonus=g.eco>=25?2:1;
+     g.eco+=bonus;g.conciencia+=1;
+     var info=g.amenaza?' | Amenaza: '+g.amenaza.nombre+' ('+g.amenaza.turnos+' rondas, -'+g.amenaza.dano+' eco)':' | Sin amenazas';
+     setStatus('🦅 Perspectiva Aérea: +'+bonus+' Eco +1 Con'+info);
+   }},
+
+  {id:'iguana',ico:'🦎',nm:'Iguana Chilena',color:'#84cc16',rol:'Adaptación',
+   habitat:'Roquedales del Valle del Cipreses y zonas semiáridas de O’Higgins',
+   estado:'Vulnerable — endémica de Chile central, afectada por pesticidas agrícolas',
+   poder:'Mimetismo Estratégico: bono distinto según el elemento del dado lanzado.',
+   sombra:'Debe usarse DESPUÉS de lanzar el dado. Antes del dado no tiene efecto.',
+   tip:'La guardiana más impredecible. Mejor con elementos AGUA, TORMENTA o TIERRA.',
+   apply:function(g){
+     var dado=document.getElementById('d-el')?document.getElementById('d-el').textContent:'';
+     if(dado==='AGUA'||dado==='TORMENTA'){g.agua+=3;setStatus('🦎 Mimetismo Acuático: +3 Agua');}
+     else if(dado==='FUEGO'||dado==='CAOS'){g.energia+=3;setStatus('🦎 Mimetismo Ígneo: +3 Energía');}
+     else if(dado==='TIERRA'||dado==='AURORA'){g.eco+=2;g.conciencia+=1;setStatus('🦎 Mimetismo Terrestre: +2 Eco +1 Con');}
+     else{g.eco+=2;setStatus('🦎 Mimetismo Vacío: +2 Eco (adaptación general)');}
    }}
 ];
 
@@ -1009,9 +1086,14 @@ function buildMenu(){
   updSP();
 }
 function selG2(id){
-  selG=GUARDIANES.find(g=>g.id===id);
-  document.querySelectorAll('.gcard').forEach(c=>{c.classList.remove('sel');c.style.borderColor='';c.style.borderWidth='';});
-  const el=document.getElementById('gc-'+id);el.classList.add('sel');el.style.borderColor=selG.color;el.style.borderWidth='2px';
+  selG=GUARDIANES.find(function(g){return g&&g.id===id;});
+  if(!selG) selG=GUARDIANES.find(function(g){return g!=null;});
+  if(!selG) return;
+  document.querySelectorAll('.gcard').forEach(function(cc){
+    cc.classList.remove('sel');cc.style.borderColor='';cc.style.borderWidth='';
+  });
+  var el=document.getElementById('gc-'+id);
+  if(el){el.classList.add('sel');el.style.borderColor=selG.color;el.style.borderWidth='2px';}
   updSP();
 }
 function updSP(){
@@ -1367,6 +1449,8 @@ function renderAll(){
   const $=id=>document.getElementById(id);
   $('tb-r').textContent='Ronda '+G.ronda+'/'+G.maxR;
   $('tb-g').textContent=G.g.ico+' '+G.g.nm;
+  var tbG=document.getElementById('tb-g');
+  if(tbG) tbG.title=G.g.habitat||G.g.nm;
   const kc=G.karma>=2?'#ff5050':G.karma>=1?'#ff9a6a':'#5ccf9a';
   $('tb-k').textContent='☯ '+G.karma+'/3';$('tb-k').style.color=kc;
   $('cb-nm').textContent=G.comm;
@@ -3472,7 +3556,7 @@ var COMUNAS_DATA = {
     // Actualizar badge
     setTimeout(function(){
       var badge = document.querySelector('.demo-badge');
-      if(badge) badge.textContent='Demo v0.7 — '+data.nm;
+      if(badge) badge.textContent='Demo v0.9 — '+data.nm;
     },500);
   }
 })();
@@ -3886,6 +3970,107 @@ function spawnConfetti(){
   }catch(e){}
 }
 
+
+// ══ ARMADOR DE MAZO ══
+var MAX_CARTAS_MAZO = 5;
+
+function goMazo(){
+  sh('mazo');
+  renderMazo();
+}
+
+function renderMazo(){
+  var col = ST.coleccion || {};
+  var activadas = ST.mazoActivo || {};
+  var total = Object.keys(col).filter(function(id){ return col[id] > 0; }).length;
+  var activas = Object.keys(activadas).filter(function(id){ return activadas[id]; }).length;
+  
+  var countEl = document.getElementById('mazo-count');
+  var colEl = document.getElementById('coleccion-count');
+  if(countEl) countEl.textContent = activas;
+  if(colEl) colEl.textContent = total;
+  
+  var lista = document.getElementById('mazo-cards-lista');
+  if(!lista) return;
+  
+  // Filtrar solo cartas que el jugador tiene
+  var cartasDisp = CARTAS_COL.filter(function(ct){ return col[ct.id] && col[ct.id] > 0; });
+  
+  if(cartasDisp.length === 0){
+    lista.innerHTML = '<div style="text-align:center;color:var(--txts);padding:20px;font-size:.8rem;">No tienes cartas de colección aún.<br>Abre sobres para obtenerlas.</div>';
+    return;
+  }
+  
+  lista.innerHTML = '';
+  cartasDisp.forEach(function(ct){
+    var activa = activadas[ct.id];
+    var ri = RAREZA_INFO ? (RAREZA_INFO[ct.tp]||{color:ct.color||"#7a9abf",label:ct.tp}) : {color:ct.color||"#7a9abf",label:ct.tp};
+    var div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:10px;background:' + (activa?'#0a1f0a':'var(--bg3)') + ';border:1.5px solid ' + (activa?'var(--green)':'var(--border2)') + ';border-radius:12px;padding:10px 12px;cursor:pointer;touch-action:manipulation;';
+    div.innerHTML = '<div style="font-size:1.5rem;">' + ct.ico + '</div>'
+      + '<div style="flex:1;">'
+      + '<div style="font-size:.8rem;font-weight:800;color:var(--txt);">' + ct.nm + '</div>'
+      + '<div style="font-size:.65rem;color:' + ri.color + ';">' + ri.label + '</div>'
+      + '<div style="font-size:.68rem;color:var(--txts);">💧' + (ct.ca||0) + ' ⚡' + (ct.ce||0) + ' · ' + ct.txt + '</div>'
+      + '</div>'
+      + '<div style="font-size:1.2rem;">' + (activa ? '✅' : '⬜') + '</div>';
+    div.addEventListener('click', function(){ toggleCartaMazo(ct.id); });
+    lista.appendChild(div);
+  });
+}
+
+function toggleCartaMazo(id){
+  var activadas = ST.mazoActivo || {};
+  var col = ST.coleccion || {};
+  var activas = Object.keys(activadas).filter(function(k){ return activadas[k]; }).length;
+  
+  if(activadas[id]){
+    // Desactivar
+    activadas[id] = false;
+  } else {
+    // Activar si no se superó el máximo
+    if(activas >= MAX_CARTAS_MAZO){
+      setStatus('⚠️ Máximo ' + MAX_CARTAS_MAZO + ' cartas de colección en el mazo.');
+      return;
+    }
+    activadas[id] = true;
+  }
+  ST.mazoActivo = activadas;
+  renderMazo();
+}
+
+function guardarMazo(){
+  try{
+    localStorage.setItem('ep_mazo', JSON.stringify(ST.mazoActivo||{}));
+  }catch(e){}
+  showBanner('✅ Mazo guardado','Las cartas activas se añadirán en tu próxima partida');
+  setTimeout(function(){ goIntro(); }, 1500);
+}
+
+// Cargar mazo guardado al iniciar
+try{
+  var savedMazo = JSON.parse(localStorage.getItem('ep_mazo')||'{}');
+  if(!ST.mazoActivo) ST.mazoActivo = savedMazo;
+}catch(e){}
+
+// Integrar mazo en startGame — añadir cartas activas al deck
+var _origStartGame2 = startGame;
+startGame = function(){
+  _origStartGame2();
+  // Añadir cartas del mazo activo
+  var activadas = ST.mazoActivo || {};
+  var cartasActivas = CARTAS_COL.filter(function(ct){
+    return activadas[ct.id] && ST.coleccion && ST.coleccion[ct.id] > 0;
+  });
+  if(cartasActivas.length > 0 && G && G.deck){
+    cartasActivas.forEach(function(ct){
+      var copia = Object.assign({}, ct, {_fromCollection: true});
+      G.deck.splice(Math.floor(Math.random()*(G.deck.length+1)), 0, copia);
+    });
+    setStatus('🎴 ' + cartasActivas.length + ' carta(s) de colección en tu mazo');
+  }
+};
+
 </script>
 
 <!-- ACCION REAL ECO -->
@@ -4135,6 +4320,37 @@ function spawnConfetti(){
 
   </div>
   <button class="btn ghost" onclick="goIntro()" style="width:100%;padding:10px;margin-top:4px;">← Volver al inicio</button>
+</div>
+
+<!-- ARMADOR DE MAZO -->
+<div class="screen z1" id="s-mazo" style="padding:14px;gap:10px;justify-content:flex-start;overflow-y:auto;">
+  <div style="font-family:var(--ffd);font-size:1.05rem;font-weight:900;color:var(--gold2);text-align:center;width:100%;">🎴 Mi Mazo de Colección</div>
+  <div style="font-size:.72rem;color:var(--txts);text-align:center;width:100%;">Las cartas activas se añaden a tu mazo en la próxima partida</div>
+  <!-- Stats del mazo -->
+  <div style="display:flex;gap:8px;width:100%;" id="mazo-stats">
+    <div style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:800;color:var(--gold2);" id="mazo-count">0</div>
+      <div style="font-size:.65rem;color:var(--txts);">En mazo</div>
+    </div>
+    <div style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:800;color:var(--green);" id="coleccion-count">0</div>
+      <div style="font-size:.65rem;color:var(--txts);">En colección</div>
+    </div>
+    <div style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:800;color:var(--purple);" id="max-mazo">5</div>
+      <div style="font-size:.65rem;color:var(--txts);">Máx. activas</div>
+    </div>
+  </div>
+  <!-- Lista de cartas de colección -->
+  <div id="mazo-cards-lista" style="width:100%;display:flex;flex-direction:column;gap:8px;"></div>
+  <div style="font-size:.68rem;color:var(--txts);text-align:center;width:100%;padding:8px 0;">
+    Máximo 5 cartas de colección activas por partida
+  </div>
+  <div style="display:flex;gap:8px;width:100%;margin-top:4px;">
+    <button class="btn ghost" onclick="goSobres()" style="flex:1;padding:10px;font-size:.8rem;">🏪 Tienda</button>
+    <button class="btn prim" onclick="guardarMazo()" style="flex:1;padding:10px;font-size:.8rem;">✅ Guardar mazo</button>
+  </div>
+  <button class="btn ghost" onclick="goIntro()" style="width:100%;padding:9px;font-size:.8rem;margin-top:0;">← Volver</button>
 </div>
 </body>
 </html>
