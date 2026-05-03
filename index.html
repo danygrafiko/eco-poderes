@@ -382,7 +382,7 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div class="intro-orb">🌍</div>
   <div class="intro-logo" style="font-size:2.8rem;letter-spacing:3px;line-height:1;">ECO-PODERES</div>
   <div class="intro-sub" style="letter-spacing:5px;font-size:.76rem;color:var(--teal);">EL CONSEJO DE GUARDIANES</div>
-  <div class="demo-badge">🧪 Demo v0.9.1 — O’Higgins</div>
+  <div class="demo-badge">🧪 Demo v0.9.3 — O’Higgins</div>
   <div class="intro-desc">Eres un Guardián del planeta. 8 rondas. Decisiones reales. Crisis inesperadas. ¿Puede la sociedad prosperar sin destruir el mundo?</div>
   <div class="intro-btns">
     <button class="btn prim" onclick="startTutorial()">📖 Aprender a jugar</button>
@@ -394,12 +394,13 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     </button>
     <button onclick="goFBRanking()" style="width:100%;padding:11px;border-radius:50px;border:1px solid var(--gold2);background:transparent;color:var(--gold2);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Ranking y Feedback</button>
     <button onclick="goAccionReal()" style="width:100%;padding:11px;border-radius:50px;border:1.5px solid var(--green);background:#0a1f0a;color:var(--green);font-size:.88rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">Comprometer Accion Eco Real</button>
+    <button onclick="goProgresoEducativo()" style="width:100%;padding:10px;border-radius:50px;border:1px solid var(--purple);background:rgba(157,96,255,.08);color:var(--purple);font-size:.82rem;font-weight:800;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">🎖️ Progreso educativo</button>
     <button onclick="toggleAcceso()" id="btn-acceso" style="width:100%;padding:9px;border-radius:50px;border:1px solid var(--border2);background:transparent;color:var(--txts);font-size:.78rem;cursor:pointer;font-family:var(--ff);touch-action:manipulation;">♿ Modo Accesible (texto grande)</button>
     <div class="seeds-pill" style="justify-content:center;">
       <span>🌱</span><span class="val" id="seeds-intro">0</span><span class="lbl">semillas guardianas</span>
     </div>
   </div>
-  <div class="ver-tag">ECO-PODERES v0.9.1 · danygrafiko © 2026</div>
+  <div class="ver-tag">ECO-PODERES v0.9.3 · danygrafiko © 2026</div>
 </div>
 
 <!-- TUTORIAL -->
@@ -705,6 +706,21 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
     </div>
   </details>
 
+</div>
+
+
+<!-- PROGRESO EDUCATIVO v0.9.3 -->
+<div class="screen z1" id="s-progreso" style="padding:14px;gap:12px;justify-content:flex-start;">
+  <div style="font-family:var(--ffd);font-size:1.15rem;font-weight:900;color:var(--purple);text-align:center;width:100%;">🎖️ Progreso Educativo</div>
+  <div id="progreso-body" style="width:100%;display:flex;flex-direction:column;gap:10px;"></div>
+  <div style="background:#0a1a0a;border:1px solid #1a4a1a;border-radius:12px;padding:12px;font-size:.74rem;color:var(--txts);line-height:1.7;width:100%;">
+    <strong style="color:var(--green);">Cómo se gana:</strong><br>
+    Mini juego correcto: +Eco, +Semillas y +1 Conocimiento.<br>
+    Racha de 3 correctas: +25 Semillas y carta temporal “Sabiduría Territorial”.<br>
+    Cada 10 conocimientos desbloquea una misión real.
+  </div>
+  <button class="btn prim" onclick="goAccionReal()" style="width:100%;">🌎 Ver misiones reales</button>
+  <button class="btn sec" onclick="goIntro()" style="width:100%;">← Volver</button>
 </div>
 
 <script>
@@ -1032,10 +1048,100 @@ const ROUND_NARR=[
 ];
 
 // ══ ESTADO ══
-let ST={seeds:0,coleccion:{},nuevas:new Set()};
-function loadST(){try{const s=sessionStorage.getItem('ep_v2')||localStorage.getItem('ep_v2');if(s){const p=JSON.parse(s);ST.seeds=Math.max(0,p.seeds||0);ST.coleccion=p.coleccion||{};}}catch(e){}}
-function saveST(){ST.seeds=Math.max(0,ST.seeds);const d=JSON.stringify({seeds:ST.seeds,coleccion:ST.coleccion});sessionStorage.setItem('ep_v2',d);try{localStorage.setItem('ep_v2',d);}catch(e){}}
+let ST={seeds:0,coleccion:{},nuevas:new Set(),conocimiento:0,rachaEdu:0,insignias:[],misionesDesbloqueadas:0,accionesValidadas:0,miniJuegosCorrectos:0,miniJuegosJugados:0};
+function loadST(){try{const s=sessionStorage.getItem('ep_v2')||localStorage.getItem('ep_v2');if(s){const p=JSON.parse(s);ST.seeds=Math.max(0,p.seeds||0);ST.coleccion=p.coleccion||{};ST.conocimiento=p.conocimiento||0;ST.rachaEdu=p.rachaEdu||0;ST.insignias=Array.isArray(p.insignias)?p.insignias:[];ST.misionesDesbloqueadas=p.misionesDesbloqueadas||0;ST.accionesValidadas=p.accionesValidadas||0;ST.miniJuegosCorrectos=p.miniJuegosCorrectos||0;ST.miniJuegosJugados=p.miniJuegosJugados||0;ST.mazoActivo=p.mazoActivo||{};}}catch(e){}}
+function saveST(){ST.seeds=Math.max(0,ST.seeds);const d=JSON.stringify({seeds:ST.seeds,coleccion:ST.coleccion,conocimiento:ST.conocimiento||0,rachaEdu:ST.rachaEdu||0,insignias:ST.insignias||[],misionesDesbloqueadas:ST.misionesDesbloqueadas||0,accionesValidadas:ST.accionesValidadas||0,miniJuegosCorrectos:ST.miniJuegosCorrectos||0,miniJuegosJugados:ST.miniJuegosJugados||0,mazoActivo:ST.mazoActivo||{}});sessionStorage.setItem('ep_v2',d);try{localStorage.setItem('ep_v2',d);}catch(e){}}
+
 loadST();
+
+// ══ v0.9.3 RECOMPENSAS EDUCATIVAS ══
+const INSIGNIAS_EDU = [
+  {id:'flora', name:'🌿 Explorador de Flora', min:5},
+  {id:'fauna', name:'🐾 Protector de Fauna', min:10},
+  {id:'reciclaje', name:'♻️ Maestro del Reciclaje', min:15},
+  {id:'agua', name:'💧 Guardián del Agua', min:20},
+  {id:'territorio', name:'🏔️ Sabiduría Territorial', min:30}
+];
+function asegurarProgresoEducativo(){
+  ST.conocimiento=ST.conocimiento||0;ST.rachaEdu=ST.rachaEdu||0;ST.insignias=ST.insignias||[];
+  ST.misionesDesbloqueadas=ST.misionesDesbloqueadas||0;ST.accionesValidadas=ST.accionesValidadas||0;
+  ST.miniJuegosCorrectos=ST.miniJuegosCorrectos||0;ST.miniJuegosJugados=ST.miniJuegosJugados||0;
+}
+function resolverMiniJuego(correcto,tipo,opts){
+  asegurarProgresoEducativo();opts=opts||{};tipo=tipo||'eco';
+  var eco=opts.eco!=null?opts.eco:2;
+  var semillas=opts.seeds!=null?opts.seeds:10;
+  var penalty=opts.penalty!=null?opts.penalty:1;
+  ST.miniJuegosJugados++;
+  if(correcto){
+    ST.miniJuegosCorrectos++;ST.conocimiento++;ST.rachaEdu++;
+    if(typeof G!=='undefined'&&G){G.eco+=eco;G.conciencia=Math.min(10,(G.conciencia||0)+1);G.commPts=(G.commPts||0)+8;}
+    if(typeof earnSeeds==='function') earnSeeds(semillas);
+    if(ST.rachaEdu>=3){
+      if(typeof earnSeeds==='function') earnSeeds(25);
+      agregarCartaTemporalSabiduria();
+      showBanner('🔥 Racha educativa', '+25 semillas y carta temporal: Sabiduría Territorial');
+      ST.rachaEdu=0;
+    } else {
+      showBanner('✅ Aprendizaje logrado', '+'+eco+' Eco · +'+semillas+' Semillas · +1 Conocimiento');
+    }
+    desbloquearInsigniasEducativas();
+  } else {
+    ST.rachaEdu=0;
+    if(typeof G!=='undefined'&&G){G.eco-=penalty;}
+    showBanner('📚 Aprendizaje pendiente', '-'+penalty+' Eco · lee la explicación y vuelve a intentarlo');
+  }
+  if(typeof clamp==='function'&&typeof G!=='undefined'&&G) clamp();
+  saveST();updateSeedsUI();renderProgresoInline();
+}
+function desbloquearInsigniasEducativas(){
+  asegurarProgresoEducativo();
+  INSIGNIAS_EDU.forEach(function(b){
+    if(ST.conocimiento>=b.min && ST.insignias.indexOf(b.name)===-1){
+      ST.insignias.push(b.name);
+      showBanner('🎖️ Nueva insignia', b.name);
+    }
+  });
+  var nuevasMisiones=Math.floor((ST.conocimiento||0)/10);
+  if(nuevasMisiones>(ST.misionesDesbloqueadas||0)){
+    ST.misionesDesbloqueadas=nuevasMisiones;
+    showBanner('🌎 Misión real desbloqueada', 'Tu conocimiento ya puede transformarse en impacto real');
+  }
+}
+function agregarCartaTemporalSabiduria(){
+  if(typeof G==='undefined'||!G||!G.hand||G.hand.length>=5)return;
+  G.hand.push({ico:'🏔️',nm:'Sabiduría Territorial',tp:'con',color:'#c084fc',c:{a:0,e:0},txt:'+2 Eco · +2 Con',ef:function(g){g.eco+=2;g.conciencia+=2;}});
+  if(typeof renderHand==='function') renderHand();
+}
+function renderProgresoInline(){
+  var ids=['edu-progreso-intro','edu-progreso-result','edu-progreso-game'];
+  var html='🧠 '+(ST.conocimiento||0)+' conocimiento · 🎖️ '+((ST.insignias||[]).length)+' insignias · 🔥 racha '+(ST.rachaEdu||0);
+  ids.forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=html;});
+}
+function goProgresoEducativo(){
+  asegurarProgresoEducativo();
+  sh('progreso');renderProgresoEducativo();
+}
+function renderProgresoEducativo(){
+  asegurarProgresoEducativo();
+  var box=document.getElementById('progreso-body');if(!box)return;
+  var tasa=ST.miniJuegosJugados?Math.round(ST.miniJuegosCorrectos/ST.miniJuegosJugados*100):0;
+  var ins=(ST.insignias&&ST.insignias.length)?ST.insignias.map(function(x){return '<div style="background:var(--bg4);border:1px solid var(--border2);border-radius:10px;padding:8px;font-size:.78rem;">'+x+'</div>';}).join(''):'<div style="font-size:.78rem;color:var(--txts);">Aún no tienes insignias. Gana mini juegos para desbloquearlas.</div>';
+  box.innerHTML='<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:16px;padding:16px;width:100%;text-align:center;">'
+    +'<div style="font-size:2rem;margin-bottom:4px;">🎖️</div><div style="font-family:var(--ffd);font-size:1.05rem;color:var(--gold2);font-weight:900;">Progreso educativo</div>'
+    +'<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">'
+    +'<div class="rs"><div class="rsl">🧠 Conocimiento</div><div class="rsv">'+(ST.conocimiento||0)+'</div></div>'
+    +'<div class="rs"><div class="rsl">✅ Efectividad</div><div class="rsv">'+tasa+'%</div></div>'
+    +'<div class="rs"><div class="rsl">🌎 Misiones</div><div class="rsv">'+(ST.misionesDesbloqueadas||0)+'</div></div>'
+    +'<div class="rs"><div class="rsl">📸 Acciones reales</div><div class="rsv">'+(ST.accionesValidadas||0)+'</div></div>'
+    +'</div></div><div style="width:100%;margin-top:10px;display:flex;flex-direction:column;gap:7px;">'+ins+'</div>';
+}
+function validarMisionRealV093(){
+  asegurarProgresoEducativo();ST.accionesValidadas++;ST.misionesDesbloqueadas=Math.max(0,(ST.misionesDesbloqueadas||0)-1);
+  if(ST.insignias.indexOf('🌎 Agente Eco Real')===-1) ST.insignias.push('🌎 Agente Eco Real');
+  if(typeof earnSeeds==='function') earnSeeds(150);saveST();updateSeedsUI();
+  showBanner('🌎 Acción real registrada', '+150 semillas · insignia Agente Eco Real');
+}
 
 let G={},selG=GUARDIANES[0],pendingCrisis=null,prevEco=50;
 
@@ -1159,7 +1265,7 @@ function startGame(){
   setPhase('dice');
   renderAll();
   setStatus('Bienvenido, Guardián ' + G.g.nm + '. Lanza el dado para comenzar.');
-  showBanner('Ronda 1 de ' + G.maxR, ROUND_NARR[0].n.substring(0, 60) + '...');
+  showBanner('Ronda 1 de ' + MAX_RONDAS, ROUND_NARR[0].n.substring(0, 60) + '...');
   showNarr(ROUND_NARR[0].t, ROUND_NARR[0].n);
   drawWorld(G.eco, G.karma, G.sociedad, G.ronda, G.maxR);
   startWorld();
@@ -1220,19 +1326,16 @@ function setPhase(p){
 // ══ DADO ══
 function rollDice(){
   let face=DICE[Math.floor(Math.random()*DICE.length)];
-  // Compatibilidad: solo transforma dados si el guardián declara applyRoll.
-  // La nueva Águila de O’Higgins usa su poder con el botón PODER, no automáticamente al lanzar.
-  if(G.g && typeof G.g.applyRoll === 'function' && !G.gpu){
-    const originalFace = face;
+  // Águila transforma elementos negativos
+  if(G.g.id==='aguila'&&!G.gpu){
     const r=G.g.applyRoll(G,face.id);
-    if(r && r!==face.id){
-      face=DICE.find(d=>d.id===r) || face;
-      setStatus((G.g.ico||'🦅')+' '+G.g.nm+' transformó '+originalFace.label+' en '+face.label+'.');
-    }
+    if(r==='AIRE'){face=DICE.find(d=>d.id==='AIRE');setStatus('🦅 Águila transformó '+face.id+' en AIRE.');}
   }
   animDice(face,()=>{
     prevEco=G.eco;
     face.apply(G);
+    // Águila bonus acción
+    if(G.g.id==='aguila')G.g.apply(G);
     clamp();renderAll();
     showNarr('El dado habla: '+face.label,face.narr);
     setStatus(face.label+' — '+face.fx);
@@ -1304,16 +1407,7 @@ function choosePath(p){
 function act(t){
   if(G.acciones<=0){setStatus('Sin acciones disponibles este turno.');return;}
   if(t==='col'){G.agua+=1;G.energia+=1;G.acciones--;setStatus('💎 Recolectaste: +1 Agua, +1 Energía.');}
-  else if(t==='pow'){
-    if(G.g.apply){
-      var beforeMsg = document.getElementById('status') ? document.getElementById('status').textContent : '';
-      G.g.apply(G);
-      // Si el poder no dejó mensaje específico, mostrar uno genérico.
-      var afterMsg = document.getElementById('status') ? document.getElementById('status').textContent : '';
-      if(afterMsg === beforeMsg) setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');
-    }
-    G.acciones--;
-  }
+  else if(t==='pow'){if(G.g.apply){G.g.apply(G);setStatus(G.g.ico+' Poder de '+G.g.nm+' activado!');}G.acciones--;}
   else if(t==='drw'){if(G.hand.length>=5){setStatus('Mano llena (5/5). Juega primero.');return;}drawCard();G.acciones--;setStatus('Carta robada. Mano:'+G.hand.length+'/5');}
   // Jaguar: +1 acción si eco subió
   if(G.g.id==='jaguar'&&G.eco>prevEco&&G.acciones<5){G.acciones++;setStatus(s=>s+' 🐆 +1 Acción Jaguar!');}
@@ -1600,6 +1694,7 @@ function showBanner(t,s){const b=document.getElementById('rbanner');document.get
 function earnSeeds(n){ST.seeds=Math.max(0,ST.seeds+n);if(G)G.seedsEarned=(G.seedsEarned||0)+n;saveST();updateSeedsUI();}
 function updateSeedsUI(){
   ['seeds-intro','seeds-game','seeds-store'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ST.seeds;});
+  if(typeof renderProgresoInline==='function') renderProgresoInline();
 }
 
 // ══ FIN DE JUEGO ══
@@ -1644,7 +1739,7 @@ function endGame(reason){
 
   // Modo 2P
   if(typeof _modo2P !== 'undefined' && _modo2P && typeof _jugadorActivo !== 'undefined'){
-    if(_jugadorActivo === 1){
+    if(_jugadorActivo === 1 && reason !== 'colapso'){
       _estadoJ[0] = {guardian: G.g.nm, ico: G.g.ico, eco: G.eco, pts: pts, villa: G.comm};
       _jugadorActivo = 2;
       setTimeout(function(){
@@ -1680,7 +1775,7 @@ function endGame(reason){
   }
 
   // Modo 2P mostrar resultado
-  if(typeof _modo2P !== 'undefined' && _modo2P && typeof mostrarResultado2P === 'function'){
+  if(typeof _modo2P !== 'undefined' && !_modo2P && typeof mostrarResultado2P === 'function'){
     if(_estadoJ && _estadoJ[0] && _estadoJ[1]) setTimeout(mostrarResultado2P, 800);
   }
 }
@@ -1747,7 +1842,7 @@ function submitFB(){
     ronda: G ? G.ronda : 0,
     score: scoreEl ? scoreEl.textContent : '?',
     villa: G ? G.comm : '',
-    version: 'v0.9.1',
+    version: 'v0.9.3',
     ts: new Date().toISOString()
   };
   // 1. Guardar localmente
@@ -1965,31 +2060,6 @@ function _ponderado(items,pesos){
   for(let i=0;i<items.length-1;i++){r-=pesos[i];if(r<=0)return items[i];}
   return items[items.length-1];
 }
-
-
-
-// ══ HELPERS DE ESTABILIDAD v0.9.1 ══
-function closeCel(){
-  var cel=document.getElementById('celebrate');
-  if(cel) cel.classList.remove('on');
-}
-function handleCelClick(event){
-  if(event && event.target && event.target.id==='celebrate') closeCel();
-}
-function installPWA(){
-  if(window.deferredInstallPrompt){
-    window.deferredInstallPrompt.prompt();
-    window.deferredInstallPrompt.userChoice.finally(function(){ window.deferredInstallPrompt=null; });
-  }else{
-    showBanner('📲 Instalación','En iPhone/Android usa “Agregar a pantalla de inicio” desde el navegador.');
-  }
-}
-window.addEventListener('beforeinstallprompt', function(e){
-  e.preventDefault();
-  window.deferredInstallPrompt=e;
-  var btn=document.getElementById('install-btn');
-  if(btn) btn.style.display='block';
-});
 
 // INIT
 updateSeedsUI();
@@ -2603,14 +2673,9 @@ function responderQuiz(idx){
     resTit.style.color = correcto ? 'var(--green)' : '#ff5a5a';
   }
   if(resExp) resExp.textContent = p.exp;
-  // Aplicar consecuencias
-  if(correcto){
-    G.eco += 2; earnSeeds(10);
-    spawnConfetti();
-  } else {
-    G.eco -= 1;
-  }
-  clamp();
+  // v0.9.3: Recompensa educativa común
+  resolverMiniJuego(correcto,'quiz',{eco:2,seeds:10,penalty:1});
+  if(correcto) spawnConfetti();
 }
 
 function cerrarQuiz(){
@@ -2909,8 +2974,8 @@ function responderEspecie(idx){
   if(resIco) resIco.textContent=idx===-1?'⏱️':correcto?'✅':'❌';
   if(resTit){resTit.textContent=correcto?'¡Correcto! +'+e.bonus_eco+' Eco, +'+e.bonus_seeds+' Semillas':'Incorrecto. La respuesta es: '+e.ops[e.correcta];resTit.style.color=correcto?'var(--green)':'#ff5a5a';}
   if(resInfo) resInfo.textContent=e.info;
-  if(correcto){G.eco+=e.bonus_eco;earnSeeds(e.bonus_seeds);spawnConfetti();}else{G.eco-=1;}
-  clamp();
+  resolverMiniJuego(correcto,'especie',{eco:e.bonus_eco||2,seeds:e.bonus_seeds||12,penalty:1});
+  if(correcto) spawnConfetti();
 }
 
 function cerrarEspecie(){
@@ -2933,8 +2998,8 @@ function responderAreaV(idx){
   if(resIco) resIco.textContent=correcto?'✅':'❌';
   if(resTit){resTit.textContent=correcto?'¡Correcto! +'+av.bonus_eco+' Eco, +'+av.bonus_seeds+' Semillas':'Incorrecto. Es: '+av.ops[av.correcta];resTit.style.color=correcto?'var(--green)':'#ff5a5a';}
   if(resInfo) resInfo.textContent=av.info;
-  if(correcto){G.eco+=av.bonus_eco;earnSeeds(av.bonus_seeds);spawnConfetti();}else{G.eco-=1;}
-  clamp();
+  resolverMiniJuego(correcto,'areav',{eco:av.bonus_eco||2,seeds:av.bonus_seeds||10,penalty:1});
+  if(correcto) spawnConfetti();
 }
 
 function cerrarAreaV(){
@@ -3152,13 +3217,9 @@ function finalizarReciclaje() {
   var ecoBonus = Math.round(recAciertos * 0.5);
   var seedsBonus = recAciertos * 8;
 
-  // Aplicar bonos al juego
-  if (typeof G !== 'undefined' && G) {
-    G.eco += ecoBonus;
-    if (typeof clamp === 'function') clamp();
-  }
-  if (typeof earnSeeds === 'function') earnSeeds(seedsBonus);
-  if (typeof updateSeedsUI === 'function') updateSeedsUI();
+  // v0.9.3: aplicar bonos al sistema educativo común
+  var correctoGlobal = pct >= 50;
+  resolverMiniJuego(correctoGlobal,'reciclaje',{eco:ecoBonus,seeds:seedsBonus,penalty:1});
 
   // Dato educativo del último ítem o random
   var dato = recItems[Math.floor(Math.random() * recItems.length)].dato;
@@ -3536,8 +3597,7 @@ function responderSeguridad(idx){
   if(resIco) resIco.textContent=correcto?'✅':'❌';
   if(resTit){resTit.textContent=correcto?'¡Correcto! +'+p.bonus_eco+' Eco':'Incorrecto. '+p.ops[p.correcta];resTit.style.color=correcto?'var(--green)':'#ff5a5a';}
   if(resExp) resExp.textContent=p.exp;
-  if(correcto&&typeof G!=='undefined'&&G){G.eco+=p.bonus_eco;if(typeof earnSeeds==='function')earnSeeds(p.bonus_seeds);if(typeof clamp==='function')clamp();}
-  else if(!correcto&&typeof G!=='undefined'&&G){G.eco-=1;if(typeof clamp==='function')clamp();}
+  resolverMiniJuego(correcto,'seguridad',{eco:p.bonus_eco||2,seeds:p.bonus_seeds||10,penalty:1});
   if(correcto&&typeof spawnConfetti==='function') spawnConfetti();
 }
 
@@ -3868,12 +3928,10 @@ function iniciarModo(n){
   _modo2P = (n === 2);
   _jugadorActivo = 1;
   _estadoJ = [null, null];
-  buildMenu();
-  sh('menu'); // ir directo al selector de guardián con iconos cargados
+  sh('menu'); // ir directo al selector de guardián
 }
 
 function goModoJuego(){
-  // Ruta directa: mostrar selector de modo. Al elegir 1 o 2 jugadores, iniciarModo() carga guardianes.
   sh('modo');
 }
 
@@ -3886,7 +3944,16 @@ function goModo(){
 // startGame crea G para el jugador activo
 // [override consolidado]
 
-// Al terminar partida en modo 2P, endGame alterna jugador y mostrarResultado2P resume el duelo.
+// Al terminar partida en modo 2P, alternar jugador
+// [override consolidado]
+    // Cambio de turno
+    _jugadorActivo = 2;
+    setTimeout(function(){
+      showBanner('¡Turno del Jugador 2!',
+        'J1 ('+_estadoJ[0].guardian+'): '+pts1+' pts · Eco:'+_estadoJ[0].eco);
+      setTimeout(function(){ sh('modo'); }, 1500);
+    }, 800);
+
 // modo 2P integrado en endGame
 
 
