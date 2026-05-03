@@ -3868,10 +3868,12 @@ function iniciarModo(n){
   _modo2P = (n === 2);
   _jugadorActivo = 1;
   _estadoJ = [null, null];
-  sh('menu'); // ir directo al selector de guardián
+  buildMenu();
+  sh('menu'); // ir directo al selector de guardián con iconos cargados
 }
 
 function goModoJuego(){
+  // Ruta directa: mostrar selector de modo. Al elegir 1 o 2 jugadores, iniciarModo() carga guardianes.
   sh('modo');
 }
 
