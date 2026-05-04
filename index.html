@@ -723,6 +723,22 @@ canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <button class="btn sec" onclick="goIntro()" style="width:100%;">← Volver</button>
 </div>
 
+
+<!-- MODAL EDUCATIVO: ACERCA DE -->
+<div id="edu-modal" style="display:none;position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.78);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;">
+  <div style="width:100%;max-width:420px;background:linear-gradient(160deg,var(--bg3),var(--bg4));border:1.5px solid var(--green);border-radius:20px;padding:18px;box-shadow:0 0 40px rgba(78,203,141,.22);text-align:left;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="font-family:var(--ffd);font-size:1rem;font-weight:900;color:var(--green);">📚 Acerca de</div>
+      <button onclick="cerrarEduModal()" style="background:rgba(255,255,255,.08);border:1px solid var(--border2);color:var(--txt);border-radius:50%;width:32px;height:32px;cursor:pointer;">✕</button>
+    </div>
+    <div id="edu-modal-title" style="font-size:.95rem;font-weight:900;color:var(--gold2);margin-bottom:8px;"></div>
+    <div id="edu-modal-detail" style="font-size:.82rem;color:var(--txt);line-height:1.7;margin-bottom:12px;"></div>
+    <div style="border-top:1px solid var(--border2);padding-top:10px;font-size:.7rem;color:var(--txts);line-height:1.5;">
+      <strong style="color:var(--green);">Referencia:</strong> <span id="edu-modal-source"></span>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══════════════════════════════════════════
 // ECO-PODERES v0.2 — Motor de juego completo
@@ -1842,7 +1858,7 @@ function submitFB(){
     ronda: G ? G.ronda : 0,
     score: scoreEl ? scoreEl.textContent : '?',
     villa: G ? G.comm : '',
-    version: 'v0.9.3',
+    version: 'v0.9.4.1',
     ts: new Date().toISOString()
   };
   // 1. Guardar localmente
@@ -2230,379 +2246,1509 @@ function actualizarAmenazaUI(){
 
 // ══ ECO QUIZ ══
 var ECO_PREGUNTAS = [
-
-  // ── RANCAGUA IDENTIDAD LOCAL ──────────────────────────
-  {cat:"Rancagua — Identidad",
-   pregunta:"¿En qué año fue fundada la ciudad de Rancagua?",
-   ops:["1691","1743","1810","1872"], correcta:1,
-   exp:"Rancagua fue fundada el 5 de octubre de 1743 por el Gobernador José Antonio Manso de Velasco. Su nombre mapuche 'Rangkagua' significa 'lugar donde se junta el agua'."},
-
-  {cat:"Rancagua — Identidad",
-   pregunta:"¿Cómo se llama el río que atraviesa la ciudad de Rancagua?",
-   ops:["Río Maule","Río Tinguiririca","Río Cachapoal","Río Rapel"], correcta:2,
-   exp:"El Río Cachapoal nace en los Andes y pasa por el sector oriente de Rancagua. Es vital para el riego agrícola y el abastecimiento de agua de la región."},
-
-  {cat:"Rancagua — Identidad",
-   pregunta:"¿Qué mineral histórico hace famosa a la región de O'Higgins?",
-   ops:["Oro","Plata","Cobre","Litio"], correcta:2,
-   exp:"El Cobre de El Teniente, ubicado a 44 km de Rancagua, es la mina de cobre subterránea más grande del mundo. Fue nacionalizada en 1971 por Salvador Allende."},
-
-  {cat:"Rancagua — Identidad",
-   pregunta:"¿Qué batalla histórica ocurrió en Rancagua en 1814?",
-   ops:["Batalla de Chacabuco","Batalla de Maipú","Desastre de Rancagua","Batalla del Roble"], correcta:2,
-   exp:"El Desastre de Rancagua (1-2 octubre 1814) fue una derrota patriota liderada por O'Higgins. Marcó el fin de la Patria Vieja e inició la Reconquista española."},
-
-  {cat:"Rancagua — Identidad",
-   pregunta:"¿Cuántos habitantes tiene aproximadamente la ciudad de Rancagua según el Censo 2024?",
-   ops:["80.000","150.000","236.000","320.000"], correcta:2,
-   exp:"Rancagua tiene aproximadamente 236.363 habitantes según el Censo 2024, siendo la quinta ciudad más poblada de Chile y capital de la Región de O'Higgins."},
-
-  // ── ÁREAS VERDES Y ESPACIOS PÚBLICOS ─────────────────
-  {cat:"Áreas Verdes Rancagua",
-   pregunta:"¿Cuál es el parque más histórico y central de Rancagua?",
-   ops:["Parque Los Álamos","Parque Centenario","Parque El Teniente","Parque Sur"], correcta:1,
-   exp:"El Parque Centenario está en el corazón de Rancagua. Tiene árboles centenarios, una laguna artificial y es punto de encuentro familiar desde hace generaciones."},
-
-  {cat:"Áreas Verdes Rancagua",
-   pregunta:"¿Qué humedal de importancia para aves migratorias está cerca de Rancagua?",
-   ops:["Humedal El Yali","Humedal Los Lirios","Humedal Batuco","Laguna Aculeo"], correcta:1,
-   exp:"El Humedal Los Lirios está en Requínoa, a 30 km de Rancagua. Es un sitio Ramsar que alberga más de 100 especies de aves, incluyendo flamencos y taguas."},
-
-  {cat:"Áreas Verdes Rancagua",
-   pregunta:"¿Cuántos metros cuadrados de área verde por habitante recomienda la OMS?",
-   ops:["3 m²","9 m²","15 m²","25 m²"], correcta:1,
-   exp:"La OMS recomienda 9 m² de área verde por habitante como mínimo. Rancagua trabaja para aumentar sus espacios verdes, especialmente en poblaciones periféricas."},
-
-  {cat:"Áreas Verdes Rancagua",
-   pregunta:"¿Qué beneficio comprobado tienen los árboles en las calles urbanas?",
-   ops:["Solo estética","Reducen temperatura hasta 8°C","Aumentan tráfico","Solo dan sombra"], correcta:1,
-   exp:"Los árboles urbanos pueden reducir la temperatura local hasta 8°C en comparación con calles sin vegetación. Este efecto se llama 'isla de frescor' y es clave ante el calor extremo."},
-
-  // ── FLORA NATIVA O'HIGGINS ────────────────────────────
-  {cat:"Flora Nativa",
-   pregunta:"¿Cuál árbol nativo de Chile produce saponina usada como jabón natural?",
-   ops:["Peumo","Boldo","Quillay","Maqui"], correcta:2,
-   exp:"El Quillay (Quillaja saponaria) produce saponinas en su corteza. Los mapuches lo usaban para lavar ropa y cabello. Hoy sus extractos se usan en cosmética y farmacia."},
-
-  {cat:"Flora Nativa",
-   pregunta:"¿Qué árbol nativo tiene hojas aromáticas usadas en infusiones medicinales para el hígado?",
-   ops:["Espino","Boldo","Litre","Colliguay"], correcta:1,
-   exp:"El Boldo (Peumus boldus) es endémico de Chile. Sus hojas contienen boldina, con propiedades digestivas y hepáticas. Chile exporta extracto de boldo a Europa y Asia."},
-
-  {cat:"Flora Nativa",
-   pregunta:"¿Cuál es el árbol nacional de Chile según el Ministerio de Agricultura?",
-   ops:["Araucaria","Peumo","Maqui","Quillay"], correcta:2,
-   exp:"El Maqui (Aristotelia chilensis) fue declarado árbol nacional de Chile. Sus bayas moradas tienen el mayor contenido de antocianinas de cualquier fruto conocido."},
-
-  {cat:"Flora Nativa",
-   pregunta:"¿En qué estación florecen los Espinos, árbol típico del Valle Central?",
-   ops:["Invierno","Primavera (agosto-septiembre)","Verano","Otoño"], correcta:1,
-   exp:"El Espino (Vachellia caven) florece en agosto-septiembre llenando el Valle Central de flores amarillas perfumadas. Es símbolo del paisaje de O'Higgins y resistente a la sequía."},
-
-  {cat:"Flora Nativa",
-   pregunta:"¿Qué planta nativa de riberas tiene hojas rugosas usadas para curar heridas?",
-   ops:["Canelo","Matico","Muña","Cedrón"], correcta:1,
-   exp:"El Matico (Buddleja globosa) crece junto al Río Cachapoal. Es una planta medicinal tradicional usada para cicatrización. Sus hojas en polvo se aplican directamente en heridas."},
-
-  {cat:"Flora Nativa",
-   pregunta:"¿Por qué los árboles nativos son mejores que exóticos para plantar en Rancagua?",
-   ops:["No lo son, los exóticos crecen más rápido","Usan menos agua y apoyan fauna local","Son más decorativos","Son más económicos"], correcta:1,
-   exp:"Los árboles nativos están adaptados al clima local, necesitan hasta 80% menos agua y sirven de alimento y refugio a aves e insectos nativos que los exóticos no pueden sostener."},
-
-  // ── FAUNA NATIVA ─────────────────────────────────────
-  {cat:"Fauna Nativa O'Higgins",
-   pregunta:"¿Qué ave rapaz pequeña se puede ver cazando en parques y campos de Rancagua?",
-   ops:["Cóndor","Cernícalo","Halcón peregrino","Águila"], correcta:1,
-   exp:"El Cernícalo (Falco sparverius) es el rapaz más común en zonas urbanas de Rancagua. Lo verás volando estático sobre campos y parques, cazando insectos y ratones."},
-
-  {cat:"Fauna Nativa O'Higgins",
-   pregunta:"¿Qué animal nativo controla naturalmente la población de ratones en la región?",
-   ops:["Perro doméstico","Zorro culpeo","Puma","Coipo"], correcta:1,
-   exp:"El Zorro culpeo (Lycalopex culpaeus) habita los cerros alrededor de Rancagua y es un controlador natural de roedores. Su caza ilegal desregula el ecosistema del Valle Central."},
-
-  {cat:"Fauna Nativa O'Higgins",
-   pregunta:"¿Qué ave acuática negra con frente blanca es típica del Lago Rapel, cerca de Rancagua?",
-   ops:["Garza Boyera","Pato Jergón","Tagua","Huairavo"], correcta:2,
-   exp:"La Tagua (Fulica armata) es un ave territorial y agresiva que vive en el Lago Rapel a 60 km de Rancagua. Construye nidos flotantes y es indicador de la salud de los humedales."},
-
-  {cat:"Fauna Nativa O'Higgins",
-   pregunta:"¿Cuántas especies de aves se han registrado en el Humedal Los Lirios cerca de Rancagua?",
-   ops:["15 especies","40 especies","100+ especies","250 especies"], correcta:2,
-   exp:"El Humedal Los Lirios alberga más de 100 especies de aves, incluyendo flamencos, taguas, garzas y aves migratorias del hemisferio norte. Es uno de los humedales más importantes de Chile Central."},
-
-  {cat:"Fauna Nativa O'Higgins",
-   pregunta:"¿Por qué es importante no cortar los cerros con vegetación nativa alrededor de Rancagua?",
-   ops:["Solo por estética","Son hábitat de zorro, cernícalo y reptiles nativos","Para turismo","Para control del clima"], correcta:1,
-   exp:"Los cerros con quillayes, espinos y peumos alrededor de Rancagua son el último refugio de zorros, cernícalos, lagartijas y culebras nativas. Sin esa vegetación, estas especies desaparecen del paisaje."},
-
-  // ── AGUA Y AHORRO HÍDRICO ─────────────────────────────
-  {cat:"Agua y Ahorro",
-   pregunta:"¿Cuántos litros de agua se ahorran al cerrar la llave mientras te cepillas los dientes?",
-   ops:["2 litros","10 litros","25 litros","50 litros"], correcta:1,
-   exp:"Dejar la llave abierta al cepillarse desperdicia aproximadamente 10 litros por minuto. Chile enfrenta estrés hídrico severo: la zona central ha perdido 30% de sus lluvias en 30 años."},
-
-  {cat:"Agua y Ahorro",
-   pregunta:"¿Qué porcentaje del agua dulce de Chile se usa en agricultura?",
-   ops:["20%","45%","70%","90%"], correcta:2,
-   exp:"El 70% del agua dulce en Chile se destina a la agricultura. La Región de O'Higgins, con sus viñedos y frutales, es una de las zonas de mayor consumo hídrico agrícola del país."},
-
-  {cat:"Agua y Ahorro",
-   pregunta:"¿Cuántos litros de agua se necesitan para producir 1 kg de carne de vacuno?",
-   ops:["500 litros","2.000 litros","8.000 litros","15.500 litros"], correcta:3,
-   exp:"Se necesitan 15.500 litros de agua para producir 1 kg de carne de vacuno. Reducir el consumo de carne roja es una de las acciones individuales de mayor impacto en el uso del agua."},
-
-  {cat:"Agua y Ahorro",
-   pregunta:"¿Qué es la 'megasequía' que afecta a la zona central de Chile?",
-   ops:["Una sola temporada seca","15 años consecutivos con lluvias bajo el promedio","Falta de ríos","Solo afecta el desierto"], correcta:1,
-   exp:"La megasequía es un período de más de 15 años de lluvias bajo el promedio histórico en Chile Central (desde 2010). Rancagua y el Valle del Cachapoal son zonas críticas de este fenómeno."},
-
-  {cat:"Agua y Ahorro",
-   pregunta:"¿Cómo puedes reutilizar el agua fría mientras esperas la caliente en la ducha?",
-   ops:["No se puede reutilizar","Recogerla en un balde para regar plantas","Dejarla correr","Mezclarla con detergente"], correcta:1,
-   exp:"Recoger el agua fría inicial en un balde puede darte entre 5-10 litros por ducha. Úsala para regar plantas, limpiar o llenar el estanque del baño. En Rancagua se pierden millones de litros así al año."},
-
-  // ── RECICLAJE Y RESIDUOS ──────────────────────────────
-  {cat:"Reciclaje y Residuos",
-   pregunta:"¿Cuántos años tarda en degradarse una colilla de cigarrillo en la naturaleza?",
-   ops:["6 meses","2 años","10 años","25 años"], correcta:2,
-   exp:"Una colilla tarda entre 10 y 15 años en degradarse y contamina hasta 50 litros de agua. Las riberas del Cachapoal y plazas de Rancagua son afectadas frecuentemente por este residuo."},
-
-  {cat:"Reciclaje y Residuos",
-   pregunta:"¿Qué porcentaje de los residuos domésticos chilenos son reciclados actualmente?",
-   ops:["Menos del 1%","8%","25%","40%"], correcta:1,
-   exp:"Chile recicla solo alrededor del 8% de sus residuos. La Ley REP (Responsabilidad Extendida del Productor) busca llegar al 60% en 2030. Tú puedes marcar la diferencia en tu villa."},
-
-  {cat:"Reciclaje y Residuos",
-   pregunta:"¿Cuántas veces puede reciclarse el vidrio sin perder calidad?",
-   ops:["Solo 1 vez","3-5 veces","10 veces","Infinitas veces"], correcta:3,
-   exp:"El vidrio es 100% reciclable de forma infinita sin perder calidad ni pureza. Reciclarlo ahorra 30% de energía comparado con fabricar vidrio nuevo. En Rancagua hay puntos limpios en varias municipalidades."},
-
-  {cat:"Reciclaje y Residuos",
-   pregunta:"¿Qué residuo NO va en el contenedor de papel/cartón?",
-   ops:["Cajas de cereal aplastadas","Revistas de papel brillante","Periódicos","Cajas de huevos"], correcta:1,
-   exp:"Las revistas con plastificado brillante y el papel parafinado NO son reciclables junto al papel. Su recubrimiento plástico contamina el lote de reciclaje. Solo papel mate y cartón limpio."},
-
-  // ── CAMBIO CLIMÁTICO Y ENERGÍA ────────────────────────
-  {cat:"Clima y Energía",
-   pregunta:"¿Cuánto ha aumentado la temperatura promedio en Chile en los últimos 50 años?",
-   ops:["0.2°C","0.8°C","1.5°C","3°C"], correcta:1,
-   exp:"Chile ha experimentado un aumento de aproximadamente 0.8°C en su temperatura promedio en 50 años. En la zona central, las olas de calor son cada vez más frecuentes e intensas."},
-
-  {cat:"Clima y Energía",
-   pregunta:"¿Qué porcentaje de la electricidad de Chile proviene de energías renovables hoy?",
-   ops:["15%","35%","55%","80%"], correcta:2,
-   exp:"Chile superó el 55% de generación eléctrica renovable gracias al solar en Atacama y la eólica. La meta es llegar al 80% en 2030, uno de los objetivos más ambiciosos de América Latina."},
-
-  {cat:"Clima y Energía",
-   pregunta:"¿Cuánto CO2 absorbe un árbol adulto al año en promedio?",
-   ops:["2 kg","22 kg","100 kg","500 kg"], correcta:1,
-   exp:"Un árbol adulto absorbe aproximadamente 22 kg de CO2 al año. Plantar árboles nativos en Rancagua no solo ayuda al clima global — también da sombra, reduce el ruido y mejora el bienestar."},
-
-  {cat:"Clima y Energía",
-   pregunta:"¿Cuál es la principal fuente de energía renovable con más crecimiento en Chile?",
-   ops:["Hidroeléctrica","Eólica","Solar fotovoltaica","Geotérmica"], correcta:2,
-   exp:"La energía solar fotovoltaica es la de mayor crecimiento en Chile. El Desierto de Atacama tiene la mayor radiación solar del planeta. En 2023, el solar fue el 75% de toda la nueva capacidad renovable instalada."},
-
-  // ── CONSEJOS ECOLÓGICOS PRÁCTICOS ────────────────────
-  {cat:"Consejos Eco Prácticos",
-   pregunta:"¿Qué significa el concepto 'km 0' en alimentación?",
-   ops:["Comida sin calorías","Alimentos producidos localmente sin transporte largo","Comida gratis","Dieta vegana"], correcta:1,
-   exp:"'Km 0' son alimentos producidos a menos de 100 km de donde se consumen. Comprar en ferias locales de Rancagua reduce la huella de carbono del transporte y apoya a agricultores de la región."},
-
-  {cat:"Consejos Eco Prácticos",
-   pregunta:"¿Cuánto CO2 se evita por cada km que recorres en bicicleta en vez de auto?",
-   ops:["0 — bici no emite nada de todas formas","150 gramos de CO2","250 gramos de CO2","500 gramos de CO2"], correcta:2,
-   exp:"Cada km en bicicleta en lugar de auto evita 250 gramos de CO2. En Rancagua hay ciclovías que conectan varios barrios. Si 1.000 personas usan bicicleta solo 5 km al día, se evitan 450 toneladas de CO2 al año."},
-
-  {cat:"Consejos Eco Prácticos",
-   pregunta:"¿Qué es el 'stand-by' de los electrodomésticos y por qué importa?",
-   ops:["Modo de máxima eficiencia","Consumo eléctrico en reposo que suma hasta 10% de la cuenta","Ahorro automático","Solo afecta televisores"], correcta:1,
-   exp:"El stand-by es el consumo eléctrico cuando un aparato está apagado pero enchufado. Puede representar hasta el 10% de tu cuenta de luz. Desenchufar cargadores y electrodomésticos ahorra dinero y CO2."},
-
-  {cat:"Consejos Eco Prácticos",
-   pregunta:"¿Cuál de estas acciones tiene el mayor impacto individual en reducir tu huella de carbono?",
-   ops:["Reciclar el papel","Apagar luces al salir","Reducir el consumo de carne roja","Usar bolsas reutilizables"], correcta:2,
-   exp:"Reducir el consumo de carne roja tiene el mayor impacto individual: la ganadería produce el 14.5% de las emisiones globales. Una persona que come sin carne 3 días a la semana puede reducir su huella hasta un 35%."},
-
-  {cat:"Consejos Eco Prácticos",
-   pregunta:"¿Qué es el compostaje y para qué sirve?",
-   ops:["Reciclar plásticos","Transformar residuos orgánicos en abono para plantas","Tratar aguas residuales","Clasificar metales"], correcta:1,
-   exp:"El compostaje convierte restos de frutas, verduras y jardín en abono natural en 2-3 meses. Una familia puede compostar hasta 1 kg de residuos orgánicos diarios, reduciendo su basura en un 30%."},
-
-  // ── SEGURIDAD CIUDADANA Y ENTORNO ─────────────────────
-  {cat:"Entorno y Convivencia",
-   pregunta:"¿Cómo contribuyen los espacios verdes a la seguridad ciudadana?",
-   ops:["No tienen relación","Estudios muestran que reducen el delito hasta un 9%","Solo generan más delito","Solo son útiles de día"], correcta:1,
-   exp:"Estudios en ciudades del mundo muestran que parques bien mantenidos reducen el delito hasta 9% en el entorno. La presencia de árboles y espacios verdes genera mayor apropiación del espacio por los vecinos."},
-
-  {cat:"Entorno y Convivencia",
-   pregunta:"¿Qué beneficio tiene conocer las especies de plantas y aves de tu barrio?",
-   ops:["Ninguno práctico","Genera identidad, pertenencia y motivación para cuidar el entorno","Solo sirve para turismo","Es solo conocimiento científico"], correcta:1,
-   exp:"Conocer la flora y fauna local crea un vínculo emocional con el territorio. Los vecinos que conocen y nombran los árboles de su calle los cuidan más y participan más en la limpieza y protección del espacio público."},
-
-  {cat:"Entorno y Convivencia",
-   pregunta:"¿Cuántos chilenos viven en zonas urbanas hoy?",
-   ops:["50%","70%","88%","99%"], correcta:2,
-   exp:"El 88% de los chilenos vive en ciudades. Por eso, las decisiones sobre áreas verdes, transporte y reciclaje en ciudades como Rancagua tienen un impacto enorme en el medioambiente del país."}
-,
-  // ── NUEVAS: CAMBIO CLIMÁTICO AVANZADO ─────────────
-  {cat:"Cambio Climático",
-   pregunta:"¿Cuántos grados Celsius de calentamiento busca evitar el Acuerdo de París?",
-   ops:["0.5°C","1.5°C","2.5°C","4°C"], correcta:1,
-   exp:"El Acuerdo de París (2015) busca limitar el calentamiento global a 1.5°C sobre niveles preindustriales. Actualmente vamos camino a 2.7°C si no cambian las políticas actuales."},
-
-  {cat:"Cambio Climático",
-   pregunta:"¿Qué fenómeno climático se intensifica por el calentamiento global en Chile Central?",
-   ops:["Más lluvias en verano","Sequías más largas y frecuentes","Inviernos más fríos","Más nieve en la costa"],
-   correcta:1,
-   exp:"La megasequía que afecta a Chile Central desde 2010 se intensifica por el cambio climático. La Región de O'Higgins ha perdido el 30% de sus precipitaciones en 30 años."},
-
-  {cat:"Cambio Climático",
-   pregunta:"¿Qué sector produce más emisiones de CO₂ en Chile?",
-   ops:["Agricultura","Residuos domésticos","Transporte","Pesca"],
-   correcta:2,
-   exp:"El transporte es el mayor emisor de CO₂ en Chile, representando el 36% de las emisiones totales. El parque automotriz creció 60% en la última década."},
-
-  {cat:"Cambio Climático",
-   pregunta:"¿Cuántos glaciares tiene Chile y qué está pasando con ellos?",
-   ops:["500 glaciares, sin cambios","2.000 glaciares, están creciendo","24.114 glaciares, el 80% retrocede","100 glaciares, estables"],
-   correcta:2,
-   exp:"Chile tiene 24.114 glaciares — el 80% del total de América del Sur. El 80% de ellos está retrocediendo por el calentamiento global. Son la reserva de agua dulce más importante del país."},
-
-  // ── NUEVAS: BIODIVERSIDAD ──────────────────────────
-  {cat:"Biodiversidad",
-   pregunta:"¿Qué porcentaje de las plantas de Chile Central son endémicas (no existen en ningún otro lugar)?",
-   ops:["5%","25%","50%","75%"],
-   correcta:1,
-   exp:"El 25% de las plantas de Chile Central son endémicas. Esto hace de la zona uno de los 36 'hotspots' de biodiversidad del mundo, junto con la cuenca mediterránea y California."},
-
-  {cat:"Biodiversidad",
-   pregunta:"¿Por qué el Bosque Esclerófilo de Chile Central está en peligro?",
-   ops:["Por el frío extremo","Por urbanización, agricultura y sequía","Por exceso de lluvia","Por invasión de fauna exótica"],
-   correcta:1,
-   exp:"El Bosque Esclerófilo (quillay, peumo, litre, boldo) cubre la zona de Rancagua y está amenazado por la expansión urbana, la agricultura intensiva y la sequía prolongada. Es un ecosistema único del planeta."},
-
-  {cat:"Biodiversidad",
-   pregunta:"¿Qué animal es el mayor polinizador de flores nativas en Chile Central?",
-   ops:["Abeja europea","Moscardón nativo","Colibrí picaflor","Mariposa del chagual"],
-   correcta:2,
-   exp:"El Colibrí picaflor (Sephanoides sephaniodes) es el principal polinizador de flores nativas en Chile Central. Sin él, plantas como el copihue y el alstroemeria no podrían reproducirse."},
-
-  {cat:"Biodiversidad",
-   pregunta:"¿Cuántas especies de aves han sido registradas en Chile?",
-   ops:["150","350","520","900"],
-   correcta:2,
-   exp:"Chile registra unas 520 especies de aves. La Región de O'Higgins alberga más de 200 de ellas gracias a sus ríos, humedales y cerros. El Cachapoal es un corredor de biodiversidad clave."},
-
-  // ── NUEVAS: AGUA Y CONSUMO ────────────────────────
-  {cat:"Agua y Consumo",
-   pregunta:"¿Cuánto tiempo tarda en purificarse el agua subterránea contaminada?",
-   ops:["1-2 años","10-20 años","Cientos a miles de años","No se puede purificar"],
-   correcta:2,
-   exp:"Los acuíferos subterráneos pueden tardar cientos o miles de años en purificarse. Una vez contaminados con pesticidas o nitratos agrícolas, prácticamente no hay forma de recuperarlos en escala humana."},
-
-  {cat:"Agua y Consumo",
-   pregunta:"¿Qué es una 'huella hídrica' de un producto?",
-   ops:["El agua que se ve en el producto","Todo el agua usada en su producción","El agua que se desperdicia","Solo el agua de riego"],
-   correcta:1,
-   exp:"La huella hídrica incluye toda el agua usada en la cadena de producción. Un jean de mezclilla requiere 10.000 litros. Un kilo de almendras, 12.000 litros. El Valle de O'Higgins es el mayor productor de frutas con alta huella hídrica."},
-
-  {cat:"Agua y Consumo",
-   pregunta:"¿Qué porcentaje de agua potable se pierde en las redes de distribución de Chile?",
-   ops:["5%","15%","30%","50%"],
-   correcta:2,
-   exp:"Chile pierde el 30% del agua potable en fugas de la red de distribución. En algunas ciudades rurales de O'Higgins, la pérdida supera el 40%. Modernizar las redes es tan importante como ahorrar en el hogar."},
-
-  // ── NUEVAS: ENERGÍA Y CONSUMO ─────────────────────
-  {cat:"Energía y Consumo",
-   pregunta:"¿Qué es la 'energía embebida' de un producto?",
-   ops:["La electricidad que usa al funcionar","La energía usada para fabricarlo y transportarlo","La batería interna","La energía solar que aprovecha"],
-   correcta:1,
-   exp:"La energía embebida es toda la energía consumida para fabricar, transportar y desechar un producto. Un smartphone lleva ~70 kWh de energía embebida. Por eso reparar es siempre mejor que comprar nuevo."},
-
-  {cat:"Energía y Consumo",
-   pregunta:"¿Cuánta energía se ahorra reciclando aluminio en vez de producirlo desde cero?",
-   ops:["10%","40%","75%","95%"],
-   correcta:3,
-   exp:"Reciclar aluminio ahorra el 95% de la energía necesaria para producirlo desde la bauxita. Es por eso que el aluminio es uno de los materiales más valiosos del reciclaje."},
-
-  {cat:"Energía y Consumo",
-   pregunta:"¿Qué consume más energía en un hogar chileno promedio?",
-   ops:["El televisor","La iluminación","El calefón/calentador de agua","El refrigerador"],
-   correcta:2,
-   exp:"El calefón o calentador de agua representa el 40-50% del consumo energético del hogar en Chile. Instalar un calefón solar puede reducir esa cuenta a casi cero y se amortiza en 3-5 años."},
-
-  // ── NUEVAS: CONSUMO RESPONSABLE ──────────────────
-  {cat:"Consumo Responsable",
-   pregunta:"¿Qué significa 'economía circular'?",
-   ops:["Comprar en círculo de amigos","Reutilizar materiales en lugar de desecharlos","Circular en bicicleta","Intercambiar monedas"],
-   correcta:1,
-   exp:"La economía circular busca mantener los materiales en uso el mayor tiempo posible: diseñar para reparar, reutilizar y reciclar. Es el opuesto al modelo lineal de 'producir-usar-tirar'."},
-
-  {cat:"Consumo Responsable",
-   pregunta:"¿Cuánta ropa desecha una persona en el mundo en promedio al año?",
-   ops:["1 kg","5 kg","11 kg","30 kg"],
-   correcta:2,
-   exp:"Una persona desecha en promedio 11 kg de ropa al año. La industria textil es la segunda más contaminante del mundo. Comprar menos y de segunda mano es una de las acciones más impactantes."},
-
-  {cat:"Consumo Responsable",
-   pregunta:"¿Qué es el 'greenwashing' o 'lavado verde'?",
-   ops:["Lavar ropa con detergente verde","Empresas que exageran sus acciones ecológicas por marketing","Un tipo de reciclaje de plástico","Pintar edificios de verde"],
-   correcta:1,
-   exp:"El greenwashing ocurre cuando empresas usan marketing 'verde' sin acciones reales. Es una forma de engaño al consumidor. Busca certificaciones verificables (FSC, Energy Star, Fairtrade) antes de creer en etiquetas eco."},
-
-  // ── NUEVAS: SUELO Y AGRICULTURA ──────────────────
-  {cat:"Suelo y Agricultura",
-   pregunta:"¿Cuántos años tarda en formarse 1 cm de suelo fértil?",
-   ops:["1 año","10 años","100-1000 años","Solo semanas"],
-   correcta:2,
-   exp:"Formar 1 cm de suelo fértil puede tomar entre 100 y 1.000 años. El Valle del Cachapoal tiene uno de los suelos más ricos de Chile gracias a miles de años de sedimentos volcánicos. Perderlo por erosión o urbanización es irreversible."},
-
-  {cat:"Suelo y Agricultura",
-   pregunta:"¿Qué es la agroecología y cómo beneficia a Rancagua?",
-   ops:["Agricultura en el espacio","Cultivo sin maquinaria","Agricultura que imita ecosistemas naturales usando menos químicos","Solo cultivo orgánico"],
-   correcta:2,
-   exp:"La agroecología diseña sistemas agrícolas inspirados en la naturaleza: diversidad de cultivos, control biológico de plagas, compostaje. En O'Higgins reduce el uso de pesticidas y el consumo de agua hasta 40%."},
-
-  {cat:"Suelo y Agricultura",
-   pregunta:"¿Por qué los monocultivos (un solo tipo de cultivo) son problemáticos?",
-   ops:["Son muy rentables siempre","Agotan nutrientes del suelo y son vulnerables a plagas","Producen demasiado alimento","No tienen ningún problema"],
-   correcta:1,
-   exp:"Los monocultivos agotan los nutrientes del suelo, requieren más fertilizantes y son vulnerables a plagas (si falla una especie, se pierde todo). El Valle de Colchagua y Cachapoal enfrentan estos desafíos con la vid y los frutales."},
-
-  // ── NUEVAS: CONTAMINACIÓN ─────────────────────────
-  {cat:"Contaminación",
-   pregunta:"¿Qué son los microplásticos y dónde se encuentran?",
-   ops:["Plásticos pequeños solo en el mar","Partículas plásticas menores a 5mm en agua, suelo, aire y cuerpo humano","Solo en productos de limpieza","Plásticos reciclados"],
-   correcta:1,
-   exp:"Los microplásticos son partículas menores a 5mm. Se han encontrado en el agua del grifo, la sal de mesa, peces del Cachapoal y hasta en la sangre humana. Son el resultado de la degradación de plásticos mayores."},
-
-  {cat:"Contaminación",
-   pregunta:"¿Cuántos plásticos de un solo uso prohíbe la ley chilena actualmente?",
-   ops:["Solo bolsas","3 productos","Más de 10 tipos de plásticos","Todos los plásticos"],
-   correcta:2,
-   exp:"La Ley de Plásticos de Un Solo Uso (2021) prohíbe más de 10 tipos en Chile: bolsas, sorbetes, botellas de hasta 3 litros, vajilla desechable, agitadores y más. Es una de las leyes más avanzadas de América Latina."},
-
-  {cat:"Contaminación",
-   pregunta:"¿Qué causa la 'lluvia ácida' y cómo afecta a los bosques?",
-   ops:["Exceso de humedad","SO₂ y NOₓ de industrias que se mezclan con el agua de lluvia","Polvo volcánico","Luz solar intensa"],
-   correcta:1,
-   exp:"La lluvia ácida se forma cuando el dióxido de azufre y los óxidos de nitrógeno industriales se mezclan con el vapor de agua. Acidifica suelos y ríos, matando flora y fauna. Las fundiciones de cobre cercanas a Rancagua han generado este problema históricamente."},
-
-  // ── NUEVAS: CIUDADES SOSTENIBLES ──────────────────
-  {cat:"Ciudad Sostenible",
-   pregunta:"¿Qué es una 'ciudad esponja' y por qué es relevante para Rancagua?",
-   ops:["Una ciudad de poco peso","Ciudad diseñada para absorber y reutilizar el agua de lluvia","Ciudad con muchos parques","Ciudad liviana en carbono"],
-   correcta:1,
-   exp:"Las ciudades esponja absorben el agua de lluvia con pavimentos permeables, humedales urbanos y jardines de lluvia en vez de drenarla al alcantarillado. En Rancagua, con la megasequía, capturar cada gota de lluvia es esencial."},
-
-  {cat:"Ciudad Sostenible",
-   pregunta:"¿Cuánto reduce el ruido una fila de árboles en una calle de alta circulación?",
-   ops:["No tiene efecto","3-5 decibeles","10-15 decibeles","30 decibeles"],
-   correcta:2,
-   exp:"Una barrera de árboles puede reducir el ruido entre 10 y 15 decibeles, equivalente a bajar el volumen a la mitad. Las avenidas arboladas de Rancagua no solo dan sombra — también protegen la salud auditiva de los vecinos."}
-
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Cuál es la capital de la Región de O’Higgins?",
+    "ops": [
+      "Rancagua",
+      "San Fernando",
+      "Pichilemu",
+      "Santa Cruz"
+    ],
+    "correcta": 0,
+    "exp": "Rancagua es la capital regional de O’Higgins.",
+    "acercaDe": "Región de O’Higgins",
+    "detalle": "La Región del Libertador General Bernardo O’Higgins se ubica en la zona central de Chile y tiene como capital a Rancagua.",
+    "fuente": "Gobierno de Chile / Subdere"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Cuántas provincias tiene la Región de O’Higgins?",
+    "ops": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "correcta": 1,
+    "exp": "La región está organizada en 3 provincias.",
+    "acercaDe": "División administrativa",
+    "detalle": "Las provincias son Cachapoal, Colchagua y Cardenal Caro.",
+    "fuente": "Gobierno de Chile"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Cuál de estas es una provincia de O’Higgins?",
+    "ops": [
+      "Cachapoal",
+      "Maipo",
+      "Talagante",
+      "Curicó"
+    ],
+    "correcta": 0,
+    "exp": "Cachapoal es una de las tres provincias de la región.",
+    "acercaDe": "Provincia de Cachapoal",
+    "detalle": "La provincia de Cachapoal incluye comunas como Rancagua, Machalí, Graneros, Rengo y Requínoa, entre otras.",
+    "fuente": "Gobierno de Chile / Subdere"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Qué provincia tiene como capital a San Fernando?",
+    "ops": [
+      "Cardenal Caro",
+      "Colchagua",
+      "Cachapoal",
+      "Maipo"
+    ],
+    "correcta": 1,
+    "exp": "San Fernando es capital de la provincia de Colchagua.",
+    "acercaDe": "Provincia de Colchagua",
+    "detalle": "Colchagua se asocia a valles agrícolas, patrimonio rural y comunas históricas del centro-sur regional.",
+    "fuente": "Subdere / Gobierno Regional"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Qué provincia de O’Higgins tiene borde costero?",
+    "ops": [
+      "Cachapoal",
+      "Colchagua",
+      "Cardenal Caro",
+      "Todas"
+    ],
+    "correcta": 2,
+    "exp": "Cardenal Caro es la provincia costera de la región.",
+    "acercaDe": "Provincia Cardenal Caro",
+    "detalle": "Incluye comunas costeras como Pichilemu, Navidad y Paredones, con ecosistemas de borde costero y humedales.",
+    "fuente": "Gobierno de Chile / Subdere"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Cuántas comunas tiene la Región de O’Higgins?",
+    "ops": [
+      "22",
+      "33",
+      "40",
+      "52"
+    ],
+    "correcta": 1,
+    "exp": "La región tiene 33 comunas.",
+    "acercaDe": "Comunas de O’Higgins",
+    "detalle": "Las comunas se distribuyen entre Cachapoal, Colchagua y Cardenal Caro.",
+    "fuente": "Gobierno de Chile"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Qué río está asociado al valle donde se ubica Rancagua?",
+    "ops": [
+      "Cachapoal",
+      "Maule",
+      "Biobío",
+      "Loa"
+    ],
+    "correcta": 0,
+    "exp": "El río Cachapoal es fundamental para el valle de Rancagua y sus alrededores.",
+    "acercaDe": "Río Cachapoal",
+    "detalle": "El Cachapoal forma parte de la cuenca del Rapel y cumple un rol clave en riego, paisaje y biodiversidad regional.",
+    "fuente": "DGA / Gobierno Regional"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Qué nombre histórico tuvo Rancagua al ser fundada?",
+    "ops": [
+      "Villa Santa Cruz de Triana",
+      "Villa San Fernando",
+      "Villa del Mar",
+      "Villa Los Cipreses"
+    ],
+    "correcta": 0,
+    "exp": "Rancagua fue fundada como Villa Santa Cruz de Triana.",
+    "acercaDe": "Historia de Rancagua",
+    "detalle": "La fundación de Rancagua se vincula al proceso de organización urbana colonial en el valle central.",
+    "fuente": "Municipalidad de Rancagua"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿En qué año fue fundada Rancagua?",
+    "ops": [
+      "1541",
+      "1743",
+      "1810",
+      "1902"
+    ],
+    "correcta": 1,
+    "exp": "Rancagua fue fundada en 1743.",
+    "acercaDe": "Fundación de Rancagua",
+    "detalle": "La ciudad fue fundada el 5 de octubre de 1743, como parte de la organización de villas en Chile central.",
+    "fuente": "Municipalidad de Rancagua"
+  },
+  {
+    "cat": "Identidad regional",
+    "pregunta": "¿Qué actividad productiva es muy característica de varios valles de O’Higgins?",
+    "ops": [
+      "Agricultura y fruticultura",
+      "Pesca oceánica industrial",
+      "Ganadería polar",
+      "Minería de litio"
+    ],
+    "correcta": 0,
+    "exp": "La agricultura y la fruticultura son muy relevantes en la región.",
+    "acercaDe": "Vocación productiva regional",
+    "detalle": "O’Higgins tiene valles agrícolas, viñas, frutales y zonas rurales que dependen fuertemente del agua y del suelo.",
+    "fuente": "Gobierno Regional / ODEPA"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿En qué comuna se ubica la Reserva Nacional Río de Los Cipreses?",
+    "ops": [
+      "Machalí",
+      "Pichilemu",
+      "Rengo",
+      "Navidad"
+    ],
+    "correcta": 0,
+    "exp": "La Reserva Nacional Río de Los Cipreses se ubica en Machalí.",
+    "acercaDe": "Reserva Nacional Río de Los Cipreses",
+    "detalle": "Es un área protegida administrada por CONAF, con ecosistemas andinos y especies emblemáticas.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Qué especie da nombre a la Reserva Nacional Río de Los Cipreses?",
+    "ops": [
+      "Ciprés de la cordillera",
+      "Palma chilena",
+      "Araucaria",
+      "Roble"
+    ],
+    "correcta": 0,
+    "exp": "La reserva lleva el nombre del ciprés de la cordillera.",
+    "acercaDe": "Ciprés de la cordillera",
+    "detalle": "El ciprés de la cordillera es una especie nativa presente en sectores cordilleranos de Chile central.",
+    "fuente": "CONAF / SIMBIO MMA"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Cuál de estos animales se encuentra en la Reserva Río de Los Cipreses?",
+    "ops": [
+      "Guanaco",
+      "Pingüino emperador",
+      "Huemul austral",
+      "Delfín chileno"
+    ],
+    "correcta": 0,
+    "exp": "El guanaco habita sectores altos de la reserva.",
+    "acercaDe": "Guanaco en O’Higgins",
+    "detalle": "El guanaco es un camélido nativo que utiliza ambientes abiertos, precordilleranos y cordilleranos.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Qué ave emblemática destaca en la Reserva Río de Los Cipreses?",
+    "ops": [
+      "Loro tricahue",
+      "Flamenco antártico",
+      "Gaviota dominicana",
+      "Pingüino de Humboldt"
+    ],
+    "correcta": 0,
+    "exp": "El loro tricahue es una de las aves destacadas en la reserva.",
+    "acercaDe": "Loro tricahue",
+    "detalle": "El tricahue vive en colonias y nidifica en barrancos, por lo que requiere protección de sus sitios de reproducción.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Qué gran ave carroñera se puede asociar a ambientes cordilleranos de la reserva?",
+    "ops": [
+      "Cóndor andino",
+      "Pelícano",
+      "Tenca",
+      "Loica"
+    ],
+    "correcta": 0,
+    "exp": "El cóndor andino habita zonas cordilleranas y cumple un rol ecológico importante.",
+    "acercaDe": "Cóndor andino",
+    "detalle": "Al alimentarse de carroña ayuda a limpiar el ecosistema y reducir focos de enfermedad.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Cuál es una regla básica al visitar un área protegida?",
+    "ops": [
+      "No dejar basura",
+      "Alimentar animales",
+      "Sacar plantas nativas",
+      "Hacer fuego libremente"
+    ],
+    "correcta": 0,
+    "exp": "No dejar basura es una regla básica de cuidado.",
+    "acercaDe": "Visita responsable",
+    "detalle": "Las áreas protegidas conservan biodiversidad; por eso se debe evitar basura, fuego, extracción de especies y ruido excesivo.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Por qué son importantes las áreas protegidas?",
+    "ops": [
+      "Conservan ecosistemas y especies",
+      "Sirven solo para turismo",
+      "Reemplazan a las ciudades",
+      "Eliminan toda actividad humana"
+    ],
+    "correcta": 0,
+    "exp": "Las áreas protegidas ayudan a conservar especies, hábitats y procesos ecológicos.",
+    "acercaDe": "Conservación",
+    "detalle": "La conservación protege la biodiversidad y también permite educación ambiental e investigación.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Qué tipo de ambiente predomina en sectores altos de Río de Los Cipreses?",
+    "ops": [
+      "Andino y precordillerano",
+      "Selva tropical",
+      "Desierto absoluto",
+      "Pantano amazónico"
+    ],
+    "correcta": 0,
+    "exp": "La reserva incluye ambientes precordilleranos y cordilleranos.",
+    "acercaDe": "Ambientes andinos",
+    "detalle": "Estos ambientes son claves para fauna como guanacos, pumas, cóndores y aves rapaces.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Qué institución administra muchas áreas silvestres protegidas del Estado en Chile?",
+    "ops": [
+      "CONAF",
+      "Banco Central",
+      "Metro",
+      "Correos de Chile"
+    ],
+    "correcta": 0,
+    "exp": "CONAF administra gran parte de las áreas silvestres protegidas del Estado.",
+    "acercaDe": "CONAF",
+    "detalle": "La Corporación Nacional Forestal cumple funciones de conservación, prevención de incendios y educación ambiental.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Áreas protegidas",
+    "pregunta": "¿Qué se debe hacer si se observa fauna silvestre en una reserva?",
+    "ops": [
+      "Mirar a distancia",
+      "Perseguirla para foto",
+      "Darle comida",
+      "Llevarla a casa"
+    ],
+    "correcta": 0,
+    "exp": "Lo correcto es observar a distancia y no intervenir.",
+    "acercaDe": "Observación responsable",
+    "detalle": "Alimentar o perseguir fauna altera su conducta, puede enfermarla y genera riesgos para las personas.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué árbol nativo contiene saponinas usadas como jabón natural?",
+    "ops": [
+      "Quillay",
+      "Eucalipto",
+      "Álamo",
+      "Pino"
+    ],
+    "correcta": 0,
+    "exp": "El quillay contiene saponinas, sustancias que producen espuma.",
+    "acercaDe": "Quillay",
+    "detalle": "El quillay es un árbol del bosque esclerófilo, adaptado a la sequía y presente en Chile central.",
+    "fuente": "MMA / GEF Montaña"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué árbol nativo tiene frutos rojos característicos?",
+    "ops": [
+      "Peumo",
+      "Pino",
+      "Sauce llorón",
+      "Ciprés macrocarpa"
+    ],
+    "correcta": 0,
+    "exp": "El peumo es reconocible por su follaje denso y frutos rojos.",
+    "acercaDe": "Peumo",
+    "detalle": "El peumo es común en la zona central, en laderas, quebradas y ambientes de bosque esclerófilo.",
+    "fuente": "MMA / GEF Montaña"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué planta nativa es muy conocida por infusiones digestivas?",
+    "ops": [
+      "Boldo",
+      "Lavanda europea",
+      "Ruda común",
+      "Menta inglesa"
+    ],
+    "correcta": 0,
+    "exp": "El boldo es usado tradicionalmente en infusiones.",
+    "acercaDe": "Boldo",
+    "detalle": "El boldo forma parte de la flora nativa de Chile central y se asocia a usos tradicionales digestivos.",
+    "fuente": "MMA / GEF Montaña"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué especie del bosque esclerófilo puede causar irritación en algunas personas al contacto?",
+    "ops": [
+      "Litre",
+      "Peumo",
+      "Quillay",
+      "Espino"
+    ],
+    "correcta": 0,
+    "exp": "El litre puede causar reacciones alérgicas en la piel de algunas personas.",
+    "acercaDe": "Litre",
+    "detalle": "El litre es una especie nativa del bosque esclerófilo, importante para el ecosistema pero debe conocerse con precaución.",
+    "fuente": "MMA / SIMBIO"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué árbol nativo tiene espinas y flores amarillas aromáticas?",
+    "ops": [
+      "Espino",
+      "Boldo",
+      "Peumo",
+      "Quillay"
+    ],
+    "correcta": 0,
+    "exp": "El espino es característico del valle central y posee espinas y flores amarillas.",
+    "acercaDe": "Espino",
+    "detalle": "El espino es resistente a la sequía y forma parte del paisaje tradicional de Chile central.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué significa que una planta sea nativa?",
+    "ops": [
+      "Que vive naturalmente en una zona",
+      "Que siempre necesita riego",
+      "Que viene de otro continente",
+      "Que es artificial"
+    ],
+    "correcta": 0,
+    "exp": "Una especie nativa vive naturalmente en un territorio.",
+    "acercaDe": "Especie nativa",
+    "detalle": "Las especies nativas están adaptadas al clima, suelo y relaciones ecológicas locales.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué tipo de hoja suele tener la vegetación esclerófila?",
+    "ops": [
+      "Dura y resistente",
+      "Transparente",
+      "Acuática",
+      "De plástico"
+    ],
+    "correcta": 0,
+    "exp": "Las hojas duras ayudan a resistir sequía y altas temperaturas.",
+    "acercaDe": "Vegetación esclerófila",
+    "detalle": "El término esclerófilo alude a hojas duras, adaptadas al clima mediterráneo de Chile central.",
+    "fuente": "MMA / SIMBIO"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Por qué conviene plantar especies nativas en áreas verdes de O’Higgins?",
+    "ops": [
+      "Porque están adaptadas al clima local",
+      "Porque no necesitan suelo",
+      "Porque nunca crecen",
+      "Porque eliminan toda fauna"
+    ],
+    "correcta": 0,
+    "exp": "Las nativas se adaptan mejor al clima local y apoyan la biodiversidad.",
+    "acercaDe": "Jardinería con nativas",
+    "detalle": "Usar nativas puede reducir demanda de agua y favorecer aves, insectos y otros organismos locales.",
+    "fuente": "MMA / CONAF"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué especie nativa da nombre a sectores cordilleranos de Río de Los Cipreses?",
+    "ops": [
+      "Ciprés de la cordillera",
+      "Palmera datilera",
+      "Roble europeo",
+      "Pino radiata"
+    ],
+    "correcta": 0,
+    "exp": "El ciprés de la cordillera está presente en la reserva.",
+    "acercaDe": "Ciprés de la cordillera",
+    "detalle": "Es una conífera nativa asociada a ambientes andinos y precordilleranos.",
+    "fuente": "CONAF / SIMBIO MMA"
+  },
+  {
+    "cat": "Flora nativa",
+    "pregunta": "¿Qué protege mejor el suelo frente a la erosión?",
+    "ops": [
+      "Cobertura vegetal",
+      "Suelo desnudo",
+      "Basura plástica",
+      "Tránsito de vehículos"
+    ],
+    "correcta": 0,
+    "exp": "La vegetación protege el suelo con sus raíces y cobertura.",
+    "acercaDe": "Erosión del suelo",
+    "detalle": "La pérdida de vegetación aumenta erosión, polvo, escorrentía y pérdida de fertilidad.",
+    "fuente": "MMA / CONAF"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué mamífero carnívoro habita cerros y quebradas de Chile central?",
+    "ops": [
+      "Zorro culpeo",
+      "León africano",
+      "Oso polar",
+      "Mapache"
+    ],
+    "correcta": 0,
+    "exp": "El zorro culpeo es un carnívoro nativo de Chile.",
+    "acercaDe": "Zorro culpeo",
+    "detalle": "Ayuda a regular poblaciones de roedores y otros animales pequeños.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué gran felino nativo puede habitar zonas cordilleranas de O’Higgins?",
+    "ops": [
+      "Puma",
+      "Tigre",
+      "Jaguar amazónico",
+      "Leopardo"
+    ],
+    "correcta": 0,
+    "exp": "El puma es el gran felino nativo de Chile.",
+    "acercaDe": "Puma",
+    "detalle": "El puma requiere grandes territorios y su presencia indica ecosistemas con cadenas tróficas funcionales.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué camélido nativo está presente en sectores altos de Río de Los Cipreses?",
+    "ops": [
+      "Guanaco",
+      "Alpaca doméstica",
+      "Camello bactriano",
+      "Llama de carga urbana"
+    ],
+    "correcta": 0,
+    "exp": "CONAF destaca guanacos en sectores altos de la cuenca del Río de Los Cipreses.",
+    "acercaDe": "Guanaco",
+    "detalle": "El guanaco es herbívoro y está adaptado a zonas abiertas, secas y cordilleranas.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué ave vive en colonias y nidifica en barrancos?",
+    "ops": [
+      "Loro tricahue",
+      "Gallina común",
+      "Pato doméstico",
+      "Gorrión"
+    ],
+    "correcta": 0,
+    "exp": "El tricahue es un loro nativo que forma colonias en barrancos.",
+    "acercaDe": "Loro tricahue",
+    "detalle": "Sus sitios de nidificación son sensibles a perturbaciones humanas y requieren protección.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué roedor nativo excava túneles bajo tierra?",
+    "ops": [
+      "Cururo",
+      "Gato colocolo",
+      "Cóndor",
+      "Tagua"
+    ],
+    "correcta": 0,
+    "exp": "El cururo vive en sistemas de túneles subterráneos.",
+    "acercaDe": "Cururo",
+    "detalle": "Es un roedor nativo asociado a suelos de Chile central; sus madrigueras forman parte del ecosistema.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué ave rapaz grande aparece en la fauna destacada de Río de Los Cipreses?",
+    "ops": [
+      "Águila mora",
+      "Canario doméstico",
+      "Cisne de cuello negro",
+      "Garza chica"
+    ],
+    "correcta": 0,
+    "exp": "CONAF menciona al águila entre las aves destacadas de la reserva.",
+    "acercaDe": "Águila mora",
+    "detalle": "Las aves rapaces regulan poblaciones de presas y son indicadores de salud ecológica.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué rol ecológico cumple el cóndor?",
+    "ops": [
+      "Carroñero",
+      "Productor de semillas",
+      "Polinizador nocturno",
+      "Constructor de represas"
+    ],
+    "correcta": 0,
+    "exp": "El cóndor se alimenta de carroña.",
+    "acercaDe": "Cóndor andino",
+    "detalle": "Los carroñeros reciclan nutrientes y ayudan a limpiar restos orgánicos del paisaje.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué acción humana amenaza directamente a la fauna silvestre?",
+    "ops": [
+      "Caza ilegal y pérdida de hábitat",
+      "Observar a distancia",
+      "Fotografiar sin flash",
+      "Mantener senderos limpios"
+    ],
+    "correcta": 0,
+    "exp": "La caza ilegal y la pérdida de hábitat dañan a la fauna.",
+    "acercaDe": "Amenazas a fauna",
+    "detalle": "La protección de hábitats es esencial para conservar especies nativas.",
+    "fuente": "MMA / CONAF"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Qué se debe hacer si encuentras un animal silvestre herido?",
+    "ops": [
+      "Avisar a autoridades o centros competentes",
+      "Llevarlo como mascota",
+      "Darle pan",
+      "Publicarlo y manipularlo"
+    ],
+    "correcta": 0,
+    "exp": "Lo correcto es pedir ayuda a instituciones competentes.",
+    "acercaDe": "Rescate de fauna",
+    "detalle": "Manipular fauna sin conocimiento puede dañar al animal y poner en riesgo a las personas.",
+    "fuente": "SAG / MMA"
+  },
+  {
+    "cat": "Fauna nativa",
+    "pregunta": "¿Por qué no se debe alimentar fauna silvestre?",
+    "ops": [
+      "Porque altera su conducta y salud",
+      "Porque aprenden más rápido",
+      "Porque se vuelven plantas",
+      "Porque mejora siempre el ecosistema"
+    ],
+    "correcta": 0,
+    "exp": "Alimentar fauna silvestre puede enfermarla y generar dependencia.",
+    "acercaDe": "Fauna libre",
+    "detalle": "La fauna debe obtener su alimento naturalmente dentro de su ecosistema.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué práctica ayuda a cuidar el agua en áreas verdes?",
+    "ops": [
+      "Regar temprano o al atardecer",
+      "Regar al mediodía con calor",
+      "Dejar fugas activas",
+      "Regar veredas"
+    ],
+    "correcta": 0,
+    "exp": "Regar en horas frescas reduce evaporación.",
+    "acercaDe": "Riego eficiente",
+    "detalle": "El riego eficiente es clave en zonas con escasez hídrica y veranos calurosos.",
+    "fuente": "MMA / DGA"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué debe hacerse al detectar una fuga de agua en un parque?",
+    "ops": [
+      "Reportarla",
+      "Ignorarla",
+      "Taparla con basura",
+      "Aumentar presión"
+    ],
+    "correcta": 0,
+    "exp": "Las fugas deben reportarse para evitar pérdidas de agua.",
+    "acercaDe": "Gestión hídrica",
+    "detalle": "Detectar fugas es una acción concreta de cuidado ambiental y de recursos públicos.",
+    "fuente": "DGA / Educación ambiental"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué tipo de planta ayuda a reducir consumo de agua en jardines?",
+    "ops": [
+      "Planta nativa adaptada",
+      "Planta tropical de alto riego",
+      "Césped ornamental excesivo",
+      "Flor artificial"
+    ],
+    "correcta": 0,
+    "exp": "Las nativas suelen adaptarse mejor al clima local.",
+    "acercaDe": "Xerojardinería",
+    "detalle": "Diseñar áreas verdes con especies adaptadas reduce riego y mantenimiento.",
+    "fuente": "MMA / CONAF"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué ocurre si se riega con manguera rota o filtrando?",
+    "ops": [
+      "Se desperdicia agua",
+      "Aumenta biodiversidad siempre",
+      "Se limpia el aire",
+      "No pasa nada"
+    ],
+    "correcta": 0,
+    "exp": "Una manguera con fuga desperdicia agua.",
+    "acercaDe": "Uso responsable del agua",
+    "detalle": "La mantención de herramientas de riego es parte del cuidado ambiental práctico.",
+    "fuente": "Educación ambiental / DGA"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Por qué el suelo con vegetación retiene mejor el agua?",
+    "ops": [
+      "Las raíces y materia orgánica ayudan a infiltrar",
+      "El plástico absorbe lluvia",
+      "El cemento deja pasar más agua",
+      "El suelo desnudo siempre retiene más"
+    ],
+    "correcta": 0,
+    "exp": "La vegetación favorece infiltración y reduce escorrentía.",
+    "acercaDe": "Infiltración",
+    "detalle": "Suelos vivos, con raíces y materia orgánica, ayudan a conservar humedad.",
+    "fuente": "MMA / FAO"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué acción doméstica ayuda a ahorrar agua?",
+    "ops": [
+      "Cerrar la llave al cepillarse",
+      "Dejar la llave corriendo",
+      "Lavar auto con manguera abierta",
+      "Regar al mediodía"
+    ],
+    "correcta": 0,
+    "exp": "Cerrar la llave evita consumo innecesario.",
+    "acercaDe": "Ahorro doméstico",
+    "detalle": "Pequeñas acciones repetidas por muchas personas pueden reducir demanda de agua.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué ecosistema ayuda a regular agua y biodiversidad?",
+    "ops": [
+      "Humedal",
+      "Basural ilegal",
+      "Estacionamiento",
+      "Suelo pavimentado"
+    ],
+    "correcta": 0,
+    "exp": "Los humedales almacenan agua, filtran contaminantes y albergan biodiversidad.",
+    "acercaDe": "Humedales",
+    "detalle": "Los humedales son ecosistemas estratégicos para aves, anfibios, plantas acuáticas y regulación hídrica.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué efecto tiene el pavimento excesivo en la lluvia?",
+    "ops": [
+      "Reduce infiltración natural",
+      "Aumenta bosque nativo",
+      "Produce más agua",
+      "Elimina calor urbano"
+    ],
+    "correcta": 0,
+    "exp": "El pavimento impide que el agua infiltre naturalmente.",
+    "acercaDe": "Suelo urbano",
+    "detalle": "Más superficies impermeables pueden aumentar escorrentía, calor y riesgo de anegamientos.",
+    "fuente": "MMA / Urbanismo sostenible"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué significa uso eficiente del agua?",
+    "ops": [
+      "Usar solo lo necesario",
+      "Usar más para terminar rápido",
+      "Regar sin control",
+      "Dejar pérdidas visibles"
+    ],
+    "correcta": 0,
+    "exp": "Usar eficientemente significa evitar desperdicios.",
+    "acercaDe": "Eficiencia hídrica",
+    "detalle": "La eficiencia hídrica combina hábitos, tecnología, mantención y planificación.",
+    "fuente": "DGA / MMA"
+  },
+  {
+    "cat": "Agua y sequía",
+    "pregunta": "¿Qué problema ambiental afecta especialmente a Chile central?",
+    "ops": [
+      "Sequía prolongada",
+      "Huracanes tropicales frecuentes",
+      "Glaciares costeros",
+      "Monzones"
+    ],
+    "correcta": 0,
+    "exp": "Chile central enfrenta sequía y estrés hídrico.",
+    "acercaDe": "Sequía en Chile central",
+    "detalle": "La sequía afecta ecosistemas, agricultura, áreas verdes y disponibilidad de agua.",
+    "fuente": "MMA / DGA"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué residuo debe estar limpio y seco para reciclarse mejor?",
+    "ops": [
+      "Papel y cartón",
+      "Restos de comida mezclados",
+      "Aceite usado en bolsa",
+      "Pañales"
+    ],
+    "correcta": 0,
+    "exp": "Papel y cartón se reciclan mejor si están limpios y secos.",
+    "acercaDe": "Separación en origen",
+    "detalle": "Separar correctamente evita contaminar materiales reciclables.",
+    "fuente": "MMA / Ley REP"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué material puede reciclarse muchas veces sin perder calidad?",
+    "ops": [
+      "Vidrio",
+      "Servilleta sucia",
+      "Restos de comida",
+      "Colilla"
+    ],
+    "correcta": 0,
+    "exp": "El vidrio es un material altamente reciclable.",
+    "acercaDe": "Vidrio reciclable",
+    "detalle": "Botellas y frascos de vidrio deben separarse limpios, sin mezclarlos con residuos orgánicos.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Dónde deben ir los restos de fruta y verdura si se hace compostaje?",
+    "ops": [
+      "Compostera",
+      "Contenedor de vidrio",
+      "Papel blanco",
+      "Basura electrónica"
+    ],
+    "correcta": 0,
+    "exp": "Los restos vegetales pueden convertirse en compost.",
+    "acercaDe": "Compostaje",
+    "detalle": "El compostaje transforma residuos orgánicos en abono para mejorar el suelo.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué residuo NO debe mezclarse con reciclables limpios?",
+    "ops": [
+      "Pañal usado",
+      "Botella plástica limpia",
+      "Cartón seco",
+      "Frasco de vidrio"
+    ],
+    "correcta": 0,
+    "exp": "Los residuos sanitarios contaminan el reciclaje.",
+    "acercaDe": "Residuos no reciclables comunes",
+    "detalle": "Pañales, servilletas sucias y residuos sanitarios deben gestionarse como basura común.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué significa separar en origen?",
+    "ops": [
+      "Clasificar residuos antes de botarlos",
+      "Mezclar todo en una bolsa",
+      "Quemar residuos",
+      "Enterrar plástico"
+    ],
+    "correcta": 0,
+    "exp": "Separar en origen es clasificar residuos desde el lugar donde se generan.",
+    "acercaDe": "Separación en origen",
+    "detalle": "Es la base del reciclaje domiciliario, escolar y comunitario.",
+    "fuente": "MMA / Ley REP"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué se debe hacer con pilas y baterías usadas?",
+    "ops": [
+      "Llevarlas a puntos autorizados",
+      "Botarlas al suelo",
+      "Quemarlas",
+      "Abrirlas en casa"
+    ],
+    "correcta": 0,
+    "exp": "Las pilas deben llevarse a puntos de recolección autorizados.",
+    "acercaDe": "Residuos peligrosos domiciliarios",
+    "detalle": "Pilas y baterías pueden contener sustancias que dañan agua, suelo y salud.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué residuo es mejor reducir antes que reciclar?",
+    "ops": [
+      "Envases de un solo uso",
+      "Árboles nativos",
+      "Agua limpia",
+      "Semillas"
+    ],
+    "correcta": 0,
+    "exp": "La reducción evita generar residuos desde el inicio.",
+    "acercaDe": "Jerarquía de residuos",
+    "detalle": "Primero se debe reducir, luego reutilizar y finalmente reciclar.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Cuál es una forma de reutilizar antes de botar?",
+    "ops": [
+      "Usar frascos como contenedores",
+      "Romper botellas",
+      "Mezclar cartón con comida",
+      "Quemar plásticos"
+    ],
+    "correcta": 0,
+    "exp": "Reutilizar alarga la vida útil de los objetos.",
+    "acercaDe": "Reutilización",
+    "detalle": "La reutilización reduce consumo de materias primas y generación de basura.",
+    "fuente": "MMA / Economía circular"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué significa economía circular?",
+    "ops": [
+      "Mantener materiales en uso el mayor tiempo posible",
+      "Comprar y botar rápido",
+      "Usar solo productos nuevos",
+      "Eliminar reparación"
+    ],
+    "correcta": 0,
+    "exp": "La economía circular busca reducir residuos y mantener materiales en circulación.",
+    "acercaDe": "Economía circular",
+    "detalle": "Incluye reducir, reparar, reutilizar, reciclar y rediseñar productos.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Reciclaje",
+    "pregunta": "¿Qué debe hacerse con aceite usado de cocina?",
+    "ops": [
+      "Gestionarlo en punto adecuado o reutilización autorizada",
+      "Botarlo al desagüe",
+      "Mezclarlo con papel",
+      "Derramarlo en tierra"
+    ],
+    "correcta": 0,
+    "exp": "El aceite usado no debe ir al desagüe.",
+    "acercaDe": "Aceite usado",
+    "detalle": "El aceite puede contaminar agua y obstruir redes; debe manejarse de forma responsable.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué gas se asocia principalmente a la quema de combustibles fósiles?",
+    "ops": [
+      "Dióxido de carbono",
+      "Oxígeno",
+      "Helio",
+      "Vapor de limón"
+    ],
+    "correcta": 0,
+    "exp": "El dióxido de carbono aumenta con la quema de carbón, petróleo y gas.",
+    "acercaDe": "CO₂",
+    "detalle": "El CO₂ es uno de los gases de efecto invernadero más relevantes por actividad humana.",
+    "fuente": "IPCC / MMA"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué ayuda a reducir la isla de calor urbana?",
+    "ops": [
+      "Árboles y sombra",
+      "Más cemento oscuro",
+      "Menos vegetación",
+      "Autos detenidos encendidos"
+    ],
+    "correcta": 0,
+    "exp": "Los árboles entregan sombra y ayudan a refrescar el ambiente urbano.",
+    "acercaDe": "Isla de calor",
+    "detalle": "Las ciudades con poca vegetación acumulan más calor en pavimentos y edificios.",
+    "fuente": "MMA / ONU Hábitat"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué acción reduce emisiones en movilidad cotidiana?",
+    "ops": [
+      "Caminar, bicicleta o transporte público",
+      "Usar auto para todo",
+      "Dejar motor encendido",
+      "Hacer viajes innecesarios"
+    ],
+    "correcta": 0,
+    "exp": "Moverse de forma limpia reduce emisiones y contaminación local.",
+    "acercaDe": "Movilidad sustentable",
+    "detalle": "La movilidad activa también mejora salud y reduce congestión.",
+    "fuente": "MMA / Ministerio de Transportes"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué efecto puede tener el cambio climático en incendios forestales?",
+    "ops": [
+      "Aumentar condiciones de riesgo",
+      "Eliminar todo riesgo",
+      "Hacer que llueva siempre",
+      "Convertir bosques en humedales"
+    ],
+    "correcta": 0,
+    "exp": "Calor, sequedad y viento pueden aumentar el riesgo de incendios.",
+    "acercaDe": "Incendios y clima",
+    "detalle": "La prevención requiere manejo de vegetación, educación y cuidado ciudadano.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué energía renovable aprovecha la luz del sol?",
+    "ops": [
+      "Solar",
+      "Carbón",
+      "Petróleo",
+      "Leña húmeda"
+    ],
+    "correcta": 0,
+    "exp": "La energía solar usa radiación del sol para producir electricidad o calor.",
+    "acercaDe": "Energía solar",
+    "detalle": "Chile tiene alto potencial solar, especialmente en el norte, pero también puede aplicarse en techos y comunidades.",
+    "fuente": "Ministerio de Energía"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué práctica ayuda a capturar carbono y mejorar biodiversidad?",
+    "ops": [
+      "Restaurar vegetación nativa",
+      "Eliminar árboles",
+      "Cubrir suelo con cemento",
+      "Quemar residuos"
+    ],
+    "correcta": 0,
+    "exp": "La restauración con vegetación nativa ayuda al suelo, fauna y captura de carbono.",
+    "acercaDe": "Restauración ecológica",
+    "detalle": "Restaurar no es solo plantar; implica recuperar funciones del ecosistema.",
+    "fuente": "MMA / CONAF"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué es adaptación climática?",
+    "ops": [
+      "Prepararse para impactos del clima",
+      "Ignorar sequías",
+      "Aumentar residuos",
+      "Eliminar áreas verdes"
+    ],
+    "correcta": 0,
+    "exp": "Adaptarse es reducir vulnerabilidad frente a cambios climáticos.",
+    "acercaDe": "Adaptación climática",
+    "detalle": "Incluye ahorro de agua, sombra urbana, manejo de incendios y protección de ecosistemas.",
+    "fuente": "MMA / IPCC"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué es mitigación climática?",
+    "ops": [
+      "Reducir emisiones de gases de efecto invernadero",
+      "Usar más combustibles fósiles",
+      "Botar residuos al río",
+      "Talar bosques"
+    ],
+    "correcta": 0,
+    "exp": "Mitigar significa reducir las causas del calentamiento global.",
+    "acercaDe": "Mitigación",
+    "detalle": "Eficiencia energética, energías renovables y movilidad limpia son acciones de mitigación.",
+    "fuente": "MMA / IPCC"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué acción en casa reduce consumo eléctrico innecesario?",
+    "ops": [
+      "Apagar luces y desenchufar equipos sin uso",
+      "Dejar todo encendido",
+      "Abrir refrigerador por largos periodos",
+      "Usar calefacción con ventanas abiertas"
+    ],
+    "correcta": 0,
+    "exp": "Apagar y desenchufar ayuda a reducir consumo energético.",
+    "acercaDe": "Eficiencia energética doméstica",
+    "detalle": "La eficiencia energética ahorra dinero y reduce emisiones asociadas a la electricidad.",
+    "fuente": "Ministerio de Energía"
+  },
+  {
+    "cat": "Cambio climático",
+    "pregunta": "¿Qué ecosistema urbano ayuda a enfrentar olas de calor?",
+    "ops": [
+      "Parques arbolados",
+      "Estacionamientos sin sombra",
+      "Plazas sin árboles",
+      "Basurales"
+    ],
+    "correcta": 0,
+    "exp": "Los parques arbolados entregan sombra, evapotranspiración y bienestar.",
+    "acercaDe": "Áreas verdes climáticas",
+    "detalle": "Las áreas verdes son infraestructura natural para adaptación al calor extremo.",
+    "fuente": "MMA / ONU Hábitat"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué significa cuidar un área verde comunitaria?",
+    "ops": [
+      "Mantenerla limpia y respetar sus plantas",
+      "Romper ramas",
+      "Botar basura",
+      "Rayar juegos"
+    ],
+    "correcta": 0,
+    "exp": "Cuidar áreas verdes mejora convivencia, salud y ambiente.",
+    "acercaDe": "Cuidado comunitario",
+    "detalle": "Las áreas verdes son espacios públicos que pertenecen a toda la comunidad.",
+    "fuente": "Educación ambiental / MMA"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué acción mejora la convivencia en una plaza?",
+    "ops": [
+      "Usar basureros y respetar turnos de uso",
+      "Escuchar música a volumen extremo",
+      "Dejar fecas de mascotas",
+      "Dañar mobiliario"
+    ],
+    "correcta": 0,
+    "exp": "El respeto del espacio común mejora convivencia.",
+    "acercaDe": "Convivencia ambiental",
+    "detalle": "La cultura ecológica también incluye respeto por personas, animales y bienes públicos.",
+    "fuente": "Educación ciudadana / MMA"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué debe hacer una persona responsable con su mascota en un parque?",
+    "ops": [
+      "Recoger sus fecas",
+      "Dejarlas en el pasto",
+      "Soltarla si persigue aves",
+      "Dejarla romper jardines"
+    ],
+    "correcta": 0,
+    "exp": "Recoger fecas de mascotas protege salud y limpieza del espacio.",
+    "acercaDe": "Mascotas responsables",
+    "detalle": "Las mascotas deben convivir con áreas verdes sin dañar fauna, plantas ni usuarios.",
+    "fuente": "Tenencia responsable / Educación ambiental"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué hábito ayuda a reducir basura en colaciones?",
+    "ops": [
+      "Usar botella y recipiente reutilizable",
+      "Comprar todo desechable",
+      "Botar envoltorios al suelo",
+      "Usar bolsas nuevas cada vez"
+    ],
+    "correcta": 0,
+    "exp": "Los reutilizables evitan residuos de un solo uso.",
+    "acercaDe": "Consumo responsable",
+    "detalle": "Reducir desechables es más efectivo que reciclar después.",
+    "fuente": "MMA / Economía circular"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué es una acción eco real?",
+    "ops": [
+      "Una acción concreta que mejora el entorno",
+      "Solo decir que cuidaré",
+      "Ganarle a otro jugador",
+      "Comprar más plástico"
+    ],
+    "correcta": 0,
+    "exp": "Una acción eco real produce un cambio observable en el entorno.",
+    "acercaDe": "Acción eco real",
+    "detalle": "Puede ser limpiar un espacio, plantar nativas, separar residuos o reportar una fuga.",
+    "fuente": "Educación ambiental"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Por qué aprender nombres de especies locales ayuda a cuidarlas?",
+    "ops": [
+      "Porque genera vínculo e identidad",
+      "Porque las vuelve invisibles",
+      "Porque reemplaza el riego",
+      "Porque elimina amenazas"
+    ],
+    "correcta": 0,
+    "exp": "Nombrar especies ayuda a reconocerlas y valorarlas.",
+    "acercaDe": "Identidad ecológica",
+    "detalle": "La educación ambiental territorial conecta conocimiento con afecto y responsabilidad.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué práctica daña un parque público?",
+    "ops": [
+      "Cortar ramas sin autorización",
+      "Caminar por senderos",
+      "Usar basureros",
+      "Respetar señaléticas"
+    ],
+    "correcta": 0,
+    "exp": "Cortar ramas sin autorización puede dañar árboles y generar riesgos.",
+    "acercaDe": "Manejo responsable de árboles",
+    "detalle": "La poda debe realizarse con criterio técnico y autorización cuando corresponda.",
+    "fuente": "Municipalidades / CONAF"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué conducta ayuda a proteger aves urbanas?",
+    "ops": [
+      "No destruir nidos",
+      "Tirar piedras",
+      "Alimentarlas con pan",
+      "Atrapar polluelos"
+    ],
+    "correcta": 0,
+    "exp": "No destruir nidos protege ciclos reproductivos.",
+    "acercaDe": "Aves urbanas",
+    "detalle": "Muchas aves usan árboles, arbustos y techumbres para nidificar; deben observarse sin intervenir.",
+    "fuente": "MMA / SAG"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Qué significa consumo responsable?",
+    "ops": [
+      "Comprar solo lo necesario y preferir durabilidad",
+      "Comprar por impulso",
+      "Botar productos útiles",
+      "Usar descartables siempre"
+    ],
+    "correcta": 0,
+    "exp": "Consumir responsablemente reduce residuos e impactos.",
+    "acercaDe": "Consumo responsable",
+    "detalle": "Implica elegir, reparar, reutilizar y evitar compras innecesarias.",
+    "fuente": "MMA / Economía circular"
+  },
+  {
+    "cat": "Ecocultura",
+    "pregunta": "¿Cuál es una buena acción grupal para una comunidad?",
+    "ops": [
+      "Jornada de limpieza y separación de residuos",
+      "Competencia de botar basura",
+      "Quema de hojas",
+      "Pintar árboles con químicos"
+    ],
+    "correcta": 0,
+    "exp": "Las acciones comunitarias fortalecen vínculos y mejoran el entorno.",
+    "acercaDe": "Participación ambiental",
+    "detalle": "La comunidad organizada puede cuidar plazas, riberas, bandejones y puntos de reciclaje.",
+    "fuente": "Educación ambiental / MMA"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Dónde es más probable encontrar vegetación esclerófila?",
+    "ops": [
+      "Chile central",
+      "Antártica",
+      "Océano abierto",
+      "Desierto polar"
+    ],
+    "correcta": 0,
+    "exp": "El bosque esclerófilo es característico de Chile central.",
+    "acercaDe": "Bosque esclerófilo mediterráneo",
+    "detalle": "Se asocia a clima mediterráneo, con veranos secos e inviernos lluviosos.",
+    "fuente": "MMA / SIMBIO"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué hábitat es clave para el loro tricahue?",
+    "ops": [
+      "Barrancos para nidificar",
+      "Hielo marino",
+      "Cuevas submarinas",
+      "Edificios altos"
+    ],
+    "correcta": 0,
+    "exp": "El tricahue nidifica en barrancos y vive en colonias.",
+    "acercaDe": "Hábitat del tricahue",
+    "detalle": "Proteger barrancos de nidificación es esencial para su conservación.",
+    "fuente": "CONAF"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué ambiente usa el coipo?",
+    "ops": [
+      "Riberas, humedales y cursos de agua",
+      "Cumbres sin agua",
+      "Desierto absoluto",
+      "Playas antárticas"
+    ],
+    "correcta": 0,
+    "exp": "El coipo está asociado a ambientes acuáticos y ribereños.",
+    "acercaDe": "Coipo",
+    "detalle": "Es un roedor semiacuático; su presencia se vincula a humedales y riberas saludables.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué especie necesita grandes territorios y evita contacto humano?",
+    "ops": [
+      "Puma",
+      "Paloma doméstica",
+      "Gallina",
+      "Perro callejero"
+    ],
+    "correcta": 0,
+    "exp": "El puma necesita amplios territorios y suele evitar a las personas.",
+    "acercaDe": "Puma y territorio",
+    "detalle": "La pérdida y fragmentación de hábitat aumenta conflictos entre fauna y actividad humana.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué ambiente urbano favorece aves pequeñas?",
+    "ops": [
+      "Árboles, arbustos y flores",
+      "Puro cemento",
+      "Basura acumulada",
+      "Ruido permanente"
+    ],
+    "correcta": 0,
+    "exp": "La vegetación urbana ofrece refugio y alimento para aves.",
+    "acercaDe": "Biodiversidad urbana",
+    "detalle": "Plazas y jardines con diversidad vegetal pueden funcionar como pequeños corredores ecológicos.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué animal puede usar roquedales y ambientes cordilleranos?",
+    "ops": [
+      "Vizcacha",
+      "Pez espada",
+      "Pingüino rey",
+      "Cangrejo de río amazónico"
+    ],
+    "correcta": 0,
+    "exp": "La vizcacha se asocia a ambientes rocosos y cordilleranos.",
+    "acercaDe": "Vizcacha",
+    "detalle": "Es un roedor de hábitos coloniales que utiliza refugios entre rocas.",
+    "fuente": "MMA / CONAF"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué elemento del hábitat ayuda a reptiles nativos?",
+    "ops": [
+      "Rocas, sol y refugios naturales",
+      "Basura plástica",
+      "Veneno para insectos",
+      "Pavimento caliente sin refugio"
+    ],
+    "correcta": 0,
+    "exp": "Muchos reptiles usan rocas, sol y refugios.",
+    "acercaDe": "Reptiles nativos",
+    "detalle": "Los reptiles cumplen roles como controladores de insectos y presas de aves rapaces.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué práctica protege hábitats ribereños?",
+    "ops": [
+      "Mantener vegetación de orilla",
+      "Eliminar toda vegetación",
+      "Botar escombros",
+      "Meter vehículos al cauce"
+    ],
+    "correcta": 0,
+    "exp": "La vegetación de orilla protege suelo, agua y fauna.",
+    "acercaDe": "Riberas saludables",
+    "detalle": "Las riberas conectan ecosistemas y reducen erosión y contaminación directa al agua.",
+    "fuente": "MMA / DGA"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué se pierde cuando desaparece el bosque nativo?",
+    "ops": [
+      "Hábitat, sombra, suelo y biodiversidad",
+      "Solo hojas secas",
+      "Nada importante",
+      "Más biodiversidad automáticamente"
+    ],
+    "correcta": 0,
+    "exp": "El bosque nativo sostiene muchas funciones ecológicas.",
+    "acercaDe": "Pérdida de bosque nativo",
+    "detalle": "La fragmentación reduce refugio, alimento y conectividad para fauna y flora.",
+    "fuente": "MMA / CONAF"
+  },
+  {
+    "cat": "Especies y hábitats",
+    "pregunta": "¿Qué especie nativa puede servir de alimento para aves por sus frutos?",
+    "ops": [
+      "Peumo",
+      "Cemento",
+      "Plástico",
+      "Metal"
+    ],
+    "correcta": 0,
+    "exp": "Los frutos de plantas nativas alimentan fauna.",
+    "acercaDe": "Frutos nativos y fauna",
+    "detalle": "La relación entre plantas y animales ayuda a dispersar semillas y regenerar vegetación.",
+    "fuente": "MMA / GEF Montaña"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Cuál es una evidencia útil para validar una misión ecológica?",
+    "ops": [
+      "Foto clara de la acción realizada",
+      "Solo decir 'lo hice'",
+      "Un dibujo sin contexto",
+      "Un audio sin información"
+    ],
+    "correcta": 0,
+    "exp": "Una foto clara ayuda a verificar la acción.",
+    "acercaDe": "Evidencia ambiental",
+    "detalle": "Para validar acciones reales conviene registrar fecha, lugar aproximado, tipo de acción y resultado.",
+    "fuente": "Diseño educativo Eco-Poderes"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué misión real aporta a la limpieza del entorno?",
+    "ops": [
+      "Recolectar residuos de una plaza",
+      "Botar más basura",
+      "Romper señalética",
+      "Mezclar reciclaje con comida"
+    ],
+    "correcta": 0,
+    "exp": "Recolectar residuos mejora el entorno y reduce riesgos para fauna y personas.",
+    "acercaDe": "Limpieza comunitaria",
+    "detalle": "La limpieza debe hacerse con seguridad: guantes, cuidado con objetos cortantes y disposición correcta.",
+    "fuente": "Educación ambiental / Municipalidades"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué misión ayuda al ahorro hídrico?",
+    "ops": [
+      "Reportar una fuga de agua",
+      "Dejar una llave abierta",
+      "Regar veredas",
+      "Romper aspersores"
+    ],
+    "correcta": 0,
+    "exp": "Reportar fugas evita pérdidas de agua.",
+    "acercaDe": "Reporte de fugas",
+    "detalle": "Las fugas en espacios públicos deben informarse para reparación oportuna.",
+    "fuente": "DGA / Gestión municipal"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué misión favorece flora nativa?",
+    "ops": [
+      "Plantar o cuidar una especie nativa autorizada",
+      "Plantar invasoras sin control",
+      "Arrancar árboles",
+      "Echar sal al suelo"
+    ],
+    "correcta": 0,
+    "exp": "Cuidar o plantar nativas favorece biodiversidad local.",
+    "acercaDe": "Plantación responsable",
+    "detalle": "La plantación debe considerar especie adecuada, temporada, riego inicial y autorización del lugar.",
+    "fuente": "CONAF / MMA"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué debe evitarse en una misión de limpieza?",
+    "ops": [
+      "Manipular residuos peligrosos sin protección",
+      "Usar guantes",
+      "Separar residuos",
+      "Trabajar en grupo"
+    ],
+    "correcta": 0,
+    "exp": "Los residuos peligrosos requieren manejo especial.",
+    "acercaDe": "Seguridad en limpieza",
+    "detalle": "No se deben manipular jeringas, químicos, vidrios cortantes o residuos peligrosos sin apoyo competente.",
+    "fuente": "Educación ambiental / Seguridad comunitaria"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué misión fortalece educación ambiental?",
+    "ops": [
+      "Enseñar a otra persona a separar residuos",
+      "Ocultar información",
+      "Reírse de quien pregunta",
+      "Mezclar residuos a propósito"
+    ],
+    "correcta": 0,
+    "exp": "Compartir conocimiento multiplica el impacto.",
+    "acercaDe": "Educación entre pares",
+    "detalle": "Cuando una persona enseña a otra, el aprendizaje se vuelve comunitario y más duradero.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué misión protege fauna urbana?",
+    "ops": [
+      "No destruir nidos y reportar fauna herida",
+      "Capturar aves",
+      "Alimentar fauna con pan",
+      "Llevar animales silvestres a casa"
+    ],
+    "correcta": 0,
+    "exp": "Proteger nidos y reportar fauna herida evita daños.",
+    "acercaDe": "Protección de fauna urbana",
+    "detalle": "Las aves y pequeños animales también forman parte de la biodiversidad de barrios y plazas.",
+    "fuente": "SAG / MMA"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué misión ayuda a reducir residuos en casa?",
+    "ops": [
+      "Separar orgánicos para compostaje",
+      "Botar comida con vidrio",
+      "Quemar hojas",
+      "Comprar más desechables"
+    ],
+    "correcta": 0,
+    "exp": "El compostaje reduce residuos orgánicos y mejora suelo.",
+    "acercaDe": "Compostaje domiciliario",
+    "detalle": "Restos vegetales pueden transformarse en abono si se gestionan correctamente.",
+    "fuente": "MMA"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Qué misión puede hacerse en un colegio o taller?",
+    "ops": [
+      "Crear punto de separación de residuos",
+      "Dejar basura en patios",
+      "Romper plantas",
+      "Cerrar basureros"
+    ],
+    "correcta": 0,
+    "exp": "Un punto de separación ayuda a practicar reciclaje.",
+    "acercaDe": "Escuela sustentable",
+    "detalle": "La educación ambiental funciona mejor cuando se practica con acciones visibles.",
+    "fuente": "MMA / Educación ambiental"
+  },
+  {
+    "cat": "Acciones reales",
+    "pregunta": "¿Cuál es el objetivo final de una misión Eco-Poderes?",
+    "ops": [
+      "Aprender y generar impacto real",
+      "Solo juntar puntos",
+      "Competir sin cuidar",
+      "Ganar aunque se dañe el entorno"
+    ],
+    "correcta": 0,
+    "exp": "La misión une aprendizaje con acción concreta.",
+    "acercaDe": "Propósito Eco-Poderes",
+    "detalle": "El juego busca formar identidad ecológica, conciencia territorial y hábitos sostenibles.",
+    "fuente": "Diseño educativo Eco-Poderes"
+  }
 ];
+// Pack Educativo PRO O’Higgins v1 · 100 preguntas con explicación, acerca de y fuente.
+
 var quizTimer = null;
 var quizTiempoRestante = 0;
 var quizPreguntaActual = null;
@@ -2678,7 +3824,24 @@ function responderQuiz(idx){
   if(correcto) spawnConfetti();
 }
 
+function mostrarAcercaQuiz(){
+  var p = quizPreguntaActual;
+  if(!p) return;
+  var modal = document.getElementById('edu-modal');
+  var title = document.getElementById('edu-modal-title');
+  var detail = document.getElementById('edu-modal-detail');
+  var source = document.getElementById('edu-modal-source');
+  if(title) title.textContent = p.acercaDe || p.cat || 'Contenido educativo';
+  if(detail) detail.textContent = p.detalle || p.exp || 'Información educativa relacionada con la pregunta.';
+  if(source) source.textContent = p.fuente || 'Referencia educativa Eco-Poderes';
+  if(modal) modal.style.display = 'flex';
+}
+function cerrarEduModal(){
+  var modal = document.getElementById('edu-modal');
+  if(modal) modal.style.display = 'none';
+}
 function cerrarQuiz(){
+  cerrarEduModal();
   sh('game');
   setTimeout(function(){ continueRound(); }, 300);
 }
@@ -3928,6 +5091,9 @@ function iniciarModo(n){
   _modo2P = (n === 2);
   _jugadorActivo = 1;
   _estadoJ = [null, null];
+  // IMPORTANTE: construir la grilla antes de mostrar el selector.
+  // En v0.9.4 esta llamada se perdió y la pantalla quedaba sin guardianes.
+  if (typeof buildMenu === 'function') buildMenu();
   sh('menu'); // ir directo al selector de guardián
 }
 
@@ -4212,6 +5378,7 @@ try{
     <div style="font-size:2rem;margin-bottom:8px;" id="quiz-res-ico">✅</div>
     <div style="font-size:.92rem;font-weight:800;margin-bottom:6px;" id="quiz-res-titulo">¡Correcto!</div>
     <div style="font-size:.8rem;color:var(--txts);line-height:1.65;margin-bottom:12px;" id="quiz-res-exp"></div>
+    <button class="btn sec" onclick="mostrarAcercaQuiz()" style="max-width:240px;margin-bottom:8px;">📚 Acerca de…</button>
     <button class="btn prim" onclick="cerrarQuiz()" style="max-width:240px;">Continuar partida →</button>
   </div>
 </div>
