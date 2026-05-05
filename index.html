@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Eco-Poderes Territorio Vivo v2.7.2.1 — Fix Respuestas y Sobres</title>
+<title>Eco-Poderes Territorio Vivo v2.8.1 — Fix Respuestas y Sobres</title>
 <style>
 :root{--bg:#06101d;--panel:#10233b;--line:#264b72;--txt:#edf6ff;--muted:#93abc4;--green:#49d48f;--gold:#ffc94a;--blue:#5b7cff;--purple:#9d68ff;--red:#ff5d6c}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(73,212,143,.16),transparent 28%),radial-gradient(circle at 90% 10%,rgba(91,124,255,.18),transparent 30%),linear-gradient(180deg,#050b14,#07111f 45%,#03070d);color:var(--txt);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:540px;margin:auto;min-height:100vh}
@@ -56,10 +56,36 @@
 
 .answerReveal{border:1px solid rgba(73,212,143,.45);background:rgba(73,212,143,.10);color:#d9ffe9;border-radius:16px;padding:12px;margin-top:10px;font-weight:850}
 .keyPill{display:inline-block;border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:5px 10px;font-size:.76rem;font-weight:950;margin:4px 0}
+
+.routeHero{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:center;border:1px solid rgba(255,201,74,.35);background:linear-gradient(155deg,#172a42,#081526);border-radius:20px;padding:12px;margin-bottom:12px}
+.routeHeroIcon{width:64px;height:64px;border-radius:18px;background:#06101d;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:2rem;position:relative}
+.routeHeroIcon .guardianMark{position:absolute;right:-6px;top:-8px;background:#081526;border:1px solid var(--gold);border-radius:999px;padding:3px;font-size:1.05rem}
+.routeHero h3{margin:0 0 4px 0}
+.progressWrap{margin:10px 0 12px 0}
+.progressText{display:flex;justify-content:space-between;gap:8px;font-size:.76rem;color:var(--muted);font-weight:850;margin-bottom:6px}
+.progressBar{height:10px;border-radius:999px;background:#05101e;overflow:hidden;border:1px solid var(--line)}
+.progressFill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:999px;transition:.35s}
+.routeStrip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px 2px;scroll-snap-type:x mandatory}
+.routeTile{min-width:72px;scroll-snap-align:center;background:#081526;border:1px solid var(--line);border-radius:16px;padding:9px 7px;text-align:center;position:relative}
+.routeTile.current{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,201,74,.20)}
+.routeTile.done{opacity:.65}
+.routeTile.goal{border-color:var(--gold);background:linear-gradient(155deg,#39260a,#081526)}
+.routeTile .num{position:absolute;top:4px;left:6px;font-size:.58rem;color:var(--muted);font-weight:900}
+.routeTile .ico{font-size:1.35rem;display:block;margin-top:6px}
+.routeTile .name{font-size:.62rem;color:var(--muted);line-height:1.12;margin-top:4px}
+.routeMiniMap{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:8px}
+.dot{height:10px;border-radius:999px;background:#081526;border:1px solid var(--line)}
+.dot.done{background:var(--green);border-color:var(--green)}
+.dot.current{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,201,74,.18)}
+.dot.goal{background:#6c4b12;border-color:var(--gold)}
+.board{display:block}
+.tile{display:none}
+@media(max-width:390px){.routeHero{grid-template-columns:58px 1fr}.routeHeroIcon{width:54px;height:54px;font-size:1.65rem}.routeTile{min-width:66px}.routeMiniMap{grid-template-columns:repeat(8,1fr)}}
+
 </style>
 </head>
 <body>
-<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v2.7.2</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
+<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v2.8</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
   <button class="btn dark" onclick="go('about')">📚 Acerca del proyecto</button></div>
 
 <div class="screen" id="profile">
@@ -96,10 +122,21 @@
 <div class="screen" id="playSetup"><div class="topbar"><button class="btn dark" onclick="go('home')" style="width:auto">←</button><div class="pill">Modo Juego</div></div><div class="card"><h2>Elige tu guardián</h2><p class="small">Base v2.0 limpia: 5 guardianes principales para mantener estabilidad.</p></div><div class="grid2" id="guardianGrid"></div><input id="communityName" placeholder="Tu comuna, sector o comunidad"><button class="btn" onclick="startGame()">Iniciar partida →</button></div>
 <div class="screen" id="game"><div class="topbar"><button class="btn dark" onclick="go('home')" style="width:auto">←</button><div class="pill" id="roundPill">Ronda 1/8</div><div class="pill">🌱 <span id="seedTop">0</span></div></div><div class="card"><h3 id="guardianTitle"></h3><p class="small" id="guardianPower"></p></div>
   <div class="card">
-    <h3>🗺️ Tablero Vivo</h3>
-    <p class="small">Tu guardián avanza según el dado. La casilla donde cae activa el minijuego o evento.</p>
-    <div class="board" id="boardGrid"></div>
-    <div class="pathInfo" id="boardInfo">Posición actual: Inicio</div>
+    <h3>🗺️ Ruta Viva hacia el Equilibrium</h3>
+    <p class="small">Tu guardián avanza por una ruta de desafíos. Supera la casilla para confirmar el avance.</p>
+    <div class="routeHero" id="routeHero">
+      <div class="routeHeroIcon" id="routeHeroIcon">🏁</div>
+      <div>
+        <h3 id="routeHeroTitle">Inicio del recorrido</h3>
+        <div class="small" id="routeHeroText">Tira el dado para entrar al territorio vivo.</div>
+      </div>
+    </div>
+    <div class="progressWrap">
+      <div class="progressText"><span id="progressText">Progreso 0%</span><span id="progressStep">Inicio</span></div>
+      <div class="progressBar"><div class="progressFill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="routeStrip" id="routeStrip"></div>
+    <div class="routeMiniMap" id="routeMiniMap"></div>
   </div><div class="statgrid"><div class="stat"><div class="label">🌍 Eco</div><div class="value" id="ecoVal">55</div><div class="bar"><div class="fill" id="ecoFill"></div></div></div><div class="stat"><div class="label">⚡ Energía</div><div class="value" id="energyVal">3</div></div><div class="stat"><div class="label">🧠 Conocimiento</div><div class="value" id="knowVal">0</div></div><div class="stat"><div class="label">🔥 Racha Viva</div><div class="value" id="streakVal">0</div></div></div><div class="card" id="gameEvent"><p class="small">Tira el dado para comenzar.</p></div><button class="btn gold" id="diceBtn" onclick="rollDice()">🎲 Tirar dado y avanzar</button><button class="btn sec" id="quizBtn" onclick="playLandedTile()" disabled>🧩 Jugar casilla</button>
   <button class="btn dark" onclick="openMiniGames()">📚 Elegir minijuego libre</button><button class="btn sec" onclick="openPackScreen()">🎴 Abrir sobre Eco</button><button class="btn" id="nextBtn" onclick="nextRound()" disabled>Siguiente ronda →</button></div>
 
@@ -338,7 +375,71 @@ const BOARD_TILES=[
  {type:"equilibrium",ico:"✨",name:"Equilibrium"}
 ];
 
-function renderBoard(){const grid=document.getElementById("boardGrid");if(!grid)return;grid.innerHTML=BOARD_TILES.map((t,i)=>`<div class="tile ${G.position===i?'active':''} ${t.type==='equilibrium'?'goal':''} ${G.pendingPosition===i?'pending':''}"><span class="num">${i+1}</span>${G.position===i?`<span class="guardianMark">${selectedGuardian?selectedGuardian.ico:"🧭"}</span>`:""}<span class="tIco">${t.ico}</span><div class="tName">${t.name}</div></div>`).join("");const info=document.getElementById("boardInfo");if(info){if(G.position===-1)info.textContent="Posición actual: Inicio";else{const t=BOARD_TILES[G.position];info.innerHTML=`Posición actual: <b>${G.position+1}</b> · Casilla <b>${t.ico} ${t.name}</b>`;}}}
+function renderBoard(){
+  const pos=G.position;
+  const total=BOARD_TILES.length;
+  const safePos=Math.max(-1,Math.min(pos,total-1));
+  const current=safePos>=0?BOARD_TILES[safePos]:{ico:"🏁",name:"Inicio",type:"start"};
+  const percent=safePos<0?0:Math.round(((safePos+1)/total)*100);
+
+  const heroIcon=document.getElementById("routeHeroIcon");
+  const heroTitle=document.getElementById("routeHeroTitle");
+  const heroText=document.getElementById("routeHeroText");
+  const progressText=document.getElementById("progressText");
+  const progressStep=document.getElementById("progressStep");
+  const progressFill=document.getElementById("progressFill");
+
+  if(heroIcon){
+    heroIcon.innerHTML=`${current.ico}${selectedGuardian?`<span class="guardianMark">${selectedGuardian.ico}</span>`:""}`;
+  }
+  if(heroTitle){
+    heroTitle.textContent=safePos<0?"Inicio del recorrido":`${current.ico} ${current.name}`;
+  }
+  if(heroText){
+    if(safePos<0) heroText.textContent="Tira el dado para comenzar el viaje hacia el Equilibrium.";
+    else if(current.type==="equilibrium") heroText.textContent="Llegaste a la meta. Activa la casilla para cerrar el juego.";
+    else heroText.textContent=`Casilla ${safePos+1} de ${total}. ${G.pendingPosition===safePos?"Avance provisional: supera el desafío para confirmar.":"Avance confirmado."}`;
+  }
+  if(progressText)progressText.textContent=`Progreso ${percent}%`;
+  if(progressStep)progressStep.textContent=safePos<0?`Inicio / ${total}`:`${safePos+1} / ${total}`;
+  if(progressFill)progressFill.style.width=percent+"%";
+
+  const strip=document.getElementById("routeStrip");
+  if(strip){
+    const base=safePos<0?0:safePos;
+    const start=Math.max(0,base-3);
+    const end=Math.min(total,start+9);
+    strip.innerHTML=BOARD_TILES.slice(start,end).map((t,offset)=>{
+      const i=start+offset;
+      const cls=[
+        "routeTile",
+        i===safePos?"current":"",
+        i<safePos?"done":"",
+        t.type==="equilibrium"?"goal":""
+      ].join(" ");
+      return `<div class="${cls}">
+        <span class="num">${i+1}</span>
+        <span class="ico">${t.ico}</span>
+        <div class="name">${t.name}</div>
+      </div>`;
+    }).join("");
+  }
+
+  const mini=document.getElementById("routeMiniMap");
+  if(mini){
+    mini.innerHTML=BOARD_TILES.map((t,i)=>{
+      const cls=["dot",i<safePos?"done":"",i===safePos?"current":"",t.type==="equilibrium"?"goal":""].join(" ");
+      return `<div class="${cls}" title="${i+1}. ${t.name}"></div>`;
+    }).join("");
+  }
+
+  const legacy=document.getElementById("boardInfo");
+  if(legacy){
+    if(safePos===-1) legacy.textContent="Posición actual: Inicio";
+    else legacy.innerHTML=`Posición actual: <b>${safePos+1}</b> · Casilla <b>${current.ico} ${current.name}</b>`;
+  }
+}
+
 function triggerTileByType(type){if(type==="quiz")return openQuiz();if(type==="species")return openSpeciesGame();if(type==="cloud")return openCloudGame();if(type==="circular")return openCircularGame();if(type==="insect")return openInsectGame();if(type==="irrigation")return openIrrigationGame();if(type==="crisis")return openCrisisGame();if(type==="ecosystem")return openEcosystemGame();if(type==="route")return openRouteGame();if(type==="evidence")return openEvidenceGame();if(type==="impact")return openImpactGame();if(type==="pack")return grantTreasureAccess();if(type==="equilibrium"){ markTileCleared(); finishClearedTile(); return; }
   if(type==="mission"){
     setMissionHint("Misión real: registra un avistamiento o acción ecológica con foto real y descripción.");
