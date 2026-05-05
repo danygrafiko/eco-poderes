@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Eco-Poderes Territorio Vivo v3.3.1 — Fix Respuestas y Sobres</title>
+<title>Eco-Poderes Territorio Vivo v3.5.1 — Fix Respuestas y Sobres</title>
 <style>
 :root{--bg:#06101d;--panel:#10233b;--line:#264b72;--txt:#edf6ff;--muted:#93abc4;--green:#49d48f;--gold:#ffc94a;--blue:#5b7cff;--purple:#9d68ff;--red:#ff5d6c}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(73,212,143,.16),transparent 28%),radial-gradient(circle at 90% 10%,rgba(91,124,255,.18),transparent 30%),linear-gradient(180deg,#050b14,#07111f 45%,#03070d);color:var(--txt);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:540px;margin:auto;min-height:100vh}
@@ -94,11 +94,25 @@
 .qualityFill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));width:0%;transition:.3s}
 
 .techNote{border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.07);border-radius:16px;padding:12px;margin-top:10px;color:#d9fbff;font-size:.8rem}
+
+.rouletteArena{position:relative;display:flex;justify-content:center;align-items:center;margin:18px 0 10px}
+.roulettePointer{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:1.7rem;color:var(--gold);z-index:5}
+.rouletteWheel{position:relative;width:280px;height:280px;border-radius:50%;border:6px solid var(--line);background:radial-gradient(circle at center,#15253b 0%,#0c1827 60%,#07111b 100%);box-shadow:0 16px 40px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.03);transition:transform 3.6s cubic-bezier(.16,.8,.12,1)}
+.rouletteCenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:999px;background:#091523;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;z-index:3}
+.rouletteSeg{position:absolute;left:50%;top:50%;transform-origin:0 0}
+.rouletteSeg span{display:block;width:96px;transform:translate(-50%,-118px);padding:6px 8px;border-radius:12px;border:1px solid var(--line);background:rgba(8,21,38,.9);color:#dce9ff;font-size:.62rem;line-height:1.14;font-weight:850;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.rouletteSeg.target span{border-color:var(--gold);color:var(--gold)}
+.rouletteCaption{text-align:center;color:var(--muted);font-size:.78rem}
+.rouletteResultBox{border:1px solid rgba(255,201,74,.45);background:rgba(255,201,74,.08);border-radius:14px;padding:12px;margin-top:10px;color:#fff4d5}
+@media(max-width:390px){.rouletteWheel{width:248px;height:248px}.rouletteSeg span{width:84px;transform:translate(-50%,-102px);font-size:.57rem}}
+
+.accreditBadge{display:inline-block;border:1px solid rgba(52,211,153,.45);background:rgba(52,211,153,.08);color:#c9ffe8;border-radius:999px;padding:5px 10px;font-size:.72rem;font-weight:950;margin:4px 4px 8px 0}
+.rouletteAuto{border:1px solid rgba(255,201,74,.45);background:rgba(255,201,74,.08);border-radius:14px;padding:10px;margin-top:10px;color:#fff4d5;font-size:.78rem}
 </style>
 <meta name="theme-color" content="#0a0f1a">
 </head>
 <body>
-<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v3.3</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
+<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v3.5</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
   <button class="btn dark" onclick="go('about')">📚 Acerca del proyecto</button></div>
 
 <div class="screen" id="profile">
@@ -335,16 +349,16 @@
 <div class="screen" id="missionGame">
   <div class="topbar"><button class="btn dark" onclick="go('game')" style="width:auto">←</button><div class="pill">Misión Real</div><div class="pill">🗝️ <span id="keyMission">0</span></div></div>
   <div class="card glow">
-    <h2>🌎 Plan de Misión Real</h2>
+    <h2>🌎 Acreditar Misión Real</h2>
     <div>
       <span class="missionStep" id="ms1">1. Objetivo</span>
       <span class="missionStep" id="ms2">2. Evidencia</span>
-      <span class="missionStep" id="ms3">3. Validación</span>
+      <span class="missionStep" id="ms3">3. Evidencia</span><span class="missionStep" id="ms4">4. Validación</span>
     </div>
     <p class="small" id="missionScenario"></p>
     <div id="missionOptions"></div>
     <div class="qualityMeter"><div class="qualityFill" id="missionQuality"></div></div>
-    <p class="small" id="missionQualityText">Calidad de misión: 0%</p>
+    <p class="small" id="missionQualityText">Calidad de acreditación: 0%</p>
   </div>
   <div class="card small" id="missionFeedback" style="display:none"></div>
   <button class="btn" id="missionContinue" onclick="finishMiniGame()" style="display:none">Continuar partida →</button>
@@ -369,6 +383,28 @@
   <button class="btn" id="keyContinue" onclick="openPackScreen()" style="display:none">Volver a Tesoros →</button>
 </div>
 
+
+<div class="screen" id="rouletteScreen">
+  <div class="topbar">
+    <button class="btn dark" onclick="go('game')" style="width:auto">←</button>
+    <div class="pill">🎡 Ruleta de Preguntas</div>
+    <div class="pill">🌱 <span id="seedRoulette">0</span></div>
+  </div>
+  <div class="card glow">
+    <h2>🎡 Gira la ruleta</h2>
+    <p class="small">La ruleta se activa automáticamente y usa un mazo de preguntas sin repetición. Hay más casillas Eco Quiz en la ruta para que aparezca con mayor frecuencia.</p>
+    <div class="rouletteArena">
+      <div class="roulettePointer">▼</div>
+      <div class="rouletteWheel" id="rouletteWheel">
+        <div class="rouletteCenter">?</div>
+      </div>
+    </div>
+    <p class="rouletteCaption" id="rouletteCaption">Preparando giro…</p>
+    <button class="btn" id="rouletteSpinBtn" onclick="spinQuestionRoulette()">Girar ahora</button><button class="btn dark" onclick="resetQuestionRotation()">Reiniciar ruleta</button>
+  </div>
+  <div class="card small" id="rouletteResult" style="display:none"></div>
+</div>
+
 <div class="screen" id="quiz"><div class="topbar"><button class="btn dark" onclick="go('game')" style="width:auto">←</button><div class="pill" id="quizCat">Eco Quiz</div><div class="pill">🌱 <span id="seedQuiz">0</span></div></div><div class="card"><h2 id="qText"></h2><div id="qOps"></div></div><div class="card small" id="qFeedback" style="display:none"></div><button class="btn sec" id="aboutBtn" onclick="showAboutQuestion()" style="display:none">📚 Acerca de esta pregunta</button><button class="btn" id="continueBtn" onclick="finishQuiz()" style="display:none">Continuar →</button></div>
 <div class="screen" id="explore"><div class="topbar"><button class="btn dark" onclick="go('home')" style="width:auto">←</button><div class="pill">Bitácora Eco-Poderes</div><div class="pill">🌱 <span id="seedExplore">0</span></div></div><div class="card glow"><h2>Registrar avistamiento real</h2><p class="small">Sube una foto capturada por ti, elige categoría y describe lo observado. No se aceptan registros ficticios.</p></div>
 <div class="card" id="missionHintBox" style="display:none"><h3>🌎 Misión sugerida</h3><p class="small" id="missionHintText"></p></div><div class="catgrid" id="catGrid"></div><div class="card"><label class="small"><b>📸 Foto real obligatoria</b></label><input type="file" id="photoInput" accept="image/*" onchange="previewPhoto(event)"><img id="photoPreview" class="preview"><br><br><label class="small"><b>📝 Descripción</b></label><textarea id="obsDesc" placeholder="Describe qué observaste, dónde fue y qué crees que significa..."></textarea><br><br><label class="small"><b>📍 Comuna / sector</b></label><input id="obsPlace" placeholder="Ej: Rancagua, Machalí, Requínoa..."><br><br><div class="notice" id="obsNotice"></div>
@@ -385,45 +421,46 @@ const CATS=[{id:"insecto",ico:"🐞",name:"Insecto"},{id:"planta",ico:"🌿",nam
 const PACK_CARDS=[{name:"🌿 Restauración Nativa",effect:"eco",value:8,rarity:"Rara"},{name:"🛡️ Sabiduría del Territorio",effect:"shield",value:1,rarity:"Rara"},{name:"🔥 Racha Viva",effect:"streak",value:1,rarity:"Épica"},{name:"🐞 Control Biológico",effect:"eco",value:5,rarity:"Épica"},{name:"☁️ Lector del Cielo",effect:"energy",value:4,rarity:"Rara"},{name:"💧 Reserva de Agua",effect:"energy",value:3,rarity:"Común"}];
 
 const BOARD_TILES=[
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"species",ico:"🌿",name:"Especie"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"insect",ico:"🐞",name:"Insectos"},
+ {type:"mission",ico:"🌎",name:"Acreditar"},
  {type:"cloud",ico:"☁️",name:"Nubes"},
  {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"circular",ico:"♻️",name:"Circular"},
  {type:"irrigation",ico:"💧",name:"Agua"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"evidence",ico:"🔎",name:"Evidencias"},
  {type:"impact",ico:"⚖️",name:"Impacto"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"crisis",ico:"🚨",name:"Crisis"},
  {type:"ecosystem",ico:"🧩",name:"Ecosistema"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"route",ico:"🧭",name:"Ruta Eco"},
  {type:"pack",ico:"🎴",name:"Tesoro"},
- {type:"mission",ico:"🌎",name:"Misión Real"},
+ {type:"mission",ico:"🌎",name:"Acreditar"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"species",ico:"🌿",name:"Especie"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"insect",ico:"🐞",name:"Insectos"},
+ {type:"mission",ico:"🌎",name:"Acreditar"},
  {type:"cloud",ico:"☁️",name:"Nubes"},
  {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"circular",ico:"♻️",name:"Circular"},
  {type:"irrigation",ico:"💧",name:"Agua"},
- {type:"evidence",ico:"🔎",name:"Evidencias"},
- {type:"impact",ico:"⚖️",name:"Impacto"},
- {type:"crisis",ico:"🚨",name:"Crisis"},
- {type:"ecosystem",ico:"🧩",name:"Ecosistema"},
- {type:"route",ico:"🧭",name:"Ruta Eco"},
- {type:"pack",ico:"🎴",name:"Tesoro"},
- {type:"mission",ico:"🌎",name:"Misión Real"},
- {type:"species",ico:"🌿",name:"Especie"},
- {type:"insect",ico:"🐞",name:"Insectos"},
- {type:"cloud",ico:"☁️",name:"Nubes"},
  {type:"quiz",ico:"🧠",name:"Eco Quiz"},
- {type:"circular",ico:"♻️",name:"Circular"},
- {type:"irrigation",ico:"💧",name:"Agua"},
  {type:"evidence",ico:"🔎",name:"Evidencias"},
  {type:"impact",ico:"⚖️",name:"Impacto"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"crisis",ico:"🚨",name:"Crisis"},
  {type:"ecosystem",ico:"🧩",name:"Ecosistema"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"route",ico:"🧭",name:"Ruta Eco"},
  {type:"pack",ico:"🎴",name:"Tesoro"},
- {type:"mission",ico:"🌎",name:"Misión Real"},
+ {type:"mission",ico:"🌎",name:"Acreditar"},
+ {type:"quiz",ico:"🧠",name:"Eco Quiz"},
  {type:"equilibrium",ico:"✨",name:"Equilibrium"}
 ];
 
@@ -492,7 +529,7 @@ function renderBoard(){
   }
 }
 
-function triggerTileByType(type){if(type==="quiz")return openQuiz();if(type==="species")return openSpeciesGame();if(type==="cloud")return openCloudGame();if(type==="circular")return openCircularGame();if(type==="insect")return openInsectGame();if(type==="irrigation")return openIrrigationGame();if(type==="crisis")return openCrisisGame();if(type==="ecosystem")return openEcosystemGame();if(type==="route")return openRouteGame();if(type==="evidence")return openEvidenceGame();if(type==="impact")return openImpactGame();if(type==="pack")return grantTreasureAccess();if(type==="equilibrium"){ markTileCleared(); finishClearedTile(); return; }
+function triggerTileByType(type){if(type==="quiz")return openQuestionRoulette();if(type==="species")return openSpeciesGame();if(type==="cloud")return openCloudGame();if(type==="circular")return openCircularGame();if(type==="insect")return openInsectGame();if(type==="irrigation")return openIrrigationGame();if(type==="crisis")return openCrisisGame();if(type==="ecosystem")return openEcosystemGame();if(type==="route")return openRouteGame();if(type==="evidence")return openEvidenceGame();if(type==="impact")return openImpactGame();if(type==="pack")return grantTreasureAccess();if(type==="equilibrium"){ markTileCleared(); finishClearedTile(); return; }
   if(type==="mission"){return openMissionGame();}return openMiniGames();}
 function playLandedTile(){if(!G.landedType){alert("Primero tira el dado y cae en una casilla.");return;}triggerTileByType(G.landedType);}
 
@@ -546,7 +583,9 @@ function def(){
     treasureKeys:0,
     questionHistory:[],
     questionSeen:{},
+    questionDecks:{},
     missionsCompleted:[],
+    missionAccreditations:[],
     missionHint:null
   };
 }
@@ -598,7 +637,7 @@ function save(){
   }catch(e){/* almacenamiento local no disponible */}
 }
 function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));document.getElementById(id).classList.add("on");if(id==="playSetup")renderGuardians();if(id==="profile")loadProfileForm();if(id==="explore"){renderCats();updateSeeds(); const n=document.getElementById("obsNotice"); if(n){n.style.display="none"; n.innerHTML="";}}if(id==="game")renderBoard();window.scrollTo(0,0)}function updateSeeds(){
-  ["seedTop","seedQuiz","seedExplore","seedMini","seedSpecies","seedCloud","seedCircular","seedInsect","seedIrrigation","seedCrisis","seedEcoChain","seedRoute","seedEvidence","seedImpact","seedPack"].forEach(id=>{
+  ["seedTop","seedQuiz","seedExplore","seedMini","seedSpecies","seedCloud","seedCircular","seedInsect","seedIrrigation","seedCrisis","seedEcoChain","seedRoute","seedEvidence","seedImpact","seedPack","seedRoulette"].forEach(id=>{
     let e=document.getElementById(id);
     if(e)e.textContent=S.seeds;
   });
@@ -714,9 +753,12 @@ function resetQuestionBags(){
   Object.keys(G.qBags).forEach(k=>G.qBags[k]=shuf(G.qBags[k]));
 }
 
+
+
 function persistentQuestionHistory(){
   if(!S.questionHistory)S.questionHistory=[];
   if(!S.questionSeen)S.questionSeen={};
+  if(!S.questionDecks)S.questionDecks={};
 }
 
 function recordQuestionUse(idx){
@@ -724,104 +766,94 @@ function recordQuestionUse(idx){
   const key=String(idx);
   S.questionHistory.push(idx);
   S.questionSeen[key]=(S.questionSeen[key]||0)+1;
-  if(S.questionHistory.length>180){
-    const old=S.questionHistory.shift();
-    // keep seen counts as long-term soft penalty, not exact block
-  }
+  if(S.questionHistory.length>520)S.questionHistory=S.questionHistory.slice(-520);
   if(!G.qHistory)G.qHistory=[];
   G.qHistory.push(idx);
-  if(G.qHistory.length>70)G.qHistory.shift();
+  if(G.qHistory.length>120)G.qHistory=G.qHistory.slice(-120);
   save();
 }
 
-function weightedPickQuestion(level){
+function questionLevelPool(level){
+  return QUESTIONS.map((q,i)=>({q,i})).filter(x=>(x.q.nivel||"desafio")===level);
+}
+
+function refillQuestionDeck(level){
   persistentQuestionHistory();
-  let pool=QUESTIONS.map((q,i)=>({q,i})).filter(x=>(x.q.nivel||"desafio")===level);
-  if(!pool.length) pool=QUESTIONS.map((q,i)=>({q,i}));
+  const recent=new Set((S.questionHistory||[]).slice(-220));
+  let candidates=questionLevelPool(level).map(x=>x.i);
+  let fresh=candidates.filter(i=>!recent.has(i));
+  if(fresh.length<35)fresh=candidates.filter(i=>!(G.qHistory||[]).includes(i));
+  if(fresh.length<20)fresh=candidates.slice();
 
-  const gameHist=new Set(G.qHistory||[]);
-  const persistentHist=new Set((S.questionHistory||[]).slice(-140));
+  // Mezcla fuerte para que no se repita el patrón de región/categoría.
+  fresh=shuf(fresh);
+  S.questionDecks[level]=fresh;
+  save();
+}
 
-  // First avoid questions seen in this game and recently across previous games.
-  let fresh=pool.filter(x=>!gameHist.has(x.i) && !persistentHist.has(x.i));
-  if(fresh.length>=12) pool=fresh;
-  else {
-    fresh=pool.filter(x=>!gameHist.has(x.i));
-    if(fresh.length>=12) pool=fresh;
+function drawFromDeck(level){
+  persistentQuestionHistory();
+  if(!S.questionDecks[level] || S.questionDecks[level].length<8)refillQuestionDeck(level);
+
+  const globalRecent=new Set((S.questionHistory||[]).slice(-180));
+  const gameRecent=new Set((G.qHistory||[]).slice(-90));
+  let deck=S.questionDecks[level]||[];
+
+  for(let attempts=0;attempts<deck.length;attempts++){
+    const idx=deck.pop();
+    const q=QUESTIONS[idx];
+    if(!q)continue;
+    if(!globalRecent.has(idx) && !gameRecent.has(idx) && q.cat!==G.lastCat){
+      S.questionDecks[level]=deck;
+      return idx;
+    }
+    deck.unshift(idx);
   }
 
-  const pref=normalizeRegionName(preferredRegion());
-  const roll=Math.random();
-  let filtered=pool;
-
-  // Less restrictive than before: prevents the same regional subset from repeating forever.
-  if(roll<0.45 && pref){
-    const local=pool.filter(x=>normalizeRegionName(x.q.region||"").includes(pref));
-    if(local.length>=6) filtered=local;
-  }else if(roll<0.65){
-    const national=pool.filter(x=>normalizeRegionName(x.q.region||"")==="nacional");
-    if(national.length>=6) filtered=national;
-  }else if(roll<0.85){
-    const other=pool.filter(x=>{
-      const qr=normalizeRegionName(x.q.region||"");
-      return qr && qr!=="nacional" && (!pref || !qr.includes(pref));
-    });
-    if(other.length>=6) filtered=other;
-  }else{
-    const pdf=pool.filter(x=>x.q.sourcePack==="Banco País Pro PDF");
-    if(pdf.length>=6) filtered=pdf;
-  }
-
-  const weighted=filtered.map(x=>{
-    const q=x.q;
-    const qr=normalizeRegionName(q.region||"");
-    let w=1;
-    if(qr && pref && qr.includes(pref)) w+=2.4;
-    if(qr==="nacional") w+=1.4;
-    if(q.sourcePack==="Banco País Pro PDF") w+=1.8;
-    if(q.cat && G.lastCat && q.cat===G.lastCat) w-=1.2;
-    const seen=(S.questionSeen&&S.questionSeen[String(x.i)])||0;
-    w-=Math.min(4,seen*1.15);
-    if(gameHist.has(x.i)) w-=50;
-    if(persistentHist.has(x.i)) w-=8;
-    return {i:x.i,w:Math.max(0.05,w)};
-  });
-
-  let total=weighted.reduce((a,b)=>a+b.w,0);
-  let r=Math.random()*total;
-  for(const x of weighted){
-    r-=x.w;
-    if(r<=0)return x.i;
-  }
-  return weighted[Math.floor(Math.random()*weighted.length)].i;
+  // Fallback: pregunta menos vista de todo el nivel.
+  let pool=questionLevelPool(level);
+  pool.sort((a,b)=>((S.questionSeen[String(a.i)]||0)-(S.questionSeen[String(b.i)]||0)));
+  const top=pool.slice(0,Math.min(40,pool.length));
+  const pick=top[Math.floor(Math.random()*top.length)];
+  return pick?pick.i:Math.floor(Math.random()*QUESTIONS.length);
 }
 
 function level(){
   const k=S.knowledge||0;
   const r=Math.random();
-  // Curva variable por turno para que no se repita siempre el mismo nivel.
+  // Más variación desde el inicio: evita que las primeras partidas se sientan iguales.
   if(k<3){
-    if(r<0.55)return"basico";
-    if(r<0.90)return"desafio";
+    if(r<0.38)return"basico";
+    if(r<0.78)return"desafio";
     return"experto";
   }
   if(k<8){
-    if(r<0.18)return"basico";
-    if(r<0.62)return"desafio";
+    if(r<0.12)return"basico";
+    if(r<0.50)return"desafio";
     return"experto";
   }
-  if(r<0.10)return"basico";
-  if(r<0.38)return"desafio";
+  if(r<0.06)return"basico";
+  if(r<0.30)return"desafio";
   return"experto";
 }
 
 function nextQ(){
   const l=level();
-  const idx=weightedPickQuestion(l);
+  const idx=drawFromDeck(l);
   const q=QUESTIONS[idx]||QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];
   recordQuestionUse(idx);
   G.lastCat=q.cat||"";
+  G.lastRegion=q.region||"";
   return q;
+}
+
+function resetQuestionRotation(){
+  S.questionDecks={};
+  S.questionHistory=[];
+  S.questionSeen={};
+  if(G){G.qHistory=[];G.lastCat="";}
+  save();
+  alert("Ruleta reiniciada: se limpiaron las preguntas recientes.");
 }
 
 function reward(q){let n=q.nivel||"desafio";if(n==="basico")return{seed:10,know:1,energy:2,label:"Nivel Básico · Reconocimiento"};if(n==="desafio")return{seed:18,know:1,energy:2,label:"Nivel Desafío · Conocimiento profundo"};return{seed:30,know:2,energy:3,label:"Nivel Experto · Decisión ecológica"}}
@@ -1405,30 +1437,23 @@ function answerImpact(i,btn){
 
 const MISSION_GAMES=[
  {
-  title:"Avistamiento de especie o elemento natural",
-  rewardMission:"Registra una especie, nube, insecto, planta, árbol, hongo o evidencia ambiental real con foto propia, descripción y sector.",
+  title:"Acreditar Registro de Especie",
+  rewardMission:"Acredita un registro completo de especie: foto propia, categoría, rasgos visibles, sector/comuna y observación honesta. Ideal: especie nativa, insecto, hongo, nube o árbol urbano.",
   steps:[
-   {label:"Objetivo",scenario:"Elige el objetivo más potente para una misión real de exploración.",ops:["Registrar una observación real del entorno con foto propia","Completar una misión usando una imagen de internet","Subir muchas fotos repetidas para ganar más","Inventar el nombre de una especie para que parezca experto"],correct:0,feedback:"Una misión real debe comenzar con observación auténtica del territorio."},
-   {label:"Evidencia",scenario:"¿Qué evidencia hace que el registro sea útil para la comunidad?",ops:["Foto propia, descripción clara, comuna/sector general y rasgos observados","Solo un emoji o una frase corta","Ubicación exacta de la casa del jugador","Foto sin contexto ni descripción"],correct:0,feedback:"La evidencia útil permite aprender, comentar y validar sin exponer datos sensibles."},
-   {label:"Validación",scenario:"Si no sabes el nombre exacto de lo observado, ¿qué haces?",ops:["Indicar que es una identificación posible y describir rasgos visibles","Inventar un nombre científico","Copiar la especie de otra región","No registrar nada porque no sabes todo"],correct:0,feedback:"La honestidad aumenta la calidad del registro y permite aprendizaje comunitario."}
+   {label:"Objetivo",scenario:"Quieres acreditar un registro de especie para ganar llave. ¿Cuál objetivo es más completo?",ops:["Registrar una especie real con foto propia, rasgos visibles, categoría y sector general","Subir cualquier foto bonita sin descripción","Subir una foto repetida para juntar volumen","Usar una imagen de internet si se ve clara"],correct:0,feedback:"La acreditación premia registros reales, completos y útiles para aprender."},
+   {label:"Variedad",scenario:"El sistema busca un registro variado de especies. ¿Qué conducta aporta más al mapa ecológico?",ops:["Registrar distintos grupos: plantas, insectos, aves, hongos, nubes o evidencias ambientales","Subir siempre la misma planta del mismo ángulo","Registrar solo mascotas domésticas","Subir fotos sin categoría para avanzar rápido"],correct:0,feedback:"La variedad aumenta el valor educativo y territorial de la comunidad."},
+   {label:"Evidencia",scenario:"¿Qué evidencia mínima permite revisar el registro sin exponer datos sensibles?",ops:["Foto propia, descripción, comuna/sector general y rasgos observados","Dirección exacta del hogar","Nombre completo de menores que salen en la foto","Solo un emoji y la foto"],correct:0,feedback:"La evidencia debe ser suficiente para validar y segura para compartir."},
+   {label:"Validación",scenario:"Si no sabes la especie exacta, ¿qué opción conserva rigor?",ops:["Marcar identificación posible, describir rasgos y pedir apoyo comunitario","Inventar un nombre científico","Copiar una especie parecida de otra región","No registrar nada si no eres experto"],correct:0,feedback:"La duda honesta también es aprendizaje si está bien documentada."}
   ]
  },
  {
-  title:"Acción ecológica comprobable",
-  rewardMission:"Realiza o registra una acción ecológica real: limpieza, separación de residuos, ahorro de agua, cuidado de árbol o reporte responsable.",
+  title:"Acreditar Acción Eco Real",
+  rewardMission:"Acredita una acción eco real con evidencia: limpieza, separación de residuos, ahorro de agua, cuidado de árbol, recuperación de suelo o reporte responsable.",
   steps:[
-   {label:"Objetivo",scenario:"¿Qué acción tiene mejor valor como misión real?",ops:["Acción concreta con evidencia: antes/después o resultado visible","Prometer que harás algo algún día","Subir una frase motivacional sin acción","Repetir un registro viejo como si fuera nuevo"],correct:0,feedback:"El juego debe premiar acciones verificables, no solo declaraciones."},
-   {label:"Evidencia",scenario:"¿Qué debe mostrar la evidencia de una acción ecológica?",ops:["Qué se hizo, dónde de forma general y cuál fue el cambio observado","Solo una foto muy cerrada sin explicación","Datos personales de terceros","Una imagen artificial sin aviso"],correct:0,feedback:"El registro debe mostrar contexto suficiente sin comprometer seguridad."},
-   {label:"Validación",scenario:"¿Qué criterio debe usar la comunidad para valorar la acción?",ops:["Calidad, impacto real y posibilidad de aprendizaje","Cantidad de fotos aunque sean repetidas","Premiar siempre al que más presiona botones","Aceptar cualquier cosa para no incomodar"],correct:0,feedback:"La validación debe cuidar calidad, evidencia y propósito educativo."}
-  ]
- },
- {
-  title:"Investigación del territorio",
-  rewardMission:"Investiga una especie, área verde, nube, cuenca o amenaza local y registra una observación real asociada.",
-  steps:[
-   {label:"Objetivo",scenario:"¿Cuál es una buena pregunta de investigación territorial?",ops:["¿Qué elemento de mi entorno puedo observar, describir y cuidar?","¿Cómo gano semillas sin salir a observar?","¿Qué respuesta puedo inventar más rápido?","¿Cómo copio el registro de otra persona?"],correct:0,feedback:"La investigación parte con curiosidad y observación directa."},
-   {label:"Evidencia",scenario:"¿Qué dato mejora el valor educativo del registro?",ops:["Rasgos observables: forma, color, comportamiento, clima o condición del lugar","Solo decir 'bonito'","Poner una dirección exacta","Afirmar certeza absoluta sin evidencia"],correct:0,feedback:"Los rasgos observables ayudan a comentar y aprender incluso sin identificación perfecta."},
-   {label:"Validación",scenario:"¿Cómo debería responder la comunidad ante una identificación dudosa?",ops:["Comentar con respeto, sugerir posibilidades y pedir mejor evidencia si falta","Burlarse del error","Validar todo automáticamente","Rechazar todo lo que no tenga nombre científico"],correct:0,feedback:"La comunidad debe enseñar, no castigar la exploración honesta."}
+   {label:"Objetivo",scenario:"¿Qué acción merece acreditación para llave?",ops:["Acción real con evidencia visible y descripción del impacto","Promesa sin evidencia","Foto descargada de una campaña externa","Comentario motivacional sin acción"],correct:0,feedback:"Las llaves deben premiar acciones verificables."},
+   {label:"Variedad",scenario:"¿Qué acción suma más diversidad al mapa comunitario?",ops:["Combinar cuidado de agua, residuos, especies y suelo en distintos registros","Repetir una misma foto muchas veces","Registrar solo acciones sin lugar ni contexto","Subir registros falsos para completar rápido"],correct:0,feedback:"El sistema necesita registros variados para construir una bitácora territorial rica."},
+   {label:"Evidencia",scenario:"¿Qué evidencia hace fuerte una acción eco?",ops:["Antes/después, foto propia, descripción breve y sector general","Solo decir 'yo ayudé'","Mostrar datos personales de terceros","Usar fotos artificiales sin aclararlo"],correct:0,feedback:"La evidencia mejora la validación y evita abuso."},
+   {label:"Validación",scenario:"¿Cómo debería premiarse una acción con evidencia incompleta?",ops:["Recompensa baja y solicitud de mejora","Llave inmediata","Premio físico directo","Validación automática regional"],correct:0,feedback:"La recompensa debe escalar con la calidad de la evidencia."}
   ]
  }
 ];
@@ -1484,7 +1509,7 @@ function openMissionGame(){
 
 function renderMissionStep(){
   const step=currentMission.steps[missionStep];
-  ["ms1","ms2","ms3"].forEach((id,idx)=>{
+  ["ms1","ms2","ms3","ms4"].forEach((id,idx)=>{
     const el=document.getElementById(id);
     if(el)el.className="missionStep"+(idx===missionStep?" on":"");
   });
@@ -1492,7 +1517,7 @@ function renderMissionStep(){
   const qf=document.getElementById("missionQuality");
   const qt=document.getElementById("missionQualityText");
   if(qf)qf.style.width=quality+"%";
-  if(qt)qt.textContent=`Calidad de misión: ${quality}%`;
+  if(qt)qt.textContent=`Calidad de acreditación: ${quality}%`;
   const sh=shuffleMissionOps(step);
   step.viewOps=sh.ops; step.viewCorrect=sh.correct;
   document.getElementById("missionScenario").innerHTML=`<b>${currentMission.title}</b><br><br>${step.scenario}`;
@@ -1526,35 +1551,38 @@ function finishMissionGame(){
   const qf=document.getElementById("missionQuality");
   const qt=document.getElementById("missionQualityText");
   if(qf)qf.style.width=quality+"%";
-  if(qt)qt.textContent=`Calidad de misión: ${quality}%`;
+  if(qt)qt.textContent=`Calidad de acreditación: ${quality}%`;
 
   let fb="";
   if(missionScore===total){
     markTileCleared();
-    S.treasureKeys=(S.treasureKeys||0)+1;
-    S.seeds+=40;
-    badge("🌎 Misión Real Excelente");
+    S.treasureKeys=(S.treasureKeys||0)+2;
+    S.seeds+=50;
+    badge("🌎 Registro Acreditado Excelente");
     setMissionHint(currentMission.rewardMission);
-    fb=`🌟 Misión excelente: ${missionScore}/${total}.<br>Ganaste +40 semillas y 1 llave de tesoro.<br><br><div class="feedbackBox">Misión desbloqueada: ${currentMission.rewardMission}<br><br>Feedback: esta misión tiene objetivo, evidencia y criterio de validación.</div>`;
-  }else if(missionScore>=2){
+    S.missionAccreditations=S.missionAccreditations||[];
+    S.missionAccreditations.push({title:currentMission.title,quality,keys:2,date:new Date().toLocaleDateString("es-CL")});
+    fb=`🌟 Acreditación excelente: ${missionScore}/${total}.<br>Ganaste +50 semillas y <b>2 llaves</b> de tesoro.<br><br><div class="feedbackBox">Misión acreditada: ${currentMission.rewardMission}<br><br>Feedback: este estándar asegura registros más completos, variados y revisables.</div>`;
+  }else if(missionScore>=3){
     markTileCleared();
-    S.seeds+=20;
-    badge("🌎 Misión Real Planificada");
+    S.treasureKeys=(S.treasureKeys||0)+1;
+    S.seeds+=25;
+    badge("🌎 Registro Acreditado");
     setMissionHint(currentMission.rewardMission);
-    fb=`✅ Misión aceptable: ${missionScore}/${total}.<br>Ganaste +20 semillas. No ganaste llave porque faltó calidad total.<br><br><div class="feedbackBox">Misión sugerida: ${currentMission.rewardMission}<br><br>Feedback: para ganar llaves debes asegurar evidencia clara y validación confiable.</div>`;
+    S.missionAccreditations=S.missionAccreditations||[];
+    S.missionAccreditations.push({title:currentMission.title,quality,keys:1,date:new Date().toLocaleDateString("es-CL")});
+    fb=`✅ Acreditación aceptada: ${missionScore}/${total}.<br>Ganaste +25 semillas y <b>1 llave</b>.<br><br><div class="feedbackBox">Feedback: el registro es útil, pero debe mejorar para llegar a acreditación excelente.</div>`;
   }else{
     markTileFailed();
-    fb=`❌ Misión débil: ${missionScore}/${total}.<br><br><div class="feedbackBox">Feedback: una misión real no puede basarse en imágenes ajenas, datos inseguros o registros sin contexto. Tu guardián no avanza.</div>`;
+    fb=`❌ Acreditación insuficiente: ${missionScore}/${total}.<br>No ganas llave y no avanzas.<br><br><div class="feedbackBox">Feedback: para conseguir llaves debes demostrar objetivo claro, variedad, evidencia propia y criterio de validación.</div>`;
   }
   save();updateSeeds();
-  document.getElementById("missionScenario").innerHTML=`<b>Resultado de Misión Real</b>`;
+  document.getElementById("missionScenario").innerHTML=`<b>Resultado de Acreditación</b>`;
   document.getElementById("missionOptions").innerHTML="";
   document.getElementById("missionFeedback").innerHTML=fb;
   document.getElementById("missionFeedback").style.display="block";
   document.getElementById("missionContinue").style.display="block";
 }
-
-let keyStep=0,keyScore=0;
 
 function openKeyChallenge(){
   if((G.energy||0)<3){
@@ -1640,8 +1668,85 @@ function finishMiniGame(){
 }
 
 
-function openQuiz(){
-  currentQ=nextQ();
+
+let rouletteTargetQ=null, rouletteItems=[], rouletteSpinning=false;
+
+function rouletteLabel(q){
+  const lvl=(q.nivel||"desafio")==="basico"?"Básico":(q.nivel||"desafio")==="desafio"?"Desafío":"Experto";
+  const reg=q.region&&q.region!=="Nacional"?q.region:"Chile";
+  return `${reg}<br>${q.cat}<br>${lvl}`;
+}
+
+function buildRouletteItems(targetQ){
+  const wheel=document.getElementById("rouletteWheel");
+  if(!wheel)return;
+  let sample=QUESTIONS.filter(q=>q.pregunta!==targetQ.pregunta);
+  sample.sort(()=>Math.random()-0.5);
+  sample=sample.slice(0,7);
+  rouletteItems=[...sample,targetQ];
+  rouletteItems.sort(()=>Math.random()-0.5);
+  const targetIndex=rouletteItems.findIndex(q=>q.pregunta===targetQ.pregunta);
+  wheel.innerHTML='<div class="rouletteCenter">🎯</div>';
+  const segAngle=360/rouletteItems.length;
+  rouletteItems.forEach((q,i)=>{
+    const ang=i*segAngle;
+    const div=document.createElement("div");
+    div.className="rouletteSeg"+(i===targetIndex?" target":"");
+    div.style.transform=`rotate(${ang}deg)`;
+    div.innerHTML=`<span style="transform:translate(-50%,-118px) rotate(${-ang}deg)">${rouletteLabel(q)}</span>`;
+    wheel.appendChild(div);
+  });
+  wheel.dataset.targetIndex=String(targetIndex);
+  wheel.style.transform="rotate(0deg)";
+  const cap=document.getElementById("rouletteCaption");
+  if(cap)cap.textContent="La ruleta mezcla región, categoría y nivel para darte una pregunta más variada.";
+}
+
+function openQuestionRoulette(){
+  rouletteTargetQ=nextQ();
+  rouletteSpinning=false
+}
+
+function openQuestionRoulette(){
+  rouletteTargetQ=nextQ();
+  rouletteSpinning=false;
+  buildRouletteItems(rouletteTargetQ);
+  const rr=document.getElementById("rouletteResult");
+  if(rr){rr.style.display="none";rr.innerHTML="";}
+  const btn=document.getElementById("rouletteSpinBtn");
+  if(btn){btn.disabled=false;btn.textContent="Girar ruleta";}
+  updateSeeds();
+  go("rouletteScreen");
+  setTimeout(()=>{ if(!rouletteSpinning) spinQuestionRoulette(); },650);
+}
+
+
+function spinQuestionRoulette(){
+  if(rouletteSpinning||!rouletteTargetQ)return;
+  rouletteSpinning=true;
+  const wheel=document.getElementById("rouletteWheel");
+  const btn=document.getElementById("rouletteSpinBtn");
+  const rr=document.getElementById("rouletteResult");
+  const cap=document.getElementById("rouletteCaption");
+  const targetIndex=parseInt(wheel.dataset.targetIndex||"0",10);
+  const segAngle=360/Math.max(1,rouletteItems.length);
+  const finalAngle=(360*5)+(360-(targetIndex*segAngle));
+  if(btn){btn.disabled=true;btn.textContent="Girando...";}
+  if(cap)cap.innerHTML="🎡 Girando la ruleta...";
+  wheel.style.transform=`rotate(${finalAngle}deg)`;
+  setTimeout(()=>{
+    if(rr){
+      rr.className="card small rouletteResultBox";
+      rr.innerHTML=`<b>Pregunta seleccionada</b><br>${rouletteTargetQ.region&&rouletteTargetQ.region!=="Nacional"?rouletteTargetQ.region+" · ":""}${rouletteTargetQ.cat}<br><span class="small">Nivel ${(rouletteTargetQ.nivel||"desafio")==="basico"?"Básico":(rouletteTargetQ.nivel||"desafio")==="desafio"?"Desafío":"Experto"}</span>`;
+      rr.style.display="block";
+    }
+    if(cap)cap.innerHTML="✨ La ruleta eligió tu próxima pregunta.";
+    setTimeout(()=>openQuiz(rouletteTargetQ),900);
+  },3700);
+}
+
+function openQuiz(preselectedQ){
+  currentQ=preselectedQ||nextQ();
   G.answered=false;
   const pairs=currentQ.ops.map((op,idx)=>({op,idx}));
   for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}
@@ -1655,7 +1760,9 @@ function openQuiz(){
   document.getElementById("aboutBtn").style.display="none";
   document.getElementById("continueBtn").style.display="none";
   go("quiz");
-}function answer(i){
+}
+
+function answer(i){
  if(G.answered)return;
  G.answered=true;
  let ok=i===currentQ.viewCorrect;
