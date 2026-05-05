@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Eco-Poderes Territorio Vivo v3.0.1 — Fix Respuestas y Sobres</title>
+<title>Eco-Poderes Territorio Vivo v3.2.1 — Fix Respuestas y Sobres</title>
 <style>
 :root{--bg:#06101d;--panel:#10233b;--line:#264b72;--txt:#edf6ff;--muted:#93abc4;--green:#49d48f;--gold:#ffc94a;--blue:#5b7cff;--purple:#9d68ff;--red:#ff5d6c}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(73,212,143,.16),transparent 28%),radial-gradient(circle at 90% 10%,rgba(91,124,255,.18),transparent 30%),linear-gradient(180deg,#050b14,#07111f 45%,#03070d);color:var(--txt);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:540px;margin:auto;min-height:100vh}
@@ -87,10 +87,15 @@
 
 .feedbackBox{border:1px solid rgba(91,124,255,.45);background:rgba(91,124,255,.09);border-radius:16px;padding:12px;margin-top:10px;color:#dce5ff}
 .lockBox{border:1px solid rgba(255,201,74,.55);background:rgba(255,201,74,.08);border-radius:16px;padding:12px;color:var(--gold);font-weight:850}
+
+.missionStep{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:.72rem;font-weight:950;color:var(--muted);margin-bottom:8px}
+.missionStep.on{border-color:var(--gold);color:var(--gold);background:rgba(255,201,74,.08)}
+.qualityMeter{height:9px;border-radius:999px;background:#05101e;border:1px solid var(--line);overflow:hidden;margin-top:8px}
+.qualityFill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));width:0%;transition:.3s}
 </style>
 </head>
 <body>
-<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v3.0</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
+<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v3.2</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
   <button class="btn dark" onclick="go('about')">📚 Acerca del proyecto</button></div>
 
 <div class="screen" id="profile">
@@ -124,7 +129,7 @@
 </div>
 
 <div class="screen" id="about"><div class="topbar"><button class="btn dark" onclick="go('home')" style="width:auto">←</button><div class="pill">Acerca de</div></div><div class="card"><h2>Eco-Poderes Territorio Vivo</h2><p class="small">Plataforma educativa phygital: juego de mesa, app, exploración real, comunidad, recompensas e identidad territorial.</p><p class="small"><b>Modo Región:</b> especies, historia, geografía, insectos, nubes y desafíos reales por territorio.</p><p class="small"><b>Regla clave:</b> los registros de exploración deben ser reales, capturados por el jugador mediante imagen y descripción.</p></div></div>
-<div class="screen" id="playSetup"><div class="topbar"><button class="btn dark" onclick="go('home')" style="width:auto">←</button><div class="pill">Modo Juego</div></div><div class="card"><h2>Elige tu guardián</h2><p class="small">Para jugar debes completar primero tu nombre/apodo y población, sector o comunidad en el Perfil del Guardián.</p><button class="btn sec" onclick="go(\'profile\')">👤 Completar perfil</button></div><div class="grid2" id="guardianGrid"></div><input id="communityName" placeholder="Tu comuna, sector o comunidad"><button class="btn" onclick="startGame()">Iniciar partida →</button></div>
+<div class="screen" id="playSetup"><div class="topbar"><button class="btn dark" onclick="go('home')" style="width:auto">←</button><div class="pill">Modo Juego</div></div><div class="card"><h2>Elige tu guardián</h2><p class="small">Para jugar debes completar primero tu nombre/apodo y población, sector o comunidad en el Perfil del Guardián.</p><button class="btn sec" onclick="go(\'profile\')">👤 Completar perfil</button></div><div class="grid2" id="guardianGrid"></div><button class="btn" onclick="startGame()">Iniciar partida →</button></div>
 <div class="screen" id="game"><div class="topbar"><button class="btn dark" onclick="go('home')" style="width:auto">←</button><div class="pill" id="roundPill">Ronda 1/8</div><div class="pill">🌱 <span id="seedTop">0</span></div></div><div class="card"><h3 id="guardianTitle"></h3><p class="small" id="guardianPower"></p></div>
   <div class="card">
     <h3>🗺️ Ruta Viva hacia el Equilibrium</h3>
@@ -328,8 +333,15 @@
   <div class="topbar"><button class="btn dark" onclick="go('game')" style="width:auto">←</button><div class="pill">Misión Real</div><div class="pill">🗝️ <span id="keyMission">0</span></div></div>
   <div class="card glow">
     <h2>🌎 Plan de Misión Real</h2>
+    <div>
+      <span class="missionStep" id="ms1">1. Objetivo</span>
+      <span class="missionStep" id="ms2">2. Evidencia</span>
+      <span class="missionStep" id="ms3">3. Validación</span>
+    </div>
     <p class="small" id="missionScenario"></p>
     <div id="missionOptions"></div>
+    <div class="qualityMeter"><div class="qualityFill" id="missionQuality"></div></div>
+    <p class="small" id="missionQualityText">Calidad de misión: 0%</p>
   </div>
   <div class="card small" id="missionFeedback" style="display:none"></div>
   <button class="btn" id="missionContinue" onclick="finishMiniGame()" style="display:none">Continuar partida →</button>
@@ -338,10 +350,17 @@
 <div class="screen" id="keyChallenge">
   <div class="topbar"><button class="btn dark" onclick="openPackScreen()" style="width:auto">←</button><div class="pill">Desafío de Llave</div><div class="pill">⚡ <span id="energyKey">0</span></div></div>
   <div class="card glow">
-    <h2>🗝️ Desafío especial</h2>
-    <p class="small">Puedes ganar una llave adicional resolviendo un desafío de criterio. Cuesta 2 de energía y no entrega semillas.</p>
+    <h2>🗝️ Desafío Experto de Llave</h2>
+    <p class="small">Para ganar una llave debes superar 3 decisiones seguidas. Cuesta 3 de energía y no entrega semillas.</p>
+    <div>
+      <span class="missionStep" id="ks1">1. Calidad</span>
+      <span class="missionStep" id="ks2">2. Riesgo</span>
+      <span class="missionStep" id="ks3">3. Validación</span>
+    </div>
     <p class="small" id="keyScenario"></p>
     <div id="keyOptions"></div>
+    <div class="qualityMeter"><div class="qualityFill" id="keyQuality"></div></div>
+    <p class="small" id="keyQualityText">Precisión de llave: 0%</p>
   </div>
   <div class="card small" id="keyFeedback" style="display:none"></div>
   <button class="btn" id="keyContinue" onclick="openPackScreen()" style="display:none">Volver a Tesoros →</button>
@@ -509,7 +528,7 @@ function finishClearedTile(){
   document.getElementById("gameEvent").innerHTML="Casilla superada. Avance confirmado. Puedes continuar la partida.";
   go("game");
 }
-function def(){return{seeds:0,knowledge:0,badges:[],cards:[],observations:[],bestStreak:0,profile:{name:"",institution:"",region:"O’Higgins",comuna:"",sector:""},treasureKeys:0}}function load(){try{return Object.assign(def(),JSON.parse(localStorage.getItem("ep_v2_state")||"{}"))}catch(e){return def()}}let S=load();let G={round:1,maxRound:40,eco:55,energy:3,streak:0,shield:false,usedZorro:false,qBags:null,answered:false,position:-1,confirmedPosition:-1,pendingPosition:null,landedType:null,tileCleared:false,qHistory:[]};let currentQ=null,selectedGuardian=null,selectedCat=null;let observationSending=false;function save(){try{localStorage.setItem("ep_v2_state",JSON.stringify(S))}catch(e){/* almacenamiento local no disponible */}}function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));document.getElementById(id).classList.add("on");if(id==="playSetup")renderGuardians();if(id==="profile")loadProfileForm();if(id==="explore"){renderCats();updateSeeds(); const n=document.getElementById("obsNotice"); if(n){n.style.display="none"; n.innerHTML="";}}if(id==="game")renderBoard();window.scrollTo(0,0)}function updateSeeds(){
+function def(){return{seeds:0,knowledge:0,badges:[],cards:[],observations:[],bestStreak:0,profile:{name:"",institution:"",region:"O’Higgins",comuna:"",sector:""},treasureKeys:0,questionHistory:[],questionSeen:{}}}function load(){try{return Object.assign(def(),JSON.parse(localStorage.getItem("ep_v2_state")||"{}"))}catch(e){return def()}}let S=load();let G={round:1,maxRound:40,eco:55,energy:3,streak:0,shield:false,usedZorro:false,qBags:null,answered:false,position:-1,confirmedPosition:-1,pendingPosition:null,landedType:null,tileCleared:false,qHistory:[]};let currentQ=null,selectedGuardian=null,selectedCat=null;let observationSending=false;function save(){try{localStorage.setItem("ep_v2_state",JSON.stringify(S))}catch(e){/* almacenamiento local no disponible */}}function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));document.getElementById(id).classList.add("on");if(id==="playSetup")renderGuardians();if(id==="profile")loadProfileForm();if(id==="explore"){renderCats();updateSeeds(); const n=document.getElementById("obsNotice"); if(n){n.style.display="none"; n.innerHTML="";}}if(id==="game")renderBoard();window.scrollTo(0,0)}function updateSeeds(){
   ["seedTop","seedQuiz","seedExplore","seedMini","seedSpecies","seedCloud","seedCircular","seedInsect","seedIrrigation","seedCrisis","seedEcoChain","seedRoute","seedEvidence","seedImpact","seedPack"].forEach(id=>{
     let e=document.getElementById(id);
     if(e)e.textContent=S.seeds;
@@ -594,7 +613,7 @@ function updateGame(){document.getElementById("roundPill").textContent=`Turno ${
  document.getElementById("nextBtn").disabled=true;
  clamp();updateGame();
 }
-function level(){if(S.knowledge<3)return"basico";if(S.knowledge<8)return"desafio";return"experto"}function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function normalizeRegionName(v){
+function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function normalizeRegionName(v){
   return (v||"").toString().trim().toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
     .replace(/región de /g,"").replace(/region de /g,"").replace(/región /g,"").replace(/region /g,"");
@@ -626,62 +645,116 @@ function resetQuestionBags(){
   Object.keys(G.qBags).forEach(k=>G.qBags[k]=shuf(G.qBags[k]));
 }
 
+function persistentQuestionHistory(){
+  if(!S.questionHistory)S.questionHistory=[];
+  if(!S.questionSeen)S.questionSeen={};
+}
+
+function recordQuestionUse(idx){
+  persistentQuestionHistory();
+  const key=String(idx);
+  S.questionHistory.push(idx);
+  S.questionSeen[key]=(S.questionSeen[key]||0)+1;
+  if(S.questionHistory.length>180){
+    const old=S.questionHistory.shift();
+    // keep seen counts as long-term soft penalty, not exact block
+  }
+  if(!G.qHistory)G.qHistory=[];
+  G.qHistory.push(idx);
+  if(G.qHistory.length>70)G.qHistory.shift();
+  save();
+}
+
 function weightedPickQuestion(level){
+  persistentQuestionHistory();
   let pool=QUESTIONS.map((q,i)=>({q,i})).filter(x=>(x.q.nivel||"desafio")===level);
   if(!pool.length) pool=QUESTIONS.map((q,i)=>({q,i}));
-  const hist=new Set(G.qHistory||[]);
-  const fresh=pool.filter(x=>!hist.has(x.i));
-  if(fresh.length>8) pool=fresh;
+
+  const gameHist=new Set(G.qHistory||[]);
+  const persistentHist=new Set((S.questionHistory||[]).slice(-140));
+
+  // First avoid questions seen in this game and recently across previous games.
+  let fresh=pool.filter(x=>!gameHist.has(x.i) && !persistentHist.has(x.i));
+  if(fresh.length>=12) pool=fresh;
+  else {
+    fresh=pool.filter(x=>!gameHist.has(x.i));
+    if(fresh.length>=12) pool=fresh;
+  }
+
   const pref=normalizeRegionName(preferredRegion());
   const roll=Math.random();
   let filtered=pool;
-  if(roll<0.62 && pref){
+
+  // Less restrictive than before: prevents the same regional subset from repeating forever.
+  if(roll<0.45 && pref){
     const local=pool.filter(x=>normalizeRegionName(x.q.region||"").includes(pref));
-    if(local.length) filtered=local;
-  }else if(roll<0.82){
+    if(local.length>=6) filtered=local;
+  }else if(roll<0.65){
     const national=pool.filter(x=>normalizeRegionName(x.q.region||"")==="nacional");
-    if(national.length) filtered=national;
+    if(national.length>=6) filtered=national;
+  }else if(roll<0.85){
+    const other=pool.filter(x=>{
+      const qr=normalizeRegionName(x.q.region||"");
+      return qr && qr!=="nacional" && (!pref || !qr.includes(pref));
+    });
+    if(other.length>=6) filtered=other;
   }else{
     const pdf=pool.filter(x=>x.q.sourcePack==="Banco País Pro PDF");
-    if(pdf.length) filtered=pdf;
+    if(pdf.length>=6) filtered=pdf;
   }
-  const weighted=filtered.map(x=>({i:x.i,w:questionWeight(x.q,level)}));
-  const total=weighted.reduce((a,b)=>a+b.w,0);
+
+  const weighted=filtered.map(x=>{
+    const q=x.q;
+    const qr=normalizeRegionName(q.region||"");
+    let w=1;
+    if(qr && pref && qr.includes(pref)) w+=2.4;
+    if(qr==="nacional") w+=1.4;
+    if(q.sourcePack==="Banco País Pro PDF") w+=1.8;
+    if(q.cat && G.lastCat && q.cat===G.lastCat) w-=1.2;
+    const seen=(S.questionSeen&&S.questionSeen[String(x.i)])||0;
+    w-=Math.min(4,seen*1.15);
+    if(gameHist.has(x.i)) w-=50;
+    if(persistentHist.has(x.i)) w-=8;
+    return {i:x.i,w:Math.max(0.05,w)};
+  });
+
+  let total=weighted.reduce((a,b)=>a+b.w,0);
   let r=Math.random()*total;
   for(const x of weighted){
     r-=x.w;
     if(r<=0)return x.i;
   }
-  return weighted[0].i;
+  return weighted[Math.floor(Math.random()*weighted.length)].i;
 }
 
 function level(){
   const k=S.knowledge||0;
   const r=Math.random();
-  // Curva aleatoria controlada: evita que el juego se quede siempre en el mismo nivel.
+  // Curva variable por turno para que no se repita siempre el mismo nivel.
   if(k<3){
-    if(r<0.70)return"basico";
-    if(r<0.95)return"desafio";
+    if(r<0.55)return"basico";
+    if(r<0.90)return"desafio";
     return"experto";
   }
   if(k<8){
-    if(r<0.25)return"basico";
-    if(r<0.70)return"desafio";
+    if(r<0.18)return"basico";
+    if(r<0.62)return"desafio";
     return"experto";
   }
-  if(r<0.15)return"basico";
-  if(r<0.45)return"desafio";
+  if(r<0.10)return"basico";
+  if(r<0.38)return"desafio";
   return"experto";
 }
 
 function nextQ(){
   const l=level();
-  if(!G.qHistory)G.qHistory=[];
   const idx=weightedPickQuestion(l);
-  G.qHistory.push(idx);
-  if(G.qHistory.length>45)G.qHistory.shift();
-  return QUESTIONS[idx]||QUESTIONS[0];
+  const q=QUESTIONS[idx]||QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];
+  recordQuestionUse(idx);
+  G.lastCat=q.cat||"";
+  return q;
 }
+
 function reward(q){let n=q.nivel||"desafio";if(n==="basico")return{seed:10,know:1,energy:2,label:"Nivel Básico · Reconocimiento"};if(n==="desafio")return{seed:18,know:1,energy:2,label:"Nivel Desafío · Conocimiento profundo"};return{seed:30,know:2,energy:3,label:"Nivel Experto · Decisión ecológica"}}
 const SPECIES_GAMES=[
  {answer:"Quillay",options:["Quillay","Peumo","Boldo","Espino"],hints:["Soy parte del bosque esclerófilo.","Mi corteza contiene saponinas.","Mi nombre científico es Quillaja saponaria."],about:"Árbol nativo adaptado a sequía y asociado a usos de limpieza natural."},
@@ -988,24 +1061,41 @@ const ECOSYSTEM_GAMES=[
 let currentEcoChain=null, ecoStep=0, ecoScore=0;
 
 const ROUTE_GAMES=[
- {scenario:"Tienes 3 puntos de energía para mejorar una plaza con sequía leve. Elige la mejor combinación de acciones.",energy:3,actions:[
-  {name:"Reparar fuga",cost:2,impact:6,good:true},
-  {name:"Limpiar residuos livianos",cost:1,impact:2,good:true},
-  {name:"Regar al mediodía",cost:1,impact:-2,good:false},
-  {name:"Plantar especie de alto consumo",cost:2,impact:-1,good:false}
- ],target:8,exp:"La mejor ruta prioriza reparar fuga y limpieza. No todo gasto de energía produce impacto positivo.",mission:"Registra una acción real de ahorro de agua o limpieza de entorno."},
- {scenario:"Tienes 4 puntos de energía para mejorar biodiversidad en un jardín comunitario.",energy:4,actions:[
-  {name:"Agregar plantas nativas con flor",cost:2,impact:5,good:true},
-  {name:"Dejar una zona de cobertura vegetal",cost:1,impact:3,good:true},
-  {name:"Aplicar insecticida preventivo",cost:1,impact:-3,good:false},
-  {name:"Instalar cartel educativo",cost:1,impact:2,good:true}
- ],target:10,exp:"La biodiversidad mejora combinando plantas nativas, refugio y educación. Evitar químicos innecesarios protege insectos benéficos.",mission:"Registra un insecto, flor o refugio de biodiversidad."},
- {scenario:"Tienes 3 puntos de energía para enfrentar basura en una actividad comunitaria.",energy:3,actions:[
-  {name:"Separar reciclables limpios",cost:1,impact:3,good:true},
-  {name:"Retirar residuos peligrosos sin protección",cost:1,impact:-4,good:false},
-  {name:"Organizar punto de acopio",cost:2,impact:5,good:true},
-  {name:"Esconder basura bajo arbustos",cost:1,impact:-3,good:false}
- ],target:8,exp:"La ruta correcta separa materiales y organiza acopio seguro. La seguridad importa tanto como la limpieza.",mission:"Registra una acción de separación de residuos."}
+ {id:"agua_suelo_sombra",scenario:"Caso difícil: Plaza con césped seco en sectores altos, charcos cerca de una pendiente, árboles jóvenes con taza endurecida y pronóstico de calor. Tienes 5 puntos de energía. Elige la ruta más estratégica.",energy:5,actions:[
+  {name:"Revisar infiltración y compactación antes de aumentar riego",cost:2,impact:6,good:true},
+  {name:"Ajustar riego temprano por sectores, no al mediodía",cost:1,impact:4,good:true},
+  {name:"Aumentar presión de aspersores en toda la plaza",cost:2,impact:-2,good:false},
+  {name:"Soltar suelo/taza y agregar cobertura orgánica controlada",cost:2,impact:5,good:true},
+  {name:"Fertilizar sin revisar agua ni suelo",cost:1,impact:-1,good:false}
+ ],target:15,optimal:["Revisar infiltración y compactación antes de aumentar riego","Ajustar riego temprano por sectores, no al mediodía","Soltar suelo/taza y agregar cobertura orgánica controlada"],exp:"La ruta óptima aborda causa, horario y suelo. Aumentar presión o fertilizar sin diagnóstico puede ocultar el problema.",mission:"Registra evidencia de suelo compactado, riego por sectores o una mejora de infiltración."},
+ {id:"biodiversidad_plaga",scenario:"Caso difícil: Jardín comunitario con pulgones en brotes nuevos, algunas chinitas, flores nativas y vecinos pidiendo fumigar. Tienes 4 puntos de energía. Elige la ruta con menor impacto.",energy:4,actions:[
+  {name:"Monitorear daño y presencia de controladores naturales",cost:1,impact:5,good:true},
+  {name:"Aplicar insecticida amplio de forma preventiva",cost:1,impact:-5,good:false},
+  {name:"Favorecer flores/refugios para polinizadores y benéficos",cost:2,impact:5,good:true},
+  {name:"Retirar manualmente focos muy afectados si el daño aumenta",cost:1,impact:3,good:true},
+  {name:"Eliminar todas las flores para que no lleguen insectos",cost:1,impact:-3,good:false}
+ ],target:13,optimal:["Monitorear daño y presencia de controladores naturales","Favorecer flores/refugios para polinizadores y benéficos","Retirar manualmente focos muy afectados si el daño aumenta"],exp:"La ruta óptima combina observación, hábitat para benéficos y control localizado. Fumigar de entrada puede dañar el equilibrio.",mission:"Registra un insecto, flor o interacción ecológica real."},
+ {id:"residuos_evento",scenario:"Caso difícil: Después de un evento hay botellas limpias, servilletas con comida, restos orgánicos y una pila usada. Tienes 5 puntos de energía. Selecciona una ruta segura y educativa.",energy:5,actions:[
+  {name:"Separar reciclables limpios y secos",cost:1,impact:4,good:true},
+  {name:"Enviar servilletas sucias al reciclaje de papel",cost:1,impact:-3,good:false},
+  {name:"Apartar pila usada como residuo especial",cost:1,impact:5,good:true},
+  {name:"Compostar restos vegetales si existe manejo adecuado",cost:1,impact:3,good:true},
+  {name:"Instalar punto educativo de separación para próximas actividades",cost:2,impact:5,good:true}
+ ],target:17,optimal:["Separar reciclables limpios y secos","Apartar pila usada como residuo especial","Compostar restos vegetales si existe manejo adecuado","Instalar punto educativo de separación para próximas actividades"],exp:"La ruta óptima separa por tipo y estado del residuo, cuida seguridad y deja aprendizaje instalado.",mission:"Registra una acción real de separación de residuos o punto limpio."},
+ {id:"arbol_joven",scenario:"Caso difícil: Árbol joven con hojas decaídas, daño leve en tronco, maleza compitiendo y taza de riego endurecida. Tienes 5 puntos de energía.",energy:5,actions:[
+  {name:"Proteger tronco y evitar nuevos daños mecánicos",cost:1,impact:4,good:true},
+  {name:"Mejorar taza de riego e infiltración",cost:2,impact:6,good:true},
+  {name:"Retirar competencia directa sin dejar suelo desnudo excesivo",cost:1,impact:3,good:true},
+  {name:"Podar fuerte para reducir hojas inmediatamente",cost:1,impact:-4,good:false},
+  {name:"Agregar cobertura/mulch sin tocar el cuello del árbol",cost:1,impact:4,good:true}
+ ],target:16,optimal:["Proteger tronco y evitar nuevos daños mecánicos","Mejorar taza de riego e infiltración","Retirar competencia directa sin dejar suelo desnudo excesivo","Agregar cobertura/mulch sin tocar el cuello del árbol"],exp:"La ruta óptima protege, mejora suelo/agua y reduce competencia. Podar fuerte no corrige el estrés de base.",mission:"Registra el estado de un árbol urbano y su entorno."},
+ {id:"humedal_mascotas",scenario:"Caso difícil: Borde de humedal urbano con aves, residuos livianos y perros sueltos. Tienes 5 puntos de energía. Elige acciones que reduzcan riesgo sin dañar el lugar.",energy:5,actions:[
+  {name:"Mantener distancia y no alimentar fauna",cost:1,impact:4,good:true},
+  {name:"Promover control de mascotas y correa",cost:1,impact:5,good:true},
+  {name:"Retirar residuos livianos sin entrar a zonas sensibles",cost:1,impact:4,good:true},
+  {name:"Entrar al humedal para sacar fotos cercanas",cost:1,impact:-4,good:false},
+  {name:"Instalar señal educativa o reporte a autoridad/local",cost:2,impact:5,good:true}
+ ],target:17,optimal:["Mantener distancia y no alimentar fauna","Promover control de mascotas y correa","Retirar residuos livianos sin entrar a zonas sensibles","Instalar señal educativa o reporte a autoridad/local"],exp:"La ruta óptima combina baja intervención, control de mascotas, limpieza segura y educación.",mission:"Registra una observación responsable de humedal, fauna o acción de cuidado."}
 ];
 
 const EVIDENCE_GAMES=[
@@ -1095,7 +1185,12 @@ function finishEcoChain(){
 }
 
 function openRouteGame(){
-  currentRoute=ROUTE_GAMES[Math.floor(Math.random()*ROUTE_GAMES.length)];
+  if(!G.routeHistory)G.routeHistory=[];
+  let pool=ROUTE_GAMES.filter(r=>!G.routeHistory.includes(r.id));
+  if(!pool.length){G.routeHistory=[];pool=ROUTE_GAMES.slice();}
+  currentRoute=pool[Math.floor(Math.random()*pool.length)];
+  G.routeHistory.push(currentRoute.id);
+  if(G.routeHistory.length>ROUTE_GAMES.length-1)G.routeHistory.shift();
   routeSelected=[];
   document.getElementById("routeScenario").textContent=currentRoute.scenario;
   document.getElementById("routeEnergy").textContent=currentRoute.energy;
@@ -1106,7 +1201,7 @@ function openRouteGame(){
 }
 
 function routeTotals(){
-  return routeSelected.reduce((a,idx)=>{const x=currentRoute.actions[idx];a.cost+=x.cost;a.impact+=x.impact;return a;},{cost:0,impact:0});
+  return routeSelected.reduce((a,idx)=>{const x=currentRoute.actions[idx];a.cost+=x.cost;a.impact+=x.impact;if(x.good)a.good++;else a.bad++;return a;},{cost:0,impact:0,good:0,bad:0});
 }
 
 function renderRoute(){
@@ -1126,15 +1221,26 @@ function resetRoute(){routeSelected=[];renderRoute();}
 
 function checkRoute(){
   const totals=routeTotals();
+  const selectedNames=routeSelected.map(i=>currentRoute.actions[i].name);
+  const optimal=currentRoute.optimal||[];
+  const optimalHits=optimal.filter(name=>selectedNames.includes(name)).length;
+  const missed=optimal.filter(name=>!selectedNames.includes(name));
+  const hasBad=routeSelected.some(i=>!currentRoute.actions[i].good);
   let fb="";
   if(totals.cost>currentRoute.energy){
-    fb=miniPenalty("Tu plan supera la energía disponible. Un buen guardián también debe priorizar.");
-  }else if(totals.impact>=currentRoute.target){
-    miniReward({seed:45,know:2,energy:2,eco:6,badgeName:"🧭 Estratega Eco"});
+    fb=miniPenalty("Tu plan supera la energía disponible. En Ruta Eco no basta elegir todo: hay que priorizar.");
+  }else if(hasBad){
+    fb=miniPenalty("Incluiste al menos una acción de impacto negativo. En escenarios complejos, una mala acción puede romper el plan.<br><br>"+currentRoute.exp);
+  }else if(totals.impact>=currentRoute.target && optimalHits===optimal.length){
+    miniReward({seed:55,know:3,energy:2,eco:7,badgeName:"🧭 Estratega Eco Experto"});
     setMissionHint(currentRoute.mission);
-    fb="✅ Plan óptimo. +45 semillas, +2 conocimiento, +6 Eco.<br><br>"+currentRoute.exp+"<br><br>🌎 Misión sugerida: "+currentRoute.mission;
+    fb="🌟 Ruta óptima. +55 semillas, +3 conocimiento, +7 Eco.<br><br>"+currentRoute.exp+"<br><br>🌎 Misión sugerida: "+currentRoute.mission;
+  }else if(totals.impact>=currentRoute.target-3 && optimalHits>=Math.max(2,optimal.length-1)){
+    miniReward({seed:25,know:1,energy:1,eco:2,streak:false,badgeName:"🧭 Ruta Eco Aceptable"});
+    setMissionHint(currentRoute.mission);
+    fb="✅ Ruta aceptable, pero no perfecta. +25 semillas, +1 conocimiento, +2 Eco.<br><br>Te faltó considerar: <b>"+(missed.join(", ")||"mejor priorización")+"</b>.<br><br>"+currentRoute.exp;
   }else{
-    fb=miniPenalty("El plan era posible, pero no logró suficiente impacto. Revisa costo/beneficio y evita acciones negativas.<br><br>"+currentRoute.exp);
+    fb=miniPenalty("El plan fue incompleto. En Ruta Eco debes leer el caso, evitar acciones negativas y seleccionar el conjunto estratégico, no solo una acción buena.<br><br>"+currentRoute.exp);
   }
   document.getElementById("routeFeedback").innerHTML=fb;
   document.getElementById("routeFeedback").style.display="block";
@@ -1196,16 +1302,60 @@ function answerImpact(i,btn){
 
 
 const MISSION_GAMES=[
- {scenario:"Vas a registrar una especie o elemento del entorno. ¿Qué registro tiene mejor valor educativo?",ops:["Foto real tomada por el jugador, descripción, comuna/sector y qué se observó","Solo texto sin evidencia","Foto descargada de internet","Una imagen sin descripción ni contexto"],correct:0,mission:"Registra una especie o elemento ambiental real con foto propia, descripción y sector."},
- {scenario:"Quieres reportar una acción ecológica real. ¿Qué evidencia es más adecuada?",ops:["Foto propia del antes/después o acción, descripción breve y lugar general","Un dibujo inventado","Una promesa sin evidencia","Una foto de otra comuna sin explicación"],correct:0,mission:"Registra una acción real: limpieza, separación de residuos, ahorro de agua o cuidado de especie."},
- {scenario:"Observas una nube, insecto o planta y no estás seguro del nombre. ¿Qué conducta es más responsable?",ops:["Subir foto propia, describir rasgos y dejar la identificación como posible","Inventar el nombre científico","Copiar una especie de otra región","No registrar nada porque no sabes todo"],correct:0,mission:"Registra una observación real aunque sea aproximada, indicando dudas y rasgos visibles."},
- {scenario:"Quieres que tu registro pueda recibir recompensas futuras. ¿Qué criterio lo hace más confiable?",ops:["Evidencia propia, descripción honesta, ubicación general y respeto por seguridad","Cantidad masiva de fotos repetidas","Datos exactos de dirección personal","Imagen artificial o no capturada por el jugador"],correct:0,mission:"Haz un registro honesto y seguro, sin ubicación exacta ni datos sensibles."}
+ {
+  title:"Avistamiento de especie o elemento natural",
+  rewardMission:"Registra una especie, nube, insecto, planta, árbol, hongo o evidencia ambiental real con foto propia, descripción y sector.",
+  steps:[
+   {label:"Objetivo",scenario:"Elige el objetivo más potente para una misión real de exploración.",ops:["Registrar una observación real del entorno con foto propia","Completar una misión usando una imagen de internet","Subir muchas fotos repetidas para ganar más","Inventar el nombre de una especie para que parezca experto"],correct:0,feedback:"Una misión real debe comenzar con observación auténtica del territorio."},
+   {label:"Evidencia",scenario:"¿Qué evidencia hace que el registro sea útil para la comunidad?",ops:["Foto propia, descripción clara, comuna/sector general y rasgos observados","Solo un emoji o una frase corta","Ubicación exacta de la casa del jugador","Foto sin contexto ni descripción"],correct:0,feedback:"La evidencia útil permite aprender, comentar y validar sin exponer datos sensibles."},
+   {label:"Validación",scenario:"Si no sabes el nombre exacto de lo observado, ¿qué haces?",ops:["Indicar que es una identificación posible y describir rasgos visibles","Inventar un nombre científico","Copiar la especie de otra región","No registrar nada porque no sabes todo"],correct:0,feedback:"La honestidad aumenta la calidad del registro y permite aprendizaje comunitario."}
+  ]
+ },
+ {
+  title:"Acción ecológica comprobable",
+  rewardMission:"Realiza o registra una acción ecológica real: limpieza, separación de residuos, ahorro de agua, cuidado de árbol o reporte responsable.",
+  steps:[
+   {label:"Objetivo",scenario:"¿Qué acción tiene mejor valor como misión real?",ops:["Acción concreta con evidencia: antes/después o resultado visible","Prometer que harás algo algún día","Subir una frase motivacional sin acción","Repetir un registro viejo como si fuera nuevo"],correct:0,feedback:"El juego debe premiar acciones verificables, no solo declaraciones."},
+   {label:"Evidencia",scenario:"¿Qué debe mostrar la evidencia de una acción ecológica?",ops:["Qué se hizo, dónde de forma general y cuál fue el cambio observado","Solo una foto muy cerrada sin explicación","Datos personales de terceros","Una imagen artificial sin aviso"],correct:0,feedback:"El registro debe mostrar contexto suficiente sin comprometer seguridad."},
+   {label:"Validación",scenario:"¿Qué criterio debe usar la comunidad para valorar la acción?",ops:["Calidad, impacto real y posibilidad de aprendizaje","Cantidad de fotos aunque sean repetidas","Premiar siempre al que más presiona botones","Aceptar cualquier cosa para no incomodar"],correct:0,feedback:"La validación debe cuidar calidad, evidencia y propósito educativo."}
+  ]
+ },
+ {
+  title:"Investigación del territorio",
+  rewardMission:"Investiga una especie, área verde, nube, cuenca o amenaza local y registra una observación real asociada.",
+  steps:[
+   {label:"Objetivo",scenario:"¿Cuál es una buena pregunta de investigación territorial?",ops:["¿Qué elemento de mi entorno puedo observar, describir y cuidar?","¿Cómo gano semillas sin salir a observar?","¿Qué respuesta puedo inventar más rápido?","¿Cómo copio el registro de otra persona?"],correct:0,feedback:"La investigación parte con curiosidad y observación directa."},
+   {label:"Evidencia",scenario:"¿Qué dato mejora el valor educativo del registro?",ops:["Rasgos observables: forma, color, comportamiento, clima o condición del lugar","Solo decir 'bonito'","Poner una dirección exacta","Afirmar certeza absoluta sin evidencia"],correct:0,feedback:"Los rasgos observables ayudan a comentar y aprender incluso sin identificación perfecta."},
+   {label:"Validación",scenario:"¿Cómo debería responder la comunidad ante una identificación dudosa?",ops:["Comentar con respeto, sugerir posibilidades y pedir mejor evidencia si falta","Burlarse del error","Validar todo automáticamente","Rechazar todo lo que no tenga nombre científico"],correct:0,feedback:"La comunidad debe enseñar, no castigar la exploración honesta."}
+  ]
+ }
 ];
 
 const KEY_CHALLENGES=[
- {scenario:"¿Cuál registro merece una llave especial por calidad?",ops:["Avistamiento real con foto propia, descripción clara y aporte educativo","Foto borrosa sin contexto repetida muchas veces","Imagen bajada de internet","Comentario sin evidencia"],correct:0,exp:"La llave debe premiar calidad, no cantidad."},
- {scenario:"Un jugador sube 20 fotos iguales para obtener premios. ¿Qué regla protege el sistema?",ops:["Anti-duplicados, límite diario y validación por calidad","Premiar todos los envíos por volumen","Eliminar la comunidad","Dar llaves sin revisar"],correct:0,exp:"La escalabilidad requiere filtros y recompensas por calidad."},
- {scenario:"Para premios reales, ¿qué debe pesar más?",ops:["Registros validados y acciones reales comprobables","Solo semillas generadas jugando libremente","Cantidad de clics","Azar sin revisión"],correct:0,exp:"Los premios reales deben basarse en evidencia validada."}
+ {
+  title:"Auditoría de calidad de registro",
+  steps:[
+   {label:"Calidad",scenario:"Un registro muestra una foto propia de una planta, descripción de hojas y flores, comuna general y duda honesta sobre especie. ¿Qué haces?",ops:["Validarlo como registro de buena calidad y sugerir identificación posible","Rechazarlo por no tener nombre científico exacto","Premiarlo solo si sube 10 fotos más","Pedir ubicación exacta de su casa"],correct:0,exp:"La calidad se basa en evidencia, descripción y honestidad, no en certeza absoluta."},
+   {label:"Riesgo",scenario:"El jugador incluye la dirección exacta de su casa y una foto de menores junto al registro. ¿Qué decisión protege mejor?",ops:["Pedir edición para retirar datos sensibles antes de destacar","Destacarlo porque tiene muchos detalles","Compartirlo en ranking público sin cambios","Premiarlo con más llaves"],correct:0,exp:"La seguridad y privacidad son parte de la validación."},
+   {label:"Validación",scenario:"Varios usuarios comentan que la especie podría ser otra. ¿Qué respuesta del sistema es mejor?",ops:["Marcar como 'requiere revisión' y fomentar comentarios respetuosos","Eliminar el registro de inmediato","Aceptar cualquier nombre como definitivo","Bloquear comentarios para evitar aprendizaje"],correct:0,exp:"La validación comunitaria debe permitir corrección y aprendizaje."}
+  ]
+ },
+ {
+  title:"Control anti-abuso",
+  steps:[
+   {label:"Calidad",scenario:"Un jugador sube 15 veces la misma nube con la misma descripción para conseguir premios. ¿Qué regla aplicas?",ops:["Detectar duplicados y limitar recompensa por repetición","Premiar cada repetición","Convertirlo en ganador automático","Eliminar todos los registros de nubes"],correct:0,exp:"El sistema debe premiar diversidad y calidad, no repetición."},
+   {label:"Riesgo",scenario:"Una foto parece descargada de internet y no capturada por el jugador. ¿Qué haces?",ops:["Marcar como observado y pedir evidencia propia","Validarla si se ve bonita","Dar llave por calidad visual","Usarla como carta oficial sin revisar"],correct:0,exp:"Las misiones reales requieren capturas reales del jugador."},
+   {label:"Validación",scenario:"¿Cuándo un registro debería participar por premios reales?",ops:["Cuando tiene validación suficiente y revisión final si está en ranking alto","Apenas se sube, sin revisión","Cuando genera muchas semillas por minijuegos libres","Cuando tiene más emojis"],correct:0,exp:"Los premios reales requieren una capa de validación más estricta."}
+  ]
+ },
+ {
+  title:"Criterio ecológico avanzado",
+  steps:[
+   {label:"Calidad",scenario:"Un registro de insecto dice 'bicho malo' pero la foto muestra posible polinizador. ¿Qué feedback es mejor?",ops:["Pedir observar conducta y evitar clasificar como plaga sin evidencia","Validar 'bicho malo' como correcto","Recomendar eliminar todos los insectos","Ignorar el registro"],correct:0,exp:"El juego debe formar criterio, no miedo a los insectos."},
+   {label:"Riesgo",scenario:"Una acción de limpieza propone entrar a un humedal sensible para sacar basura. ¿Qué opción es mejor?",ops:["Priorizar seguridad, no entrar a zona sensible y reportar si corresponde","Entrar igual para obtener más puntos","Pisar vegetación para llegar más rápido","Usar perros para buscar basura"],correct:0,exp:"Una acción ecológica no debe generar un daño mayor."},
+   {label:"Validación",scenario:"Un registro tiene buena intención pero evidencia débil. ¿Qué recompensa corresponde?",ops:["Recompensa baja y solicitud de mejora","Llave inmediata","Premio físico directo","Destacado regional automático"],correct:0,exp:"La recompensa debe escalar con calidad y validación."}
+  ]
+ }
 ];
 
 let currentMission=null,currentKeyChallenge=null;
@@ -1216,69 +1366,169 @@ function shuffleMissionOps(obj){
   return {ops:pairs.map(x=>x.op), correct:pairs.findIndex(x=>x.i===obj.correct)};
 }
 
+let missionStep=0,missionScore=0;
+
+function shuffleMissionOps(obj){
+  const pairs=obj.ops.map((op,i)=>({op,i}));
+  for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}
+  return {ops:pairs.map(x=>x.op), correct:pairs.findIndex(x=>x.i===obj.correct)};
+}
+
 function openMissionGame(){
   currentMission=MISSION_GAMES[Math.floor(Math.random()*MISSION_GAMES.length)];
-  const sh=shuffleMissionOps(currentMission);
-  currentMission.viewOps=sh.ops; currentMission.viewCorrect=sh.correct;
-  document.getElementById("missionScenario").textContent=currentMission.scenario;
+  missionStep=0;
+  missionScore=0;
   document.getElementById("missionFeedback").style.display="none";
   document.getElementById("missionContinue").style.display="none";
-  document.getElementById("missionOptions").innerHTML=currentMission.viewOps.map((o,i)=>`<button class="op" onclick="answerMission(${i},this)">${String.fromCharCode(65+i)}) ${o}</button>`).join("");
+  renderMissionStep();
   updateSeeds();go("missionGame");
 }
 
+function renderMissionStep(){
+  const step=currentMission.steps[missionStep];
+  ["ms1","ms2","ms3"].forEach((id,idx)=>{
+    const el=document.getElementById(id);
+    if(el)el.className="missionStep"+(idx===missionStep?" on":"");
+  });
+  const quality=Math.round((missionScore/currentMission.steps.length)*100);
+  const qf=document.getElementById("missionQuality");
+  const qt=document.getElementById("missionQualityText");
+  if(qf)qf.style.width=quality+"%";
+  if(qt)qt.textContent=`Calidad de misión: ${quality}%`;
+  const sh=shuffleMissionOps(step);
+  step.viewOps=sh.ops; step.viewCorrect=sh.correct;
+  document.getElementById("missionScenario").innerHTML=`<b>${currentMission.title}</b><br><br>${step.scenario}`;
+  document.getElementById("missionOptions").innerHTML=step.viewOps.map((o,i)=>`<button class="op" onclick="answerMission(${i},this)">${String.fromCharCode(65+i)}) ${o}</button>`).join("");
+}
+
 function answerMission(i,btn){
-  const ok=i===currentMission.viewCorrect;
-  document.querySelectorAll("#missionOptions .op").forEach((b,idx)=>{b.disabled=true;if(idx===currentMission.viewCorrect)b.classList.add("correct");});
+  const step=currentMission.steps[missionStep];
+  const ok=i===step.viewCorrect;
+  document.querySelectorAll("#missionOptions .op").forEach((b,idx)=>{b.disabled=true;if(idx===step.viewCorrect)b.classList.add("correct");});
+  if(!ok)btn.classList.add("wrong");
+  if(ok)missionScore++;
+
+  document.getElementById("missionFeedback").innerHTML=(ok?"✅ Buena decisión. ":"⚠️ Esa decisión debilita la misión. ")+step.feedback;
+  document.getElementById("missionFeedback").style.display="block";
+
+  setTimeout(()=>{
+    missionStep++;
+    if(missionStep<currentMission.steps.length){
+      document.getElementById("missionFeedback").style.display="none";
+      renderMissionStep();
+    }else{
+      finishMissionGame();
+    }
+  },950);
+}
+
+function finishMissionGame(){
+  const total=currentMission.steps.length;
+  const quality=Math.round((missionScore/total)*100);
+  const qf=document.getElementById("missionQuality");
+  const qt=document.getElementById("missionQualityText");
+  if(qf)qf.style.width=quality+"%";
+  if(qt)qt.textContent=`Calidad de misión: ${quality}%`;
+
   let fb="";
-  if(ok){
+  if(missionScore===total){
     markTileCleared();
     S.treasureKeys=(S.treasureKeys||0)+1;
+    S.seeds+=40;
+    badge("🌎 Misión Real Excelente");
+    setMissionHint(currentMission.rewardMission);
+    fb=`🌟 Misión excelente: ${missionScore}/${total}.<br>Ganaste +40 semillas y 1 llave de tesoro.<br><br><div class="feedbackBox">Misión desbloqueada: ${currentMission.rewardMission}<br><br>Feedback: esta misión tiene objetivo, evidencia y criterio de validación.</div>`;
+  }else if(missionScore>=2){
+    markTileCleared();
     S.seeds+=20;
-    badge("🌎 Planificador de Misión Real");
-    setMissionHint(currentMission.mission);
-    fb=`✅ Misión planificada correctamente.<br>Ganaste +20 semillas y 1 llave de tesoro.<br><br><div class="feedbackBox">Feedback: ahora ve a Explorar y cumple la misión con evidencia real. La recompensa grande debe depender de validación, no solo de declarar una acción.</div>`;
+    badge("🌎 Misión Real Planificada");
+    setMissionHint(currentMission.rewardMission);
+    fb=`✅ Misión aceptable: ${missionScore}/${total}.<br>Ganaste +20 semillas. No ganaste llave porque faltó calidad total.<br><br><div class="feedbackBox">Misión sugerida: ${currentMission.rewardMission}<br><br>Feedback: para ganar llaves debes asegurar evidencia clara y validación confiable.</div>`;
   }else{
-    btn.classList.add("wrong");
     markTileFailed();
-    fb=`❌ Esa opción no asegura evidencia real ni calidad educativa.<br><br><div class="feedbackBox">Feedback: una misión real debe tener foto propia, descripción, comuna/sector y honestidad sobre lo observado.</div>`;
+    fb=`❌ Misión débil: ${missionScore}/${total}.<br><br><div class="feedbackBox">Feedback: una misión real no puede basarse en imágenes ajenas, datos inseguros o registros sin contexto. Tu guardián no avanza.</div>`;
   }
   save();updateSeeds();
+  document.getElementById("missionScenario").innerHTML=`<b>Resultado de Misión Real</b>`;
+  document.getElementById("missionOptions").innerHTML="";
   document.getElementById("missionFeedback").innerHTML=fb;
   document.getElementById("missionFeedback").style.display="block";
   document.getElementById("missionContinue").style.display="block";
 }
 
+let keyStep=0,keyScore=0;
+
 function openKeyChallenge(){
-  if((G.energy||0)<2){
+  if((G.energy||0)<3){
     const pr=document.getElementById("packResult");
-    if(pr){pr.innerHTML="⚠️ Necesitas al menos 2 de energía para intentar el desafío de llave.";pr.style.display="block";}
+    if(pr){pr.innerHTML="⚠️ Necesitas al menos 3 de energía para intentar el Desafío Experto de Llave.";pr.style.display="block";}
     return;
   }
-  G.energy-=2;
+  G.energy-=3;
   currentKeyChallenge=KEY_CHALLENGES[Math.floor(Math.random()*KEY_CHALLENGES.length)];
-  const sh=shuffleMissionOps(currentKeyChallenge);
-  currentKeyChallenge.viewOps=sh.ops; currentKeyChallenge.viewCorrect=sh.correct;
-  document.getElementById("keyScenario").textContent=currentKeyChallenge.scenario;
+  keyStep=0;keyScore=0;
   document.getElementById("keyFeedback").style.display="none";
   document.getElementById("keyContinue").style.display="none";
-  document.getElementById("keyOptions").innerHTML=currentKeyChallenge.viewOps.map((o,i)=>`<button class="op" onclick="answerKeyChallenge(${i},this)">${String.fromCharCode(65+i)}) ${o}</button>`).join("");
+  renderKeyStep();
   updateGame();go("keyChallenge");
 }
 
+function renderKeyStep(){
+  const step=currentKeyChallenge.steps[keyStep];
+  ["ks1","ks2","ks3"].forEach((id,idx)=>{const el=document.getElementById(id);if(el)el.className="missionStep"+(idx===keyStep?" on":"");});
+  const pct=Math.round((keyScore/currentKeyChallenge.steps.length)*100);
+  const f=document.getElementById("keyQuality");
+  const t=document.getElementById("keyQualityText");
+  if(f)f.style.width=pct+"%";
+  if(t)t.textContent=`Precisión de llave: ${pct}%`;
+  const sh=shuffleMissionOps(step);
+  step.viewOps=sh.ops;step.viewCorrect=sh.correct;
+  document.getElementById("keyScenario").innerHTML=`<b>${currentKeyChallenge.title}</b><br><br>${step.scenario}`;
+  document.getElementById("keyOptions").innerHTML=step.viewOps.map((o,i)=>`<button class="op" onclick="answerKeyChallenge(${i},this)">${String.fromCharCode(65+i)}) ${o}</button>`).join("");
+}
+
 function answerKeyChallenge(i,btn){
-  const ok=i===currentKeyChallenge.viewCorrect;
-  document.querySelectorAll("#keyOptions .op").forEach((b,idx)=>{b.disabled=true;if(idx===currentKeyChallenge.viewCorrect)b.classList.add("correct");});
+  const step=currentKeyChallenge.steps[keyStep];
+  const ok=i===step.viewCorrect;
+  document.querySelectorAll("#keyOptions .op").forEach((b,idx)=>{b.disabled=true;if(idx===step.viewCorrect)b.classList.add("correct");});
+  if(!ok)btn.classList.add("wrong");
+  if(ok)keyScore++;
+
+  document.getElementById("keyFeedback").innerHTML=(ok?"✅ Buen criterio. ":"⚠️ Criterio incompleto. ")+step.exp;
+  document.getElementById("keyFeedback").style.display="block";
+
+  setTimeout(()=>{
+    keyStep++;
+    if(keyStep<currentKeyChallenge.steps.length){
+      document.getElementById("keyFeedback").style.display="none";
+      renderKeyStep();
+    }else{
+      finishKeyChallenge();
+    }
+  },950);
+}
+
+function finishKeyChallenge(){
+  const total=currentKeyChallenge.steps.length;
+  const pct=Math.round((keyScore/total)*100);
+  const f=document.getElementById("keyQuality");
+  const t=document.getElementById("keyQualityText");
+  if(f)f.style.width=pct+"%";
+  if(t)t.textContent=`Precisión de llave: ${pct}%`;
+
   let fb="";
-  if(ok){
+  if(keyScore===total){
     S.treasureKeys=(S.treasureKeys||0)+1;
-    badge("🗝️ Llave por Criterio");
-    fb=`✅ Desafío superado. Ganaste 1 llave de tesoro.<br><br><div class="feedbackBox">Feedback: las llaves deben premiar criterio, calidad y validación, no repetición de acciones.</div>`;
+    badge("🗝️ Llave Experta");
+    fb=`🌟 Desafío perfecto: ${keyScore}/${total}. Ganaste 1 llave de tesoro.<br><br><div class="feedbackBox">Feedback: las llaves ahora premian criterio experto: calidad, riesgo y validación.</div>`;
+  }else if(keyScore===2){
+    fb=`🟡 Casi lo lograste: ${keyScore}/${total}. No ganaste llave.<br><br><div class="feedbackBox">Feedback: para ganar una llave debes resolver las 3 etapas. Una falla puede permitir abuso o mala validación.</div>`;
   }else{
-    btn.classList.add("wrong");
-    fb=`❌ No ganaste llave.<br>${currentKeyChallenge.exp}<br><br><div class="feedbackBox">Feedback: intenta pensar como moderador del sistema: calidad, evidencia y protección contra abuso.</div>`;
+    fb=`❌ Desafío fallido: ${keyScore}/${total}. No ganaste llave.<br><br><div class="feedbackBox">Feedback: conseguir llaves debe ser difícil porque habilita Tesoros y futuras recompensas.</div>`;
   }
   save();updateSeeds();
+  document.getElementById("keyScenario").innerHTML="<b>Resultado del Desafío de Llave</b>";
+  document.getElementById("keyOptions").innerHTML="";
   document.getElementById("keyFeedback").innerHTML=fb;
   document.getElementById("keyFeedback").style.display="block";
   document.getElementById("keyContinue").style.display="block";
