@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Eco-Poderes Territorio Vivo v3.2.1 — Fix Respuestas y Sobres</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eco-Poderes Territorio Vivo v3.3.1 — Fix Respuestas y Sobres</title>
 <style>
 :root{--bg:#06101d;--panel:#10233b;--line:#264b72;--txt:#edf6ff;--muted:#93abc4;--green:#49d48f;--gold:#ffc94a;--blue:#5b7cff;--purple:#9d68ff;--red:#ff5d6c}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(73,212,143,.16),transparent 28%),radial-gradient(circle at 90% 10%,rgba(91,124,255,.18),transparent 30%),linear-gradient(180deg,#050b14,#07111f 45%,#03070d);color:var(--txt);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:540px;margin:auto;min-height:100vh}
@@ -92,10 +92,13 @@
 .missionStep.on{border-color:var(--gold);color:var(--gold);background:rgba(255,201,74,.08)}
 .qualityMeter{height:9px;border-radius:999px;background:#05101e;border:1px solid var(--line);overflow:hidden;margin-top:8px}
 .qualityFill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));width:0%;transition:.3s}
+
+.techNote{border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.07);border-radius:16px;padding:12px;margin-top:10px;color:#d9fbff;font-size:.8rem}
 </style>
+<meta name="theme-color" content="#0a0f1a">
 </head>
 <body>
-<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v3.2</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
+<div class="screen on" id="home"><div class="hero"><div class="logo">ECO-PODERES</div><div class="sub">Territorio Vivo v3.3</div></div><div class="card glow"><h2>Conoce tu territorio. Despierta tu guardián.</h2><p class="small">Juego híbrido de mesa + app: aprende, explora, registra avistamientos reales, comparte con tu comunidad y gana Semillas Guardianas.</p></div><div class="navgrid"><button class="navbtn" onclick="go('playSetup')"><span class="ico">🎮</span><b>Jugar</b><span>Partidas rápidas con Eco Quiz, racha y sobres.</span></button><button class="navbtn" onclick="go('explore')"><span class="ico">👀</span><b>Explorar</b><span>Registra avistamientos reales con foto.</span></button><button class="navbtn" onclick="renderCommunity();go('community')"><span class="ico">🌎</span><b>Comunidad</b><span>Muro local de registros y acciones.</span></button><button class="navbtn" onclick="renderCollection();go('collection')"><span class="ico">🎖️</span><b>Colección</b><span>Semillas, insignias, cartas y progreso.</span></button></div><button class="btn sec" onclick="go('profile')">👤 Perfil del Guardián</button>
   <button class="btn dark" onclick="go('about')">📚 Acerca del proyecto</button></div>
 
 <div class="screen" id="profile">
@@ -528,7 +531,73 @@ function finishClearedTile(){
   document.getElementById("gameEvent").innerHTML="Casilla superada. Avance confirmado. Puedes continuar la partida.";
   go("game");
 }
-function def(){return{seeds:0,knowledge:0,badges:[],cards:[],observations:[],bestStreak:0,profile:{name:"",institution:"",region:"O’Higgins",comuna:"",sector:""},treasureKeys:0,questionHistory:[],questionSeen:{}}}function load(){try{return Object.assign(def(),JSON.parse(localStorage.getItem("ep_v2_state")||"{}"))}catch(e){return def()}}let S=load();let G={round:1,maxRound:40,eco:55,energy:3,streak:0,shield:false,usedZorro:false,qBags:null,answered:false,position:-1,confirmedPosition:-1,pendingPosition:null,landedType:null,tileCleared:false,qHistory:[]};let currentQ=null,selectedGuardian=null,selectedCat=null;let observationSending=false;function save(){try{localStorage.setItem("ep_v2_state",JSON.stringify(S))}catch(e){/* almacenamiento local no disponible */}}function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));document.getElementById(id).classList.add("on");if(id==="playSetup")renderGuardians();if(id==="profile")loadProfileForm();if(id==="explore"){renderCats();updateSeeds(); const n=document.getElementById("obsNotice"); if(n){n.style.display="none"; n.innerHTML="";}}if(id==="game")renderBoard();window.scrollTo(0,0)}function updateSeeds(){
+const EP_S_KEY="ep_v33_state";
+const EP_G_KEY="ep_v33_game";
+
+function def(){
+  return{
+    seeds:0,
+    knowledge:0,
+    badges:[],
+    cards:[],
+    observations:[],
+    bestStreak:0,
+    profile:{name:"",institution:"",region:"O’Higgins",comuna:"",sector:""},
+    treasureKeys:0,
+    questionHistory:[],
+    questionSeen:{},
+    missionsCompleted:[],
+    missionHint:null
+  };
+}
+
+function defG(){
+  return{
+    round:1,
+    maxRound:40,
+    eco:55,
+    energy:3,
+    streak:0,
+    shield:false,
+    usedZorro:false,
+    qBags:null,
+    answered:false,
+    position:-1,
+    confirmedPosition:-1,
+    pendingPosition:null,
+    landedType:null,
+    tileCleared:false,
+    qHistory:[],
+    routeHistory:[],
+    lastCat:""
+  };
+}
+
+function load(){
+  try{
+    const legacy=JSON.parse(localStorage.getItem("ep_v2_state")||"{}");
+    const current=JSON.parse(localStorage.getItem(EP_S_KEY)||"{}");
+    return Object.assign(def(),legacy,current);
+  }catch(e){return def()}
+}
+
+function loadG(){
+  try{
+    return Object.assign(defG(),JSON.parse(localStorage.getItem(EP_G_KEY)||"{}"));
+  }catch(e){return defG()}
+}
+
+let S=load();
+let G=loadG();
+let currentQ=null,selectedGuardian=null,selectedCat=null;let observationSending=false;
+
+function save(){
+  try{
+    localStorage.setItem(EP_S_KEY,JSON.stringify(S));
+    localStorage.setItem(EP_G_KEY,JSON.stringify(G));
+  }catch(e){/* almacenamiento local no disponible */}
+}
+function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));document.getElementById(id).classList.add("on");if(id==="playSetup")renderGuardians();if(id==="profile")loadProfileForm();if(id==="explore"){renderCats();updateSeeds(); const n=document.getElementById("obsNotice"); if(n){n.style.display="none"; n.innerHTML="";}}if(id==="game")renderBoard();window.scrollTo(0,0)}function updateSeeds(){
   ["seedTop","seedQuiz","seedExplore","seedMini","seedSpecies","seedCloud","seedCircular","seedInsect","seedIrrigation","seedCrisis","seedEcoChain","seedRoute","seedEvidence","seedImpact","seedPack"].forEach(id=>{
     let e=document.getElementById(id);
     if(e)e.textContent=S.seeds;
@@ -583,7 +652,7 @@ function startGame(){
     return;
   }
   if(!selectedGuardian){alert("Primero elige un guardián.");return}
-  G={round:1,maxRound:40,eco:55,energy:selectedGuardian.id==="guanaco"?5:3,streak:0,shield:false,usedZorro:false,qBags:null,answered:false,position:-1,confirmedPosition:-1,pendingPosition:null,landedType:null,tileCleared:false,qHistory:[]};
+  G=defG();G.energy=selectedGuardian.id==="guanaco"?5:3;
   resetQuestionBags();
   updateGame();
   document.getElementById("gameEvent").innerHTML="<p class='small'>Tira el dado para comenzar. Recuerda: si no superas la casilla, no avanzas.</p>";
@@ -805,9 +874,18 @@ function miniReward({seed=15,know=1,energy=1,eco=0,streak=true,badgeName=null}={
   clamp();updateGame();save();
 }
 
+function guardianLoss(defaultLoss=2){
+  if(selectedGuardian && selectedGuardian.id==="zorro" && !G.usedZorro){
+    G.usedZorro=true;
+    return Math.max(1,defaultLoss-1);
+  }
+  return defaultLoss;
+}
+
 function miniPenalty(msg){ markTileFailed();
   if(G.shield){G.shield=false;return "🛡️ Protección activada. No pierdes Eco.<br><br>"+msg;}
-  G.eco-=2;G.streak=0;clamp();updateGame();return "❌ Decisión incorrecta. -2 Eco.<br><br>"+msg;
+  const loss=guardianLoss(2);
+  G.eco-=loss;G.streak=0;clamp();updateGame();return `❌ Decisión incorrecta. -${loss} Eco.<br><br>`+msg;
 }
 
 function openSpeciesGame(){
@@ -921,8 +999,28 @@ const CRISIS_GAMES=[
 
 let currentInsect=null,currentIrrigation=null,currentCrisis=null;
 
+
+const MISSIONS=[
+  {id:"species_observation",cat:"avistamiento",evidencia:"foto propia + descripción + sector",recompensa:{seeds:80,validation:"comunitaria"}},
+  {id:"eco_action",cat:"acción real",evidencia:"antes/después o acción visible",recompensa:{seeds:120,validation:"moderador"}},
+  {id:"water_saving",cat:"agua",evidencia:"fuga, práctica de ahorro o riego eficiente",recompensa:{seeds:100,validation:"comunitaria"}},
+  {id:"waste_sorting",cat:"residuos",evidencia:"separación correcta o punto limpio",recompensa:{seeds:100,validation:"comunitaria"}},
+  {id:"cloud_record",cat:"nubes",evidencia:"foto propia + descripción del cielo",recompensa:{seeds:60,validation:"comunitaria"}}
+];
+
 function setMissionHint(text){
-  S.missionHint=text;
+  const match=(MISSIONS||[]).find(m=>text && (
+    text.toLowerCase().includes(m.cat) ||
+    text.toLowerCase().includes(m.id.replace("_"," "))
+  ));
+  S.missionHint={
+    id:match?match.id:"custom_"+Date.now(),
+    txt:text,
+    cat:match?match.cat:"misión personalizada",
+    evidencia:match?match.evidencia:"foto propia + descripción + sector",
+    recompensa:match?match.recompensa:{seeds:60,validation:"comunitaria"},
+    status:"pendiente"
+  };
   save();
 }
 
@@ -932,7 +1030,11 @@ function showMissionHintIfAny(){
   if(!box||!txt)return;
   if(S.missionHint){
     box.style.display="block";
-    txt.textContent=S.missionHint;
+    if(typeof S.missionHint==="string"){
+      txt.textContent=S.missionHint;
+    }else{
+      txt.innerHTML=`<b>${S.missionHint.txt}</b><br>Evidencia requerida: ${S.missionHint.evidencia}<br>Validación: ${S.missionHint.recompensa.validation}`;
+    }
   }else{
     box.style.display="none";
   }
@@ -1368,11 +1470,7 @@ function shuffleMissionOps(obj){
 
 let missionStep=0,missionScore=0;
 
-function shuffleMissionOps(obj){
-  const pairs=obj.ops.map((op,i)=>({op,i}));
-  for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}
-  return {ops:pairs.map(x=>x.op), correct:pairs.findIndex(x=>x.i===obj.correct)};
-}
+
 
 function openMissionGame(){
   currentMission=MISSION_GAMES[Math.floor(Math.random()*MISSION_GAMES.length)];
@@ -1542,14 +1640,29 @@ function finishMiniGame(){
 }
 
 
-function openQuiz(){currentQ=nextQ();G.answered=false;let n=currentQ.nivel||"desafio",lbl=n==="basico"?"Nivel Básico":n==="desafio"?"Nivel Desafío":"Nivel Experto";document.getElementById("quizCat").textContent=(currentQ.region&&currentQ.region!=="Nacional"?currentQ.region+" · ":"")+currentQ.cat;document.getElementById("qText").innerHTML=`<span class="diff ${n}">${lbl}</span>${currentQ.region?` <span class="bankPill">${currentQ.region}</span>`:""}${currentQ.sourcePack?` <span class="bankPill">Banco País Pro</span>`:""}<br>${currentQ.pregunta}`;document.getElementById("qOps").innerHTML=currentQ.ops.map((o,i)=>`<button class="op" onclick="answer(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join("");document.getElementById("qFeedback").style.display="none";document.getElementById("aboutBtn").style.display="none";document.getElementById("continueBtn").style.display="none";go("quiz")}function answer(i){
+function openQuiz(){
+  currentQ=nextQ();
+  G.answered=false;
+  const pairs=currentQ.ops.map((op,idx)=>({op,idx}));
+  for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}
+  currentQ.viewOps=pairs.map(x=>x.op);
+  currentQ.viewCorrect=pairs.findIndex(x=>x.idx===currentQ.correcta);
+  let n=currentQ.nivel||"desafio",lbl=n==="basico"?"Nivel Básico":n==="desafio"?"Nivel Desafío":"Nivel Experto";
+  document.getElementById("quizCat").textContent=(currentQ.region&&currentQ.region!=="Nacional"?currentQ.region+" · ":"")+currentQ.cat;
+  document.getElementById("qText").innerHTML=`<span class="diff ${n}">${lbl}</span>${currentQ.region?` <span class="bankPill">${currentQ.region}</span>`:""}${currentQ.sourcePack?` <span class="bankPill">Banco País Pro</span>`:""}<br>${currentQ.pregunta}`;
+  document.getElementById("qOps").innerHTML=currentQ.viewOps.map((o,i)=>`<button class="op" onclick="answer(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join("");
+  document.getElementById("qFeedback").style.display="none";
+  document.getElementById("aboutBtn").style.display="none";
+  document.getElementById("continueBtn").style.display="none";
+  go("quiz");
+}function answer(i){
  if(G.answered)return;
  G.answered=true;
- let ok=i===currentQ.correcta;
+ let ok=i===currentQ.viewCorrect;
  const ops=document.querySelectorAll("#qOps .op");
  ops.forEach((b,idx)=>{
    b.classList.remove("correct","wrong");
-   if(idx===currentQ.correcta){
+   if(idx===currentQ.viewCorrect){
      b.classList.add("correct");
      b.style.borderColor="#49d48f";
      b.style.background="#063d25";
@@ -1563,8 +1676,8 @@ function openQuiz(){currentQ=nextQ();G.answered=false;let n=currentQ.nivel||"des
    }
    b.disabled=true;
  });
- const correctaTxt=currentQ.ops && currentQ.ops[currentQ.correcta] ? currentQ.ops[currentQ.correcta] : "la alternativa marcada en verde";
- let msg=`<div class="answerReveal">Respuesta correcta: <b>${String.fromCharCode(65+currentQ.correcta)}) ${correctaTxt}</b></div>`;if(ok){markTileCleared();let rw=reward(currentQ),seeds=rw.seed,know=rw.know,en=rw.energy,bonus="";if(selectedGuardian.id==="tricahue")seeds+=4;if(selectedGuardian.id==="condor"&&(currentQ.nivel==="desafio"||currentQ.nivel==="experto"))know+=1;G.streak++;S.bestStreak=Math.max(S.bestStreak||0,G.streak);if(G.streak===3){G.shield=true;bonus+="<br>🛡️ Racha 3: protección activa."}if(G.streak>=5){seeds+=40;badge("🌎 Estado Guardián");bonus+="<br>🌎 Racha 5: Estado Guardián +40 semillas."}S.seeds+=seeds;S.knowledge+=know;G.energy+=en;msg+=`<br>✅ Correcto.<br>${rw.label}<br>+${seeds} semillas · +${know} conocimiento · +${en} energía.${bonus}<br><br>${currentQ.exp}`}else{markTileFailed();let loss=2;if(G.shield){G.shield=false;loss=0;msg+=`<br>🛡️ Protección activada. No pierdes Eco.<br><br>${currentQ.exp}`}else{if(selectedGuardian.id==="zorro"&&!G.usedZorro){loss=1;G.usedZorro=true}G.eco-=loss;G.streak=0;msg+=`<br>❌ Incorrecto. -${loss} Eco.<br><br>${currentQ.exp}`}}if(S.knowledge>=3)badge("🌿 Explorador Territorial");if(S.knowledge>=8)badge("🧠 Guardián del Conocimiento");if(S.seeds>=150)badge("🌱 Recolector de Semillas");document.getElementById("qFeedback").innerHTML=msg;document.getElementById("qFeedback").style.display="block";document.getElementById("aboutBtn").style.display="block";document.getElementById("continueBtn").style.display="block";clamp();updateGame()}function showAboutQuestion(){openModal(currentQ.acercaDe||currentQ.cat,`Nivel: ${(currentQ.nivel||"desafio").toUpperCase()}\\n\\n${currentQ.detalle||currentQ.exp}`,"Referencia: "+(currentQ.fuente||"Material educativo Eco-Poderes"))}function finishQuiz(){finishMiniGame()}function nextRound(){G.round++;G.eco-=2;if(G.eco<=0)return endGame(false);if(G.position>=BOARD_TILES.length-1)return endGame(true);document.getElementById("diceBtn").disabled=false;document.getElementById("quizBtn").disabled=true;document.getElementById("quizBtn").innerHTML="🧩 Jugar casilla";document.getElementById("nextBtn").disabled=true;G.landedType=null;document.getElementById("gameEvent").innerHTML="<p class='small'>Nueva ronda. Tira el dado y avanza en el tablero.</p>";clamp();updateGame()}function endGame(success){
+ const correctaTxt=currentQ.viewOps && currentQ.viewOps[currentQ.viewCorrect] ? currentQ.viewOps[currentQ.viewCorrect] : "la alternativa marcada en verde";
+ let msg=`<div class="answerReveal">Respuesta correcta: <b>${String.fromCharCode(65+currentQ.viewCorrect)}) ${correctaTxt}</b></div>`;if(ok){markTileCleared();let rw=reward(currentQ),seeds=rw.seed,know=rw.know,en=rw.energy,bonus="";if(selectedGuardian.id==="tricahue")seeds+=4;if(selectedGuardian.id==="condor"&&(currentQ.nivel==="desafio"||currentQ.nivel==="experto"))know+=1;G.streak++;S.bestStreak=Math.max(S.bestStreak||0,G.streak);if(G.streak===3){G.shield=true;bonus+="<br>🛡️ Racha 3: protección activa."}if(G.streak>=5){seeds+=40;badge("🌎 Estado Guardián");bonus+="<br>🌎 Racha 5: Estado Guardián +40 semillas."}S.seeds+=seeds;S.knowledge+=know;G.energy+=en;msg+=`<br>✅ Correcto.<br>${rw.label}<br>+${seeds} semillas · +${know} conocimiento · +${en} energía.${bonus}<br><br>${currentQ.exp}`}else{markTileFailed();let loss=2;if(G.shield){G.shield=false;loss=0;msg+=`<br>🛡️ Protección activada. No pierdes Eco.<br><br>${currentQ.exp}`}else{loss=guardianLoss(loss);G.eco-=loss;G.streak=0;msg+=`<br>❌ Incorrecto. -${loss} Eco.<br><br>${currentQ.exp}`}}if(S.knowledge>=3)badge("🌿 Explorador Territorial");if(S.knowledge>=8)badge("🧠 Guardián del Conocimiento");if(S.seeds>=150)badge("🌱 Recolector de Semillas");document.getElementById("qFeedback").innerHTML=msg;document.getElementById("qFeedback").style.display="block";document.getElementById("aboutBtn").style.display="block";document.getElementById("continueBtn").style.display="block";clamp();updateGame()}function showAboutQuestion(){openModal(currentQ.acercaDe||currentQ.cat,`Nivel: ${(currentQ.nivel||"desafio").toUpperCase()}\\n\\n${currentQ.detalle||currentQ.exp}`,"Referencia: "+(currentQ.fuente||"Material educativo Eco-Poderes"))}function finishQuiz(){finishMiniGame()}function nextRound(){G.round++;G.eco-=2;if(G.eco<=0)return endGame(false);if(G.position>=BOARD_TILES.length-1)return endGame(true);document.getElementById("diceBtn").disabled=false;document.getElementById("quizBtn").disabled=true;document.getElementById("quizBtn").innerHTML="🧩 Jugar casilla";document.getElementById("nextBtn").disabled=true;G.landedType=null;document.getElementById("gameEvent").innerHTML="<p class='small'>Nueva ronda. Tira el dado y avanza en el tablero.</p>";clamp();updateGame()}function endGame(success){
   let score=G.eco+S.knowledge*10+S.seeds/5+(success?250:0);
   const title=success?"✨ Equilibrium alcanzado":(G.eco>0?"🌍 Partida finalizada":"⚠️ Ecosistema en riesgo");
   document.getElementById("resultBox").innerHTML=`<h2>${title}</h2><p>Puntaje: <b>${Math.round(score)}</b></p><p>Eco: ${G.eco} · Conocimiento: ${S.knowledge} · Mejor racha: ${S.bestStreak||0}</p><p>Posición final: ${Math.max(0,G.position+1)}/${BOARD_TILES.length}</p><p class='small'>${success?"Lograste llegar al Equilibrium. Ahora puedes continuar el impacto en el modo Explorar.":"Puedes volver a intentar llegar al Equilibrium y fortalecer tu territorio."}</p>`;
@@ -1782,7 +1895,7 @@ function saveObservation(){
       S.observations.unshift(obs);
       S.seeds+=80;
       badge(cat.ico+" Observador "+cat.name);
-      S.missionHint="";
+      if(S.missionHint&&typeof S.missionHint==="object"){S.missionHint.status="enviado";S.missionsCompleted=S.missionsCompleted||[];S.missionsCompleted.push(S.missionHint);}S.missionHint=null;
       save();
 
       showObsNotice("✅ Registro enviado correctamente. Ganaste +80 semillas. Puedes revisarlo en Comunidad.");
@@ -1828,11 +1941,12 @@ function renderCommunity(){let feed=document.getElementById("feed"),list=S.obser
     profileBox.innerHTML=`<b>${p.name||"Guardián sin nombre"}</b><br>${p.institution||"Sin institución"}<br>${p.region||"Región no definida"} · ${p.comuna||"Comuna no definida"}<br>${p.sector||"Sector no definido"}<br><span class="keyPill">🗝️ Llaves de Tesoro: ${S.treasureKeys||0}</span>`;
   }
 
-  const rarityClass=(r)=>r==="common"?"common":r==="rare"?"rare":r==="epic"?"epic":"legend";
+  const normalizeRarity=(r)=>{r=(r||"common").toString().toLowerCase();if(r.includes("com"))return"common";if(r.includes("rar"))return"rare";if(r.includes("ép")||r.includes("ep"))return"epic";if(r.includes("leg"))return"legend";return r;};
+  const rarityClass=(r)=>{r=normalizeRarity(r);return r==="common"?"common":r==="rare"?"rare":r==="epic"?"epic":"legend";};
   document.getElementById("cardBox").innerHTML=S.cards.length?S.cards.slice().reverse().map(c=>{
     const canUse=!c.used && c.type!=="collectible";
     return `<div class="invCard ${c.used?'used':''}">
-      <b>${c.name}</b> <span class="rarity ${rarityClass(c.rarity)}">${(c.rarity||"common").toUpperCase()}</span><br>
+      <b>${c.name}</b> <span class="rarity ${rarityClass(c.rarity)}">${normalizeRarity(c.rarity).toUpperCase()}</span><br>
       ${c.desc||""}<br>
       <span class="small">${c.source||"Tesoro"}</span><br>
       ${c.used?"<span class='small'>Usada</span>":(canUse?`<button class="btn sec" onclick="useInventoryCard(${c.id})">Usar carta</button>`:"<span class='small'>Coleccionable</span>")}
